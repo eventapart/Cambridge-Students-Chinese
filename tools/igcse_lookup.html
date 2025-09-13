@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cambridge IGCSE 中文成语词典</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="./assets/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+  /* 基础重置 */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    background-color: #f9f9f9; /* 浅灰背景 */
+    color: #333;
+    line-height: 1.6;
+  }
+
+  /* 主色调：柔和蓝色 */
+  :root {
+    --primary-color: #4a90e2; /* 柔和蓝色 */
+    --secondary-color: #e0f0ff; /* 浅蓝色背景 */
+    --card-bg: #ffffff;
+    --text-muted: #666;
+    --border-color: #ddd;
+    --highlight-color: #ffc107;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .nav-tabs .nav-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+  }
+
+  .nav-tabs .nav-link.active {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border-color: var(--primary-color) var(--primary-color) var(--border-color);
+  }
+
+  .card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-text {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+  }
+
+  .btn-primary:hover {
+    background-color: #3a75c0;
+    border-color: #3a75c0;
+  }
+
+  .form-control {
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+
+  .feedback {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .feedback.text-success {
+    color: #28a745;
+  }
+
+  .feedback.text-danger {
+    color: #dc3545;
+  }
+
+  /* 高亮样式 */
+  mark {
+    background-color: var(--highlight-color);
+    padding: 0 2px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  /* 游戏选项按钮 */
+  .option {
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
+    display: inline-block;
+
+    margin:0;
+    padding:0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+/*  width: calc(40% - 1rem); */
+  min-height: 3.5rem; /* 固定最小高度 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: left;
+  }
+
+  .option:hover {
+    background-color: #f0f0f0;
+    border-color: #aaa;
+    color: #000;
+  }
+#check-toast {
+  min-width: 240px;
+  max-width: 320px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  /* 避免被其他元素遮挡 */
+  pointer-events: auto;
+}
+
+#toast-body {
+  padding: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+#current-score, #best-score {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.text-primary { color: #007bff; }
+.text-danger { color: #dc3545; }
+
+  /* 响应式优化 */
+  @media (max-width: 768px) {
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="container-lg py-4">
+    <h1 class="text-center mb-5 mt-5">Cambridge IGCSE<br />中文成语词典</h1>
+
+    <ul class="nav nav-tabs justify-content-center mb-4" id="myTabs">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#home">首页</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#dictionary">成语词典</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#igcse">真题成语</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#game">成语挑战</a></li>
+    </ul>
+
+    <div class="tab-content" style="min-height: 400px;">
+
+      <!-- 首页 -->
+      <div class="tab-pane fade show active" id="home">
+        <h4 class="text-center mb-4">积土成山、日积月累，定能旗开得胜、马到成功！</h4>
+        <div id="random-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 g-3"></div>
+      </div>
+
+      <!-- 成语词典 -->
+      <div class="tab-pane fade" id="dictionary">
+        <h4 class="text-center mb-4">查成语</h4>
+        <div class="d-flex justify-content-center mb-3">
+          <input type="text" id="search-input" class="form-control w-75" placeholder="输入成语搜索..." />
+          <button class="btn btn-primary ms-2" onclick="searchIdiom()">搜索</button>
+        </div>
+        <div id="search-results" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+      </div>
+
+      <!-- IGCSE真题 -->
+      <div class="tab-pane fade" id="igcse">
+        <h4 class="text-center mb-4">真题成语 2016-2025</h4>
+        <div id="igcse-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+      </div>
+
+      <!-- 成语游戏 -->
+      <div class="tab-pane fade" id="game">
+        <h4 class="text-center mb-4">20429条成语随机挑战</h4>
+
+          <!-- 计分栏 -->
+          <div class="text-center mb-3">
+            <span class="fs-5">当前得分：</span>
+            <strong id="current-score" class="text-primary fs-5">0</strong>
+            <span class="mx-3">|</span>
+            <span>最高分：</span>
+            <strong id="best-score" class="text-danger fs-5">0</strong>
+          </div>
+
+          <!-- 游戏主体 -->
+          <div id="game-container" class="text-center">
+            <p id="question" class="lead"></p>
+            <div id="options" class="mb-5 row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+            <div class="feedback text-center" id="feedback"></div>
+            <button class="btn btn-outline-primary" onclick="nextQuestion()">下一题</button>
+            <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p class="fs-6"><center class="card-text">Copyright &copy; 2025 Mr. Z-Benjamin<br />数据来源：中国成语大辞典 & IGCSE0509历年真题</center></p>
+  </div>
+
+<!-- 居中 Toast 容器 -->
+<div aria-live="polite" aria-atomic="true" class="position-fixed top-0 start-50 translate-middle-x" style="z-index: 1050;">
+  <div id="check-toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+    <div id="toast-body" class="d-flex align-items-center justify-content-center text-center"></div>
+  </div>
+</div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let allIdioms = [];
+    let igcseData = {
+      "0509_s16_in_11": [
+        "一成不变",
+        "一目了然",
+        "息息相关",
+        "日新月异",
+        "百思不解"
+      ],
+      "0509_s16_in_13": ["平心静气", "潜移默化"],
+      "0509_s17_in_11": [
+        "天昏地暗",
+        "山穷水尽",
+        "念念不忘",
+        "息息相关",
+        "无穷无尽",
+        "柳暗花明",
+        "随遇而安",
+        "青山绿水"
+      ],
+      "0509_s17_in_13": [
+        "不厌其烦",
+        "云泥之别",
+        "平淡无奇",
+        "截然不同",
+        "通宵达旦"
+      ],
+      "0509_s18_in_11": [
+        "古往今来",
+        "惶惶不安",
+        "游山玩水",
+        "特立独行",
+        "离经叛道"
+      ],
+      "0509_s18_in_13": [
+        "不知不觉",
+        "以己度人",
+        "多此一举",
+        "长此以往"
+      ],
+      "0509_s19_in_11": [
+        "不合时宜",
+        "人满为患",
+        "刀耕火种",
+        "崇山峻岭",
+        "成群结队",
+        "政出多门",
+        "浩浩荡荡",
+        "风土人情"
+      ],
+      "0509_s19_in_12": [
+        "一扫而空",
+        "半途而废",
+        "心血来潮",
+        "无论如何",
+        "欲速则不达",
+        "马不停蹄"
+      ],
+      "0509_s19_in_13": [
+        "一举一动",
+        "千千万万",
+        "千变万化",
+        "心有灵犀一点通",
+        "怡然自得",
+        "患得患失",
+        "无论如何",
+        "津津有味",
+        "海阔天空",
+        "甜言蜜语",
+        "郁郁葱葱"
+      ],
+      "0509_s20_in_11": [
+        "勤能补拙",
+        "十有八九",
+        "微不足道",
+        "无能为力",
+        "未雨绸缪",
+        "束手无策",
+        "独来独往"
+      ],
+      "0509_s20_in_13": ["一团和气", "一模一样", "兔起鹘落"],
+      "0509_s21_in_12": [
+        "做小伏低",
+        "天南地北",
+        "归根结底",
+        "得意洋洋",
+        "忿忿不平",
+        "长吁短叹"
+      ],
+      "0509_s21_in_13": [
+        "一视同仁",
+        "出人头地",
+        "小题大做",
+        "无可厚非",
+        "日上三竿",
+        "轻手轻脚"
+      ],
+      "0509_s22_in_11": [
+        "妙手回春",
+        "德艺双馨",
+        "昂首挺胸",
+        "言过其实"
+      ],
+      "0509_s22_in_13": ["前车之鉴", "随心所欲"],
+      "0509_s23_in_12": [
+        "不知不觉",
+        "不置可否",
+        "举世无双",
+        "以假乱真",
+        "众所周知",
+        "凡夫俗子",
+        "呱呱坠地",
+        "差之毫厘，失之千里",
+        "旧雨新知",
+        "持之以恒",
+        "未雨绸缪",
+        "水泄不通",
+        "漫山遍野",
+        "独具匠心",
+        "见风转舵",
+        "过目不忘"
+      ],
+      "0509_s23_in_13": [
+        "有钱有势",
+        "珠光宝气",
+        "钢筋铁骨"
+      ],
+      "0509_s24_in_12": [
+        "事半功倍",
+        "喜怒无常",
+        "忽冷忽热"
+      ],
+      "0509_s24_in_13": [
+        "囫囵吞枣",
+        "慢条斯理",
+        "汗流浃背",
+        "言传身教",
+        "量力而行"
+      ],
+      "0509_s25_in_13": [
+        "出其不意",
+        "千篇一律",
+        "哑口无言",
+        "哭笑不得",
+        "如释重负",
+        "孤注一掷",
+        "快人快语",
+        "标新立异",
+        "正襟危坐",
+        "正颜厉色",
+        "理直气壮",
+        "琳琅满目",
+        "胸有成竹",
+        "语重心长",
+        "蹑手蹑脚",
+        "迅雷不及掩耳",
+        "进德修业"
+      ]
+    };
+
+    // 加载 JSON 数据
+    fetch('./dictionaries/chengyu.json')
+      .then(res => res.json())
+      .then(data => {
+        allIdioms = data;
+        showHome();
+        showIgcseIdioms();
+
+        // 监听 tab 切换事件，自动加载游戏第一题
+        const tabEl = document.querySelector('#myTabs a[href="#game"]');
+        tabEl.addEventListener('shown.bs.tab', () => {
+          nextQuestion();
+        });
+      })
+      .catch(err => console.error('数据加载失败:', err));
+
+    // 显示首页随机成语
+    function showHome() {
+      const randomIds = shuffle(allIdioms).slice(0, 3);
+      const container = document.getElementById('random-idioms');
+      container.innerHTML = '';
+      randomIds.forEach(idiom => {
+        renderCard(container, idiom.idiom, idiom.definition);
+      });
+    }
+
+    // 渲染卡片函数
+    function renderCard(container, title, content) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `
+        <div class="card shadow-sm h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">${title}</h5>
+            <p class="card-text mt-auto">${content}</p>
+          </div>
+        </div>
+      `;
+      container.appendChild(col);
+    }
+
+    // 高亮关键词函数
+    function highlightText(text, keyword) {
+      if (!keyword || !text) return text;
+
+      const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const pattern = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+      return text.replace(pattern, '<mark>$1</mark>');
+    }
+
+    // 搜索成语
+    function searchIdiom() {
+      const input = document.getElementById('search-input').value.trim();
+      const results = allIdioms.filter(idiom =>
+        idiom.idiom.toLowerCase().includes(input.toLowerCase()) ||
+        idiom.definition.toLowerCase().includes(input.toLowerCase())
+      );
+      const container = document.getElementById('search-results');
+      container.innerHTML = '';
+
+      if (results.length === 0) {
+        container.innerHTML = '<p class="text-muted text-center">未找到相关成语。</p>';
+      } else {
+        results.forEach(idiom => {
+          const highlightedIdiom = highlightText(idiom.idiom, input);
+          const highlightedDef = highlightText(idiom.definition, input);
+
+          renderCard(container, highlightedIdiom, highlightedDef);
+        });
+      }
+    }
+
+    // 显示 IGCSE 成语
+    function showIgcseIdioms() {
+      const container = document.getElementById('igcse-idioms');
+      container.innerHTML = '';
+      Object.entries(igcseData).forEach(([exam, idioms]) => {
+        idioms.forEach(idiomName => {
+          const item = allIdioms.find(i => i.idiom === idiomName);
+          if (item) {
+            renderCard(container, `${item.idiom}<br><small class="text-muted">出处：${exam}</small>`, item.definition);
+          } else {
+            console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
+          }
+        });
+      });
+    }
+
+    // 初始化游戏
+    let currentQuestion = null;
+
+    function nextQuestion() {
+      const randomIdiom = allIdioms[Math.floor(Math.random() * allIdioms.length)];
+      let options = [randomIdiom.definition]; // 正确答案
+
+      // 添加其他干扰项
+      while (options.length < 3) {
+        const def = allIdioms[Math.floor(Math.random() * allIdioms.length)].definition;
+        if (!options.includes(def)) options.push(def);
+      }
+
+      // 打乱选项顺序
+      options = shuffle(options);
+
+      // 记录正确答案的新位置
+      currentQuestion = {
+        idiom: randomIdiom.idiom,
+        correctIndex: options.indexOf(randomIdiom.definition) // 更新为打乱后的索引
+      };
+
+      document.getElementById('question').textContent = `请选择“${randomIdiom.idiom}”的正确释义：`;
+      document.getElementById('options').innerHTML = options.map((def, index) => `
+        <div class="col"><button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
+        <span class="card-body d-flex flex-column">${def}</span></button></div>
+      `).join('');
+      document.getElementById('feedback').textContent = '';
+    }
+
+    function checkAnswer(index) {
+      const toastEl = document.getElementById('check-toast');
+      const toastBody = document.getElementById('toast-body');
+      const toast = bootstrap.Toast.getInstance(toastEl) || new bootstrap.Toast(toastEl);
+
+      const isCorrect = index === currentQuestion.correctIndex;
+
+      if (isCorrect) {
+        // ✅ 答对：加 10 分
+        currentScore += 10;
+        document.getElementById('current-score').textContent = currentScore;
+
+        // 更新最高分（如果需要）
+        if (currentScore > bestScore) {
+          bestScore = currentScore;
+          document.getElementById('best-score').textContent = bestScore;
+          localStorage.setItem('idiomGameBestScore', bestScore);
+        }
+
+        // 显示 Toast
+        toastEl.classList.remove('bg-danger', 'text-white');
+        toastEl.classList.add('bg-success', 'text-white');
+        toastBody.innerHTML = '正确！+10 分';
+
+        // 自动进入下一题
+        setTimeout(() => {
+          nextQuestion();
+        }, 300);
+      } else {
+        // ❌ 答错：不加分
+        const correctDef = allIdioms.find(i => i.idiom === currentQuestion.idiom).definition;
+        toastEl.classList.remove('bg-success', 'text-white');
+        toastEl.classList.add('bg-danger', 'text-white');
+        toastBody.innerHTML = `错误。`;
+      }
+
+      // 显示 Toast
+      toast.hide();
+      toast.show();
+    }
+
+    // 辅助函数：洗牌
+    function shuffle(array) {
+      return [...array].sort(() => Math.random() - 0.5);
+    }
+
+    // 计分变量
+    let currentScore = 0;
+    let bestScore = parseInt(localStorage.getItem('idiomGameBestScore')) || 0;
+
+    // 页面加载后显示最高分
+    document.addEventListener('DOMContentLoaded', () => {
+      const bestScoreEl = document.getElementById('best-score');
+      if (bestScoreEl) {
+        bestScoreEl.textContent = bestScore;
+      }
+    });
+    function restartGame() {
+      currentScore = 0;
+      document.getElementById('current-score').textContent = currentScore;
+      nextQuestion();
+    }
+  </script>
+</body>
+</html>
