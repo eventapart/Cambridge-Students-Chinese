@@ -417,7 +417,7 @@
     };
 
     // 加载 JSON 数据
-    fetch('./dictionaries/chengyu.json')
+    fetch('./dictionaries/idioms.json')
       .then(res => res.json())
       .then(data => {
         allIdioms = data;
@@ -438,7 +438,7 @@
       const container = document.getElementById('random-idioms');
       container.innerHTML = '';
       randomIds.forEach(idiom => {
-        renderCard(container, idiom.idiom, idiom.definition);
+        renderCard(container, idiom.word, idiom.explanation);
       });
     }
 
@@ -470,8 +470,8 @@
     function searchIdiom() {
       const input = document.getElementById('search-input').value.trim();
       const results = allIdioms.filter(idiom =>
-        idiom.idiom.toLowerCase().includes(input.toLowerCase()) ||
-        idiom.definition.toLowerCase().includes(input.toLowerCase())
+        idiom.word.toLowerCase().includes(input.toLowerCase()) ||
+        idiom.explanation.toLowerCase().includes(input.toLowerCase())
       );
       const container = document.getElementById('search-results');
       container.innerHTML = '';
@@ -480,8 +480,8 @@
         container.innerHTML = '<p class="text-muted text-center">未找到相关成语。</p>';
       } else {
         results.forEach(idiom => {
-          const highlightedIdiom = highlightText(idiom.idiom, input);
-          const highlightedDef = highlightText(idiom.definition, input);
+          const highlightedIdiom = highlightText(idiom.word, input);
+          const highlightedDef = highlightText(idiom.explanation, input);
 
           renderCard(container, highlightedIdiom, highlightedDef);
         });
@@ -494,9 +494,9 @@
       container.innerHTML = '';
       Object.entries(igcseData).forEach(([exam, idioms]) => {
         idioms.forEach(idiomName => {
-          const item = allIdioms.find(i => i.idiom === idiomName);
+          const item = allIdioms.find(i => i.word === idiomName);
           if (item) {
-            renderCard(container, `${item.idiom}<br><small class="text-muted">出处：${exam}</small>`, item.definition);
+            renderCard(container, `${item.word}<br><small class="text-muted">出处：${exam}</small>`, item.explanation);
           } else {
             console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
           }
@@ -509,11 +509,11 @@
 
     function nextQuestion() {
       const randomIdiom = allIdioms[Math.floor(Math.random() * allIdioms.length)];
-      let options = [randomIdiom.definition]; // 正确答案
+      let options = [randomidiom.explanation]; // 正确答案
 
       // 添加其他干扰项
       while (options.length < 3) {
-        const def = allIdioms[Math.floor(Math.random() * allIdioms.length)].definition;
+        const def = allIdioms[Math.floor(Math.random() * allIdioms.length)].explanation;
         if (!options.includes(def)) options.push(def);
       }
 
@@ -522,11 +522,11 @@
 
       // 记录正确答案的新位置
       currentQuestion = {
-        idiom: randomIdiom.idiom,
-        correctIndex: options.indexOf(randomIdiom.definition) // 更新为打乱后的索引
+        idiom: randomidiom.word,
+        correctIndex: options.indexOf(randomidiom.explanation) // 更新为打乱后的索引
       };
 
-      document.getElementById('question').textContent = `请选择“${randomIdiom.idiom}”的正确释义：`;
+      document.getElementById('question').textContent = `请选择“${randomidiom.word}”的正确释义：`;
       document.getElementById('options').innerHTML = options.map((def, index) => `
         <div class="col"><button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
         <span class="card-body d-flex flex-column">${def}</span></button></div>
@@ -564,7 +564,7 @@
         }, 300);
       } else {
         // ❌ 答错：不加分
-        const correctDef = allIdioms.find(i => i.idiom === currentQuestion.idiom).definition;
+        const correctDef = allIdioms.find(i => i.word === currentQuestion.idiom).explanation;
         toastEl.classList.remove('bg-success', 'text-white');
         toastEl.classList.add('bg-danger', 'text-white');
         toastBody.innerHTML = `错误。`;
