@@ -509,7 +509,7 @@
 
     function nextQuestion() {
       const randomIdiom = allIdioms[Math.floor(Math.random() * allIdioms.length)];
-      let options = [randomidiom.explanation]; // 正确答案
+      let options = [randomIdiom.explanation]; // 正确答案
 
       // 添加其他干扰项
       while (options.length < 3) {
@@ -522,11 +522,11 @@
 
       // 记录正确答案的新位置
       currentQuestion = {
-        idiom: randomidiom.word,
-        correctIndex: options.indexOf(randomidiom.explanation) // 更新为打乱后的索引
+        idiom: randomIdiom.word,
+        correctIndex: options.indexOf(randomIdiom.explanation) // 更新为打乱后的索引
       };
 
-      document.getElementById('question').textContent = `请选择“${randomidiom.word}”的正确释义：`;
+      document.getElementById('question').textContent = `请选择“${randomIdiom.word}”的正确释义：`;
       document.getElementById('options').innerHTML = options.map((def, index) => `
         <div class="col"><button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
         <span class="card-body d-flex flex-column">${def}</span></button></div>
