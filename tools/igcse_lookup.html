@@ -592,28 +592,60 @@
     function renderPagination(totalPages) {
       const paginationContainer = document.getElementById('pagination');
       
-      paginationContainer.innerHTML = `
-        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-3">
-          <!-- 上一页按钮：第一页时禁用 -->
-          <button 
-            class="btn btn-outline-primary" 
-            ${currentPage <= 1 ? 'disabled' : ''} 
-            onclick="goToPage(${currentPage - 1})">
-            上一页
-          </button>
-
-          <!-- 页码按钮 -->
-          ${generatePageButtons(currentPage, totalPages)}
-
-          <!-- 下一页按钮：最后一页时禁用 -->
-          <button 
-            class="btn btn-outline-primary" 
-            ${currentPage >= totalPages ? 'disabled' : ''} 
-            onclick="goToPage(${currentPage + 1})">
-            下一页
-          </button>
-        </div>
+      // 清空并生成分页 HTML（不包含 onclick）
+      let html = `
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-3" id="pagination-controls">
       `;
+
+      // 上一页
+      if (currentPage > 1) {
+        html += `<button class="btn btn-primary" data-page="${currentPage - 1}">上一页</button>`;
+      }
+
+      // 页码按钮
+      const maxButtons = 7;
+      let startPage, endPage;
+
+      if (totalPages <= maxButtons) {
+        startPage = 1;
+        endPage = totalPages;
+      } else {
+        const half = Math.floor(maxButtons / 2);
+        if (currentPage <= half) {
+          startPage = 1;
+          endPage = maxButtons;
+        } else if (currentPage + half >= totalPages) {
+          startPage = totalPages - maxButtons + 1;
+          endPage = totalPages;
+        } else {
+          startPage = currentPage - half;
+          endPage = currentPage + half;
+        }
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        const btnClass = i === currentPage ? 'btn-outline-secondary' : 'btn-primary';
+        html += `<button class="btn ${btnClass}" data-page="${i}">${i}</button>`;
+      }
+
+      // 下一页
+      if (currentPage < totalPages) {
+        html += `<button class="btn btn-outline-primary" data-page="${currentPage + 1}">下一页</button>`;
+      }
+
+      html += `</div>`;
+      paginationContainer.innerHTML = html;
+
+      // ✅ 使用事件委托绑定点击事件
+      const controls = document.getElementById('pagination-controls');
+      controls.addEventListener('click', function(e) {
+        if (e.target.tagName === 'BUTTON') {
+          const page = parseInt(e.target.dataset.page); // 从 data-page 获取目标页码
+          if (!isNaN(page)) {
+            goToPage(page); // 调用跳转函数
+          }
+        }
+      });
     }
 
     // 生成页码按钮的 HTML 字符串
@@ -659,14 +691,19 @@
 
     // 跳转到指定页码的函数
     function goToPage(page) {
-      const totalPages = Math.ceil(
-        Object.entries(igcseData).reduce((acc, [exam, map]) => acc + Object.keys(map).length, 0) / 60
+      // 重新计算总页数（基于当前 igcseData 数据总量）
+      const totalItems = Object.entries(igcseData).reduce(
+        (acc, [exam, map]) => acc + Object.keys(map).length,
+        0
       );
+      const totalPages = Math.ceil(totalItems / 60);
 
-      if (page >= 1 && page <= totalPages && page !== currentPage) {
+      // ✅ 安全检查：page 必须是有效数字，且在范围内，且不是当前页
+      if (Number.isInteger(page) && page >= 1 && page <= totalPages && page !== currentPage) {
         currentPage = page;
         showIgcseIdioms(); // 重新渲染成语列表
       }
+      // 否则：无效点击，静默忽略
     }
 
     // 初始化游戏
