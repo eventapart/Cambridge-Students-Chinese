@@ -716,7 +716,7 @@
       let options = [randomIdiom.definition]; // 正确答案
 
       // 添加其他干扰项
-      while (options.length < 3) {
+      while (options.length < 6) {
         const def = allIdioms[Math.floor(Math.random() * allIdioms.length)].definition;
         if (!options.includes(def)) options.push(def);
       }
