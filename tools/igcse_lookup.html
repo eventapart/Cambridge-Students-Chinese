@@ -482,9 +482,8 @@
       } else {
         results.forEach(idiom => {
           const highlightedIdiom = highlightText(idiom.idiom, input);
-          const highlightedDef = highlightText(idiom.definition, input);
 
-          renderCard(container, highlightedIdiom, highlightedDef);
+          renderCard(container, highlightedIdiom, idiom.pinyin, idiom.definition);
         });
       }
     }
