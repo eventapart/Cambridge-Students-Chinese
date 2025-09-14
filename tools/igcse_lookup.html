@@ -490,7 +490,7 @@
       // ✅ 使用事件委托绑定点击事件
       const controls = document.getElementById('pagination-controls');
       controls.addEventListener('click', function(e) {
-        if (e.target.tagName === 'BUTTON') {
+        if (e.target.tagName === 'A') {
           const page = parseInt(e.target.dataset.page); // 从 data-page 获取目标页码
           if (!isNaN(page)) {
             goToPage(page); // 调用跳转函数
