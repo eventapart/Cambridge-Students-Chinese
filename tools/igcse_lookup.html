@@ -396,51 +396,44 @@
 
     function showIgcseIdioms() {
       const container = document.getElementById('igcse-idioms');
-      // 清空容器
-      container.innerHTML = '';
+      container.innerHTML = ''; // 清空容器
 
       // 1. 获取所有条目并转换为数组
       const entries = Object.entries(igcseData);
 
       // 2. 按 exam（即文件名）倒序排序
-      //    例如: "0509_s18_in_12" > "0509_s17_in_13"
       entries.sort((a, b) => {
-        const examA = a[0]; // a[0] 是 exam 名称
+        const examA = a[0];
         const examB = b[0];
-        // 倒序：b[0] - a[0]，即大的在前
         return examB.localeCompare(examA, 'en', { numeric: true, sensitivity: 'base' });
       });
 
-      // 3. 遍历排序后的 entries
+      // 3. 计算总条目数
+      let allItems = [];
       entries.forEach(([exam, idiomToExampleMap]) => {
-        // idiomToExampleMap: { "成语": "例句" }
         Object.entries(idiomToExampleMap).forEach(([idiomName, exampleSentence]) => {
           const item = allIdioms.find(i => i.idiom === idiomName);
-
           if (item) {
-            // 渲染卡片，保持原有逻辑
-            renderCard(
-              container,
-              item.idiom,
-              item.pinyin,
-              `<strong>辞典释义：</strong>${item.definition}<br /><strong>官方例句：</strong>${exampleSentence} (${exam})`
-            );
-          } else {
-            console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
+            allItems.push({
+              idiom: item.idiom,
+              pinyin: item.pinyin,
+              definition: item.definition,
+              exampleSentence: `${exampleSentence} (${exam})`
+            });
           }
         });
       });
 
-      // 计算总页数
-      const totalPages = Math.ceil(allIdiomsData.length / pageSize);
+      // 4. 计算总页数
+      const totalPages = Math.ceil(allItems.length / pageSize);
 
       // 获取当前页的成语数据
       const startIdx = (currentPage - 1) * pageSize;
       const endIdx = startIdx + pageSize;
-      const currentIdioms = allIdiomsData.slice(startIdx, endIdx);
+      const currentItems = allItems.slice(startIdx, endIdx);
 
       // 渲染当前页的成语卡片
-      currentIdioms.forEach(item => {
+      currentItems.forEach(item => {
         renderCard(
           container,
           item.idiom,
