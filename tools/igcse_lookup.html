@@ -599,7 +599,7 @@
 
       // 上一页
       if (currentPage > 1) {
-        html += `<button class="btn btn-primary" data-page="${currentPage - 1}">上一页</button>`;
+        html += `<button class="btn btn-outline-primary" data-page="${currentPage - 1}">上一页</button>`;
       }
 
       // 页码按钮
@@ -624,7 +624,7 @@
       }
 
       for (let i = startPage; i <= endPage; i++) {
-        const btnClass = i === currentPage ? 'btn-outline-secondary' : 'btn-primary';
+        const btnClass = i === currentPage ? 'btn-outline-secondary' : 'btn-outline-primary';
         html += `<button class="btn ${btnClass}" data-page="${i}">${i}</button>`;
       }
 
