@@ -225,7 +225,7 @@
 
       <!-- IGCSE真题 -->
       <div class="tab-pane fade" id="igcse">
-        <h4 class="text-center mb-4">真题成语 2016-2025</h4>
+        <h4 class="text-center mb-4">官方教材和历史真题中的成语 2016-2025</h4>
         <div id="igcse-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
         <div id="pagination" class="mt-5"></div>
       </div>
@@ -336,7 +336,7 @@
       }
 
       // 数据已加载，生成随机成语
-      const randomIds = shuffle(allIdioms).slice(0, 6);
+      const randomIds = shuffle(allIdioms).slice(0, 12);
       container.innerHTML = '';
       randomIds.forEach(idiom => {
         renderCard(container, idiom.idiom, idiom.pinyin, idiom.definition);
@@ -392,7 +392,7 @@
     // 显示 IGCSE 成语
     // 全局变量用于存储当前页码
     let currentPage = 1;
-    const pageSize = 6; // 每页显示的成语数量
+    const pageSize = 12; // 每页显示的成语数量
 
     function showIgcseIdioms() {
       const container = document.getElementById('igcse-idioms');
@@ -568,13 +568,18 @@
     let currentQuestion = null;
 
     function nextQuestion() {
+      // 随机选择一个成语作为正确答案
       const randomIdiom = allIdioms[Math.floor(Math.random() * allIdioms.length)];
-      let options = [randomIdiom.definition]; // 正确答案
+      
+      // 正确选项是成语名
+      let options = [randomIdiom.idiom];
 
-      // 添加其他干扰项
+      // 添加其他 5 个干扰项（其他成语的名字）
       while (options.length < 6) {
-        const def = allIdioms[Math.floor(Math.random() * allIdioms.length)].definition;
-        if (!options.includes(def)) options.push(def);
+        const candidate = allIdioms[Math.floor(Math.random() * allIdioms.length)].idiom;
+        if (!options.includes(candidate)) {
+          options.push(candidate);
+        }
       }
 
       // 打乱选项顺序
@@ -582,19 +587,27 @@
 
       // 记录正确答案的新位置
       currentQuestion = {
-        idiom: randomIdiom.idiom,
-        correctIndex: options.indexOf(randomIdiom.definition) // 更新为打乱后的索引
+        definition: randomIdiom.definition, // 当前释义
+        correctIndex: options.indexOf(randomIdiom.idiom) // 成语在打乱后的位置
       };
 
-      document.getElementById('question').textContent = `“${randomIdiom.idiom}”对应的释义是？`;
-      document.getElementById('options').innerHTML = options.map((def, index) => `
-        <div class="col"><button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
-        <span class="card-body d-flex flex-column" style="justify-content: center">${def}</span></button></div>
+      // 显示问题：根据释义猜成语
+      document.getElementById('question').textContent = `“${randomIdiom.definition}” 对应的成语是？`;
+
+      // 渲染选项按钮（显示成语名）
+      document.getElementById('options').innerHTML = options.map((idiom, index) => `
+        <div class="col">
+          <button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
+            <span class="card-body d-flex flex-column" style="justify-content: center">${idiom}</span>
+          </button>
+        </div>
       `).join('');
+      // 清除上一轮反馈
       document.getElementById('feedback').textContent = '';
     }
 
     function checkAnswer(index) {
+      if (!currentQuestion) return;
       const toastEl = document.getElementById('check-toast');
       const toastBody = document.getElementById('toast-body');
       const toast = bootstrap.Toast.getInstance(toastEl) || new bootstrap.Toast(toastEl);
