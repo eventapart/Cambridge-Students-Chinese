@@ -596,7 +596,7 @@
       paginationContainer.innerHTML = `
         <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-3">
           <!-- 上一页按钮 -->
-          <button class="btn btn-primary" ${currentPage <= 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+          <button class="btn btn-outline-primary" ${currentPage <= 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
             上一页
           </button>
 
@@ -604,7 +604,7 @@
           ${generatePageButtons(currentPage, totalPages)}
 
           <!-- 下一页按钮 -->
-          <button class="btn btn-primary" ${currentPage >= totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+          <button class="btn btn-outline-primary" ${currentPage >= totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
             下一页
           </button>
         </div>
