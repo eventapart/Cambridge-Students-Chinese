@@ -588,43 +588,80 @@
       renderPagination(totalPages);
     }
 
-    // 渲染分页控件
+    // 渲染分页控件（使用 Bootstrap 样式）
     function renderPagination(totalPages) {
       const paginationContainer = document.getElementById('pagination');
-      paginationContainer.innerHTML = '';
+      
+      // 使用 Bootstrap 的 flexbox 工具类实现居中
+      paginationContainer.innerHTML = `
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-3">
+          <!-- 上一页按钮 -->
+          <button class="btn btn-primary" ${currentPage <= 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+            上一页
+          </button>
 
-      const prevButton = document.createElement('button');
-      prevButton.textContent = '上一页';
-      prevButton.onclick = () => {
-        if (currentPage > 1) {
-          currentPage--;
-          showIgcseIdioms();
-        }
-      };
-      paginationContainer.appendChild(prevButton);
+          <!-- 页码按钮 -->
+          ${generatePageButtons(currentPage, totalPages)}
 
-      for (let i = 1; i <= totalPages; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.textContent = i;
-        if (i === currentPage) {
-          pageButton.classList.add('active'); // 可以通过 CSS 设置选中样式
+          <!-- 下一页按钮 -->
+          <button class="btn btn-primary" ${currentPage >= totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+            下一页
+          </button>
+        </div>
+      `;
+    }
+
+    // 生成页码按钮的 HTML 字符串
+    function generatePageButtons(currentPage, totalPages) {
+      let buttonsHTML = '';
+
+      // 显示逻辑：最多显示 7 个页码按钮（可调整）
+      const maxButtons = 7;
+      let startPage, endPage;
+
+      if (totalPages <= maxButtons) {
+        // 总页数少，显示全部
+        startPage = 1;
+        endPage = totalPages;
+      } else {
+        // 总页数多，居中当前页
+        const half = Math.floor(maxButtons / 2);
+        if (currentPage <= half) {
+          startPage = 1;
+          endPage = maxButtons;
+        } else if (currentPage + half >= totalPages) {
+          startPage = totalPages - maxButtons + 1;
+          endPage = totalPages;
+        } else {
+          startPage = currentPage - half;
+          endPage = currentPage + half;
         }
-        pageButton.onclick = () => {
-          currentPage = i;
-          showIgcseIdioms();
-        };
-        paginationContainer.appendChild(pageButton);
       }
 
-      const nextButton = document.createElement('button');
-      nextButton.textContent = '下一页';
-      nextButton.onclick = () => {
-        if (currentPage < totalPages) {
-          currentPage++;
-          showIgcseIdioms();
-        }
-      };
-      paginationContainer.appendChild(nextButton);
+      for (let i = startPage; i <= endPage; i++) {
+        buttonsHTML += `
+          <button 
+            class="btn ${i === currentPage ? 'btn-secondary' : 'btn-primary'}" 
+            onclick="goToPage(${i})"
+          >
+            ${i}
+          </button>
+        `;
+      }
+
+      return buttonsHTML;
+    }
+
+    // 跳转到指定页码的函数
+    function goToPage(page) {
+      const totalPages = Math.ceil(
+        Object.entries(igcseData).reduce((acc, [exam, map]) => acc + Object.keys(map).length, 0) / 60
+      );
+
+      if (page >= 1 && page <= totalPages && page !== currentPage) {
+        currentPage = page;
+        showIgcseIdioms(); // 重新渲染成语列表
+      }
     }
 
     // 初始化游戏
