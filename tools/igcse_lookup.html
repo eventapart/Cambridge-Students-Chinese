@@ -595,13 +595,22 @@
       document.getElementById('question').textContent = `“${randomIdiom.definition}” 对应的成语是？`;
 
       // 渲染选项按钮（显示成语名）
-      document.getElementById('options').innerHTML = options.map((idiom, index) => `
-        <div class="col">
-          <button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
-            <span class="card-body d-flex flex-column" style="justify-content: center">${idiom}</span>
-          </button>
-        </div>
-      `).join('');
+      document.getElementById('options').innerHTML = options.map((idiom, index) => {
+        // 查找该成语的拼音（用于显示）
+        const item = allIdioms.find(i => i.idiom === idiom);
+        const pinyin = item ? item.pinyin : '未知拼音';
+
+        return `
+          <div class="col">
+            <button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
+              <span class="card-body d-flex flex-column" style="justify-content: center">
+                <strong>${idiom}</strong>  <!-- 成语 -->
+                <small class="text-muted mt-1">${pinyin}</small>  <!-- 拼音 -->
+              </span>
+            </button>
+          </div>
+        `;
+      }).join('');
       // 清除上一轮反馈
       document.getElementById('feedback').textContent = '';
     }
@@ -615,7 +624,7 @@
       const isCorrect = index === currentQuestion.correctIndex;
 
       if (isCorrect) {
-        // ✅ 答对：加 10 分
+        // 答对：加 10 分
         currentScore += 10;
         document.getElementById('current-score').textContent = currentScore;
 
