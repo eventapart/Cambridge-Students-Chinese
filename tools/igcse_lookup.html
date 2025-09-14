@@ -641,7 +641,7 @@
       for (let i = startPage; i <= endPage; i++) {
         buttonsHTML += `
           <button 
-            class="btn ${i === currentPage ? 'btn-secondary' : 'btn-primary'}" 
+            class="btn ${i === currentPage ? 'btn-outline-secondary' : 'btn-outline-primary'}" 
             onclick="goToPage(${i})"
           >
             ${i}
