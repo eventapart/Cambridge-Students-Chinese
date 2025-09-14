@@ -399,26 +399,38 @@
       // 清空容器
       container.innerHTML = '';
 
-      // 获取所有条目并转换为数组
-      let allIdiomsData = [];
-      
-      // 遍历 igcseData 中的每一个文件 (exam 是文件名，如 "0509_s17_in_13")
-      Object.entries(igcseData).forEach(([exam, idiomToExampleMap]) => {
-        // 遍历每个文件中的成语和例句
+      // 1. 获取所有条目并转换为数组
+      const entries = Object.entries(igcseData);
+
+      // 2. 按 exam（即文件名）倒序排序
+      //    例如: "0509_s18_in_12" > "0509_s17_in_13"
+      entries.sort((a, b) => {
+        const examA = a[0]; // a[0] 是 exam 名称
+        const examB = b[0];
+        // 倒序：b[0] - a[0]，即大的在前
+        return examB.localeCompare(examA, 'en', { numeric: true, sensitivity: 'base' });
+      });
+
+      // 3. 遍历排序后的 entries
+      entries.forEach(([exam, idiomToExampleMap]) => {
+        // idiomToExampleMap: { "成语": "例句" }
         Object.entries(idiomToExampleMap).forEach(([idiomName, exampleSentence]) => {
           const item = allIdioms.find(i => i.idiom === idiomName);
+
           if (item) {
-            allIdiomsData.push({
-              idiom: item.idiom,
-              pinyin: item.pinyin,
-              definition: item.definition,
-              exampleSentence: `${exampleSentence} (${exam})`
-            });
+            // 渲染卡片，保持原有逻辑
+            renderCard(
+              container,
+              item.idiom,
+              item.pinyin,
+              `<strong>辞典释义：</strong>${item.definition}<br /><strong>官方例句：</strong>${exampleSentence} (${exam})`
+            );
           } else {
             console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
           }
         });
       });
+    }
 
       // 计算总页数
       const totalPages = Math.ceil(allIdiomsData.length / pageSize);
