@@ -527,14 +527,31 @@
     // 显示 IGCSE 成语
     function showIgcseIdioms() {
       const container = document.getElementById('igcse-idioms');
+      // 清空容器
       container.innerHTML = '';
-      Object.entries(igcseData).forEach(([exam, idioms]) => {
-        idioms.forEach(idiomName => {
+
+      // 遍历 igcseData 中的每一个文件 (exam 是文件名，如 "0509_s17_in_13")
+      Object.entries(igcseData).forEach(([exam, idiomToExampleMap]) => {
+        
+        // idiomToExampleMap 是一个对象: { "成语1": "例句1", "成语2": "例句2" }
+        // 我们需要遍历它的键值对
+        Object.entries(idiomToExampleMap).forEach(([idiomName, exampleSentence]) => {
+          
+          // 在 allIdioms 中查找该成语的详细信息（拼音、释义等）
           const item = allIdioms.find(i => i.idiom === idiomName);
+          
           if (item) {
-            renderCard(container, item.idiom, `${item.pinyin}<br />出处：${exam}`, item.definition);
+            // ✅ 找到成语，渲染卡片
+            // 出处信息现在包含 exam (试卷编号) 和 exampleSentence (例句)
+            const sourceInfo = `${item.pinyin}<br />出处：${exam}<br />例句：${exampleSentence}`;
+            
+            renderCard(container, item.idiom, sourceInfo, item.definition);
+            
           } else {
+            // ⚠️ 如果在主词典中找不到该成语
             console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
+            // 可选：仍然显示，但缺少拼音和释义
+            // renderCard(container, idiomName, `出处：${exam}<br />例句：${exampleSentence}`, '暂无释义');
           }
         });
       });
