@@ -635,8 +635,7 @@
           nextQuestion();
         }, 300);
       } else {
-        // ❌ 答错：不加分
-        const correctDef = allIdioms.find(i => i.idiom === currentQuestion.idiom).definition;
+        // 答错：不加分
         toastEl.classList.remove('bg-success', 'text-white');
         toastEl.classList.add('bg-danger', 'text-white');
         toastBody.innerHTML = `错误。`;
