@@ -19,8 +19,7 @@
 
   body {
     font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
-    background-color: #fff;
-    background:url(./assets/images/bg.webp) 100px 100px center;
+    background-color:#fff;
     color: #333;
     line-height: 1.6;
   }
@@ -224,16 +223,18 @@
         <h4 class="text-center mb-4">50000条成语随机挑战</h4>
 
           <!-- 计分栏 -->
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title text-center">记分牌</h3>
+          <div class="card text-center">
+            <div class="card-header">
+              记分牌
             </div>
-            <div class="panel-body text-center">
-              <span class="fs-3">当前得分：</span>
-              <strong id="current-score" class="text-primary fs-5">0</strong>
-              <span class="mx-3">|</span>
-              <span>最高分：</span>
-              <strong id="best-score" class="text-danger fs-5">0</strong>
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="fs-5">当前得分：</span>
+                <strong id="current-score" class="text-primary fs-4">0</strong>
+                <span class="mx-3">|</span>
+                <span class="fs-5">最高分：</span>
+                <strong id="best-score" class="text-danger fs-4">0</strong>
+              </h5>
             </div>
           </div>
 
