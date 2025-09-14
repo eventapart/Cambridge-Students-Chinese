@@ -592,7 +592,7 @@
       };
 
       // 显示问题：根据释义猜成语
-      document.getElementById('question').textContent = `“<strong>${randomIdiom.definition}” 对应的成语是？</strong>`;
+      document.getElementById('question').textContent = `<strong>“${randomIdiom.definition}” 对应的成语是？</strong>`;
 
       // 渲染选项按钮（显示成语名）
       document.getElementById('options').innerHTML = options.map((idiom, index) => {
