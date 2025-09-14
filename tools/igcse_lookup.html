@@ -449,7 +449,7 @@
       col.innerHTML = `
         <div class="card shadow-sm h-100">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">${title}<br><small class="text-muted">${pinyin}</small></h5>
+            <h5 class="card-title">${title}<br><small class="text-muted" style="font-family:Helvetica, Arial, sans-serif">${pinyin}</small></h5>
             <p class="card-text mt-auto">${content}</p>
           </div>
         </div>
@@ -497,7 +497,7 @@
         idioms.forEach(idiomName => {
           const item = allIdioms.find(i => i.idiom === idiomName);
           if (item) {
-            renderCard(container, item.idiom, `${item.pinyin}<br /><small class="text-muted">出处：${exam}</small>`, item.definition);
+            renderCard(container, item.idiom, `${item.pinyin}<br />出处：${exam}`, item.definition);
           } else {
             console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
           }
