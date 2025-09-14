@@ -169,16 +169,26 @@
 .text-primary { color: #007bff; }
 .text-danger { color: #dc3545; }
 
-  /* 响应式优化 */
-  @media (max-width: 768px) {
-    .card-title {
-      font-size: 1rem;
-    }
+/* 分页按钮样式 */
+#pagination button {
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+#pagination button.active {
+    background-color: lightblue;
+}
 
-    .card-text {
-      font-size: 0.9rem;
-    }
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 1rem;
   }
+
+  .card-text {
+    font-size: 0.9rem;
+  }
+}
 </style>
 </head>
 <body>
@@ -215,6 +225,7 @@
       <div class="tab-pane fade" id="igcse">
         <h4 class="text-center mb-4">真题成语 2016-2025</h4>
         <div id="igcse-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+        <div id="pagination"></div>
       </div>
 
       <!-- 成语游戏 -->
@@ -525,42 +536,95 @@
     }
 
     // 显示 IGCSE 成语
+    // 全局变量用于存储当前页码
+    let currentPage = 1;
+    const pageSize = 60; // 每页显示的成语数量
+
     function showIgcseIdioms() {
       const container = document.getElementById('igcse-idioms');
       // 清空容器
       container.innerHTML = '';
 
-      // 1. 获取所有条目并转换为数组
-      const entries = Object.entries(igcseData);
-
-      // 2. 按 exam（即文件名）倒序排序
-      //    例如: "0509_s18_in_12" > "0509_s17_in_13"
-      entries.sort((a, b) => {
-        const examA = a[0]; // a[0] 是 exam 名称
-        const examB = b[0];
-        // 倒序：b[0] - a[0]，即大的在前
-        return examB.localeCompare(examA, 'en', { numeric: true, sensitivity: 'base' });
-      });
-
-      // 3. 遍历排序后的 entries
-      entries.forEach(([exam, idiomToExampleMap]) => {
-        // idiomToExampleMap: { "成语": "例句" }
+      // 获取所有条目并转换为数组
+      let allIdiomsData = [];
+      
+      // 遍历 igcseData 中的每一个文件 (exam 是文件名，如 "0509_s17_in_13")
+      Object.entries(igcseData).forEach(([exam, idiomToExampleMap]) => {
+        // 遍历每个文件中的成语和例句
         Object.entries(idiomToExampleMap).forEach(([idiomName, exampleSentence]) => {
           const item = allIdioms.find(i => i.idiom === idiomName);
-
           if (item) {
-            // 渲染卡片，保持原有逻辑
-            renderCard(
-              container,
-              item.idiom,
-              item.pinyin,
-              `<strong>辞典释义：</strong>${item.definition}<br /><strong>官方例句：</strong>${exampleSentence} (${exam})`
-            );
+            allIdiomsData.push({
+              idiom: item.idiom,
+              pinyin: item.pinyin,
+              definition: item.definition,
+              exampleSentence: `${exampleSentence} (${exam})`
+            });
           } else {
             console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
           }
         });
       });
+
+      // 计算总页数
+      const totalPages = Math.ceil(allIdiomsData.length / pageSize);
+
+      // 获取当前页的成语数据
+      const startIdx = (currentPage - 1) * pageSize;
+      const endIdx = startIdx + pageSize;
+      const currentIdioms = allIdiomsData.slice(startIdx, endIdx);
+
+      // 渲染当前页的成语卡片
+      currentIdioms.forEach(item => {
+        renderCard(
+          container,
+          item.idiom,
+          item.pinyin,
+          `<strong>辞典释义：</strong>${item.definition}<br /><strong>官方例句：</strong>${item.exampleSentence}`
+        );
+      });
+
+      // 渲染分页控件
+      renderPagination(totalPages);
+    }
+
+    // 渲染分页控件
+    function renderPagination(totalPages) {
+      const paginationContainer = document.getElementById('pagination');
+      paginationContainer.innerHTML = '';
+
+      const prevButton = document.createElement('button');
+      prevButton.textContent = '上一页';
+      prevButton.onclick = () => {
+        if (currentPage > 1) {
+          currentPage--;
+          showIgcseIdioms();
+        }
+      };
+      paginationContainer.appendChild(prevButton);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = i;
+        if (i === currentPage) {
+          pageButton.classList.add('active'); // 可以通过 CSS 设置选中样式
+        }
+        pageButton.onclick = () => {
+          currentPage = i;
+          showIgcseIdioms();
+        };
+        paginationContainer.appendChild(pageButton);
+      }
+
+      const nextButton = document.createElement('button');
+      nextButton.textContent = '下一页';
+      nextButton.onclick = () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          showIgcseIdioms();
+        }
+      };
+      paginationContainer.appendChild(nextButton);
     }
 
     // 初始化游戏
