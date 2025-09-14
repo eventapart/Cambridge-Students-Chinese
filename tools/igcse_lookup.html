@@ -438,18 +438,18 @@
       const container = document.getElementById('random-idioms');
       container.innerHTML = '';
       randomIds.forEach(idiom => {
-        renderCard(container, idiom.idiom, idiom.definition);
+        renderCard(container, idiom.idiom, idiom.pinyin, idiom.definition);
       });
     }
 
     // 渲染卡片函数
-    function renderCard(container, title, content) {
+    function renderCard(container, title, pinyin, content) {
       const col = document.createElement('div');
       col.className = 'col';
       col.innerHTML = `
         <div class="card shadow-sm h-100">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">${title}</h5>
+            <h5 class="card-title">${title}<br><small>${pinyin}</small></h5>
             <p class="card-text mt-auto">${content}</p>
           </div>
         </div>
@@ -483,8 +483,9 @@
         results.forEach(idiom => {
           const highlightedIdiom = highlightText(idiom.idiom, input);
           const highlightedDef = highlightText(idiom.definition, input);
+          const highlightedPinyin = highlightText(idiom.pinyin, input);
 
-          renderCard(container, highlightedIdiom, highlightedDef);
+          renderCard(container, highlightedIdiom, highlightedPinyin, highlightedDef);
         });
       }
     }
