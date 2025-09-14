@@ -483,9 +483,8 @@
         results.forEach(idiom => {
           const highlightedIdiom = highlightText(idiom.idiom, input);
           const highlightedDef = highlightText(idiom.definition, input);
-          const highlightedPinyin = highlightText(idiom.pinyin, input);
 
-          renderCard(container, highlightedIdiom, highlightedPinyin, highlightedDef);
+          renderCard(container, highlightedIdiom, highlightedDef);
         });
       }
     }
@@ -498,7 +497,7 @@
         idioms.forEach(idiomName => {
           const item = allIdioms.find(i => i.idiom === idiomName);
           if (item) {
-            renderCard(container, `${item.idiom}<br /><small>${item.pinyin}</small><br /><small class="text-muted">出处：${exam}</small>`, item.definition);
+            renderCard(container, `${item.idiom}<br /><small class="text-muted">出处：${exam}</small>`, item.pinyin, item.definition);
           } else {
             console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
           }
