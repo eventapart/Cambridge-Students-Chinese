@@ -476,7 +476,7 @@
 
       for (let i = startPage; i <= endPage; i++) {
         const btnClass = i === currentPage ? 'active' : '';
-        html += `<li class="page-item"><a class="page-link ${btnClass}" data-page="${i}" href="###">${i}</a></li>`;
+        html += `<li class="page-item ${btnClass}"><a class="page-link" data-page="${i}" href="###">${i}</a></li>`;
       }
 
       // 下一页
