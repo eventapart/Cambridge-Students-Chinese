@@ -730,10 +730,10 @@
         correctIndex: options.indexOf(randomIdiom.definition) // 更新为打乱后的索引
       };
 
-      document.getElementById('question').textContent = `请选择“${randomIdiom.idiom}”的正确释义：`;
+      document.getElementById('question').textContent = `“${def}”<br />以上释义对应的成语是？`;
       document.getElementById('options').innerHTML = options.map((def, index) => `
         <div class="col"><button class="btn btn-outline-secondary option card h-100" onclick="checkAnswer(${index})">
-        <span class="card-body d-flex flex-column" style="justify-content: center">${def}</span></button></div>
+        <span class="card-body d-flex flex-column" style="justify-content: center">${randomIdiom.idiom}</span></button></div>
       `).join('');
       document.getElementById('feedback').textContent = '';
     }
