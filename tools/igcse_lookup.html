@@ -96,20 +96,6 @@
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
   }
 
-  .feedback {
-    margin-top: 1rem;
-    font-size: 1rem;
-    font-weight: 500;
-  }
-
-  .feedback.text-success {
-    color: #28a745;
-  }
-
-  .feedback.text-danger {
-    color: #dc3545;
-  }
-
   /* 高亮样式 */
   mark {
     background-color: var(--highlight-color);
@@ -247,7 +233,6 @@
           <div id="game-container" class="text-center">
             <p id="question" class="lead"></p>
             <div id="options" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
-            <div class="feedback text-center mt-5" id="feedback"></div>
             <p>
               <button class="btn btn-outline-primary" onclick="nextQuestion()">下一题</button>
               <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
@@ -592,7 +577,7 @@
       };
 
       // 显示问题：根据释义猜成语
-      document.getElementById('question').textContent = `<strong>“${randomIdiom.definition}” 对应的成语是？</strong>`;
+      document.getElementById('question').innerHTML = `<strong>“${randomIdiom.definition}” 对应的成语是？</strong>`;
 
       // 渲染选项按钮（显示成语名）
       document.getElementById('options').innerHTML = options.map((idiom, index) => {
@@ -610,8 +595,7 @@
           </div>
         `;
       }).join('');
-      // 清除上一轮反馈
-      document.getElementById('feedback').textContent = '';
+
     }
 
     function checkAnswer(index) {
