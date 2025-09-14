@@ -224,8 +224,8 @@
       <!-- IGCSE真题 -->
       <div class="tab-pane fade" id="igcse">
         <h4 class="text-center mb-4">真题成语 2016-2025</h4>
-        <div id="pagination"></div>
         <div id="igcse-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+        <div id="pagination"></div>
       </div>
 
       <!-- 成语游戏 -->
@@ -244,12 +244,12 @@
           <!-- 游戏主体 -->
           <div id="game-container" class="text-center">
             <p id="question" class="lead"></p>
+            <div id="options" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+            <div class="feedback text-center" id="feedback"></div>
             <p>
               <button class="btn btn-outline-primary" onclick="nextQuestion()">下一题</button>
               <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
             </p>
-            <div id="options" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
-            <div class="feedback text-center" id="feedback"></div>
           </div>
         </div>
       </div>
