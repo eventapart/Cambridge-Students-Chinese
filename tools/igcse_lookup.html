@@ -530,27 +530,34 @@
       // 清空容器
       container.innerHTML = '';
 
-      // 遍历 igcseData 中的每一个文件 (exam 是文件名，如 "0509_s17_in_13")
-      Object.entries(igcseData).forEach(([exam, idiomToExampleMap]) => {
-        
-        // idiomToExampleMap 是一个对象: { "成语1": "例句1", "成语2": "例句2" }
-        // 我们需要遍历它的键值对
+      // 1. 获取所有条目并转换为数组
+      const entries = Object.entries(igcseData);
+
+      // 2. 按 exam（即文件名）倒序排序
+      //    例如: "0509_s18_in_12" > "0509_s17_in_13"
+      entries.sort((a, b) => {
+        const examA = a[0]; // a[0] 是 exam 名称
+        const examB = b[0];
+        // 倒序：b[0] - a[0]，即大的在前
+        return examB.localeCompare(examA, 'en', { numeric: true, sensitivity: 'base' });
+      });
+
+      // 3. 遍历排序后的 entries
+      entries.forEach(([exam, idiomToExampleMap]) => {
+        // idiomToExampleMap: { "成语": "例句" }
         Object.entries(idiomToExampleMap).forEach(([idiomName, exampleSentence]) => {
-          
-          // 在 allIdioms 中查找该成语的详细信息（拼音、释义等）
           const item = allIdioms.find(i => i.idiom === idiomName);
-          
+
           if (item) {
-            // ✅ 找到成语，渲染卡片
-            // 出处信息现在包含 exam (试卷编号) 和 exampleSentence (例句)
-            
-            renderCard(container, item.idiom, item.pinyin, `<strong>辞典释义：</strong>${item.definition}<br /><strong>官方例句：</strong>${exampleSentence}(${exam})`);
-            
+            // 渲染卡片，保持原有逻辑
+            renderCard(
+              container,
+              item.idiom,
+              item.pinyin,
+              `<strong>辞典释义：</strong>${item.definition}<br /><strong>官方例句：</strong>${exampleSentence} (${exam})`
+            );
           } else {
-            // ⚠️ 如果在主词典中找不到该成语
             console.warn(`IGCSE 中的成语 "${idiomName}" 未在 chengyu.json 中找到`);
-            // 可选：仍然显示，但缺少拼音和释义
-            // renderCard(container, idiomName, `出处：${exam}<br />例句：${exampleSentence}`, '暂无释义');
           }
         });
       });
