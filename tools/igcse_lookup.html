@@ -698,7 +698,7 @@
         (acc, [exam, map]) => acc + Object.keys(map).length,
         0
       );
-      const totalPages = Math.ceil(totalItems / 60);
+      const totalPages = Math.ceil(totalItems / 6);
 
       // ✅ 安全检查：page 必须是有效数字，且在范围内，且不是当前页
       if (Number.isInteger(page) && page >= 1 && page <= totalPages && page !== currentPage) {
