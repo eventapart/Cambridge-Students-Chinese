@@ -244,10 +244,12 @@
           <!-- 游戏主体 -->
           <div id="game-container" class="text-center">
             <p id="question" class="lead"></p>
-            <div id="options" class="mb-5 row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+            <p>
+              <button class="btn btn-outline-primary" onclick="nextQuestion()">下一题</button>
+              <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
+            </p>
+            <div id="options" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
             <div class="feedback text-center" id="feedback"></div>
-            <button class="btn btn-outline-primary" onclick="nextQuestion()">下一题</button>
-            <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
           </div>
         </div>
       </div>
