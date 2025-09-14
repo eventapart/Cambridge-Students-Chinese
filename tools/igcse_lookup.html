@@ -450,7 +450,7 @@
 
       // 上一页
       if (currentPage > 1) {
-        html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="#">上一页</a></li>`;
+        html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="###">上一页</a></li>`;
       }
 
       // 页码按钮
@@ -475,13 +475,13 @@
       }
 
       for (let i = startPage; i <= endPage; i++) {
-        const btnClass = i === currentPage ? 'btn-outline-secondary' : 'btn-outline-primary';
-        html += `<li class="page-item"><a class="page-link btn ${btnClass}" data-page="${i}" href="#">${i}</a></li>`;
+        const btnClass = i === currentPage ? 'active' : '';
+        html += `<li class="page-item"><a class="page-link ${btnClass}" data-page="${i}" href="###">${i}</a></li>`;
       }
 
       // 下一页
       if (currentPage < totalPages) {
-        html += `<li class="page-item"><a class="page-link" data-page="${currentPage + 1}" href="#">下一页</a></li>`;
+        html += `<li class="page-item"><a class="page-link" data-page="${currentPage + 1}" href="###">下一页</a></li>`;
       }
 
       html += `</ul>`;
