@@ -545,7 +545,7 @@
             // 出处信息现在包含 exam (试卷编号) 和 exampleSentence (例句)
             const sourceInfo = `${item.pinyin}<br />出处：${exam}`;
             
-            renderCard(container, item.idiom, sourceInfo, `${item.definition}<br />官方例句：${exampleSentence}`);
+            renderCard(container, item.idiom, sourceInfo, `释义：${item.definition}<br />官方例句：${exampleSentence}`);
             
           } else {
             // ⚠️ 如果在主词典中找不到该成语
