@@ -449,7 +449,7 @@
         // 即使失败，也应恢复交互（否则页面完全不可用）
         appContainer.classList.remove('loading-state');
         const container = document.getElementById('random-idioms');
-        container.innerHTML = '<p class="text-danger">加载失败</p>';
+        container.innerHTML = '<p></p><p class="text-danger">加载失败</p><p></p>';
       });
 
     // 显示首页随机成语
@@ -528,7 +528,7 @@
       container.innerHTML = '';
 
       if (results.length === 0) {
-        container.innerHTML = '<p class="text-muted text-center">未找到相关成语。</p>';
+        container.innerHTML = '<p></p><p class="text-muted text-center">未找到相关成语。</p><p></p>';
       } else {
         results.forEach(idiom => {
           const highlightedIdiom = highlightText(idiom.idiom, input);
