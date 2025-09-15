@@ -358,36 +358,32 @@
         <h4 class="text-center mb-4">50000条成语随机挑战</h4>
 
           <!-- 计分栏 -->
-          <div class="card text-center text-dark bg-light" style="max-width:600px; margin:0 auto">
-            <div class="card-header">
-              记分牌
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">
-                <span class="fs-5">当前得分：</span>
-                <strong id="current-score" class="text-primary fs-4">0</strong>
-                <span class="mx-3">|</span>
-                <span class="fs-5">最高分：</span>
-                <strong id="best-score" class="text-danger fs-4">0</strong>
-              </h5>
-            </div>
-          </div>
 
-          <!-- 游戏主体 -->
-          <div id="game-container" class="text-center">
-            <p id="question" class="lead mt-5 mb-5 ml-5 mr-5"></p>
-            <div id="options" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
-            <p class="mt-5">
-              <button class="btn btn-outline-dark" onclick="nextQuestion()">下一题</button>
-              <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
-            </p>
+        <div class="card-chinese" style="max-width:900px">
+          <div style="padding:1rem; text-align:center;">
+            <span class="fs-5">当前得分：</span>
+            <strong id="current-score" class="text-primary fs-4">0</strong>
+            <span class="mx-3">|</span>
+            <span class="fs-5">最高分：</span>
+            <strong id="best-score" class="text-danger fs-4">0</strong>
           </div>
         </div>
-      </div>
-      <p class="fs-6"><center class="card-text mt-5 ml-3 mr-3" style="font-size:.875rem">Copyright &copy; 2025 Mr. Z-Benjamin<br />数据来源：码谱mapull's chinese-dictionary & IGCSE0509历年真题</center></p>
 
+        <!-- 游戏主体 -->
+        <div id="game-container" class="text-center">
+          <p id="question" class="lead mt-5 mb-5 ml-5 mr-5"></p>
+          <div id="options" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+          <p class="mt-5">
+            <button class="btn btn-outline-dark" onclick="nextQuestion()">下一题</button>
+            <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
+          </p>
+        </div>
+      </div>
     </div>
+    <p class="fs-6"><center class="card-text mt-5 ml-3 mr-3" style="font-size:.875rem">Copyright &copy; 2025 Mr. Z-Benjamin<br />数据来源：码谱mapull's chinese-dictionary & IGCSE0509历年真题</center></p>
+
   </div>
+</div>
 
 <!-- 居中 Toast 容器 -->
 <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 start-50 translate-middle-x" style="z-index: 1050;">
