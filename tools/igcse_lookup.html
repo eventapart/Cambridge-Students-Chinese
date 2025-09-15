@@ -204,6 +204,18 @@
   }
 }
 
+/* 全局加载状态：禁用所有点击 */
+.loading-state {
+  pointer-events: none;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+/* 可选：鼠标样式 */
+.loading-state * {
+  cursor: not-allowed !important;
+}
+
 /* 响应式优化 */
 @media (max-width: 768px) {
   .card-title {
@@ -218,7 +230,7 @@
 </head>
 <body>
 
-  <div class="container-lg py-4">
+  <div id="app" class="container-lg py-4">
     <h1 class="text-center mb-5 mt-5">Cambridge IGCSE<br />中文成语词典</h1>
 
     <ul class="nav nav-tabs justify-content-center mb-4" id="myTabs">
@@ -370,6 +382,12 @@
 
   <script>
 
+    // 获取根容器
+    const appContainer = document.getElementById('app');
+
+    // 初始化：进入加载状态
+    appContainer.classList.add('loading-state');
+
     // 声明igcse成语
     let igcseData = null;
     async function loadIgcseData() {
@@ -412,6 +430,11 @@
       .then(res => res.json())
       .then(data => {
         allIdioms = data;
+
+        // 数据加载成功：移除加载状态
+        appContainer.classList.remove('loading-state');
+
+        // 渲染页面
         showHome();
         showIgcseIdioms();
 
@@ -422,6 +445,9 @@
         });
       })
       .catch(err => {
+        console.error('数据加载失败:', err);
+        // 即使失败，也应恢复交互（否则页面完全不可用）
+        appContainer.classList.remove('loading-state');
         const container = document.getElementById('random-idioms');
         container.innerHTML = '<p class="text-danger">加载失败</p>';
       });
