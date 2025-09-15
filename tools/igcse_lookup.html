@@ -166,6 +166,49 @@
     background-color: lightblue;
 }
 
+/* 骨架屏容器 */
+.skeleton-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* 骨架元素通用样式 */
+.skeleton-title,
+.skeleton-pinyin,
+.skeleton-definition {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+.skeleton-title {
+  width: 80px;
+  height: 32px;
+}
+
+.skeleton-pinyin {
+  width: 120px;
+  height: 16px;
+}
+
+.skeleton-definition {
+  width: 100%;
+  height: 16px;
+  max-width: 200px;
+}
+
+/* 动画：模拟加载光扫过的效果 */
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* 响应式优化 */
 @media (max-width: 768px) {
   .card-title {
@@ -196,6 +239,55 @@
       <div class="tab-pane fade show active" id="home">
         <h4 class="text-center mb-4">今日成语</h4>
         <div id="random-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 g-3">
+          <div id="random-idioms">
+            <!-- Skeleton Screen -->
+            <div class="skeleton-container">
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="skeleton-title"></div>
+                  <div class="skeleton-pinyin mt-2"></div>
+                  <div class="skeleton-definition mt-3"></div>
+                </div>
+              </div>
+              <!-- 复制 5 个 -->
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="skeleton-title"></div>
+                  <div class="skeleton-pinyin mt-2"></div>
+                  <div class="skeleton-definition mt-3"></div>
+                </div>
+              </div>
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="skeleton-title"></div>
+                  <div class="skeleton-pinyin mt-2"></div>
+                  <div class="skeleton-definition mt-3"></div>
+                </div>
+              </div>
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="skeleton-title"></div>
+                  <div class="skeleton-pinyin mt-2"></div>
+                  <div class="skeleton-definition mt-3"></div>
+                </div>
+              </div>
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="skeleton-title"></div>
+                  <div class="skeleton-pinyin mt-2"></div>
+                  <div class="skeleton-definition mt-3"></div>
+                </div>
+              </div>
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="skeleton-title"></div>
+                  <div class="skeleton-pinyin mt-2"></div>
+                  <div class="skeleton-definition mt-3"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div></div><div class="text-center"><div class="spinner-border" role="status"><span class="sr-only"></span></div></div><div></div>
         </div>
       </div>
@@ -319,17 +411,23 @@
           nextQuestion();
         });
       })
-      .catch(err => console.error('数据加载失败:', err));
+      .catch(err => {
+        const container = document.getElementById('random-idioms');
+        container.innerHTML = '<p class="text-danger">加载失败</p>';
+      });
 
     // 显示首页随机成语
     function showHome() {
       const container = document.getElementById('random-idioms');
 
-      // 如果数据还没加载完，显示 loading
+      // 如果数据未加载，确保骨架屏已存在（通常 HTML 已写好）
       if (!allIdioms || allIdioms.length === 0) {
-        container.innerHTML = '<div></div><div class="text-center"><div class="spinner-border" role="status"><span class="sr-only"></span></div></div><div></div>';
+        // 骨架屏已在 HTML 中，无需操作
         return;
       }
+
+      // ✅ 数据已加载：清空容器，渲染真实内容
+      container.innerHTML = ''; // 🔥 自动移除骨架屏
 
       // 数据已加载，生成随机成语
       const randomIds = shuffle(allIdioms).slice(0, 6);
