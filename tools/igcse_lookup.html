@@ -401,7 +401,7 @@
   <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- 繁簡轉換 -->
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+<script src="./assets/js/opencc-js/full.js"></script>
 
   <script>
 
@@ -410,24 +410,17 @@
 
     // 初始化：进入加载状态
     appContainer.classList.add('loading-state');
-      
-    // 检查 OpenCC 是否加载成功
-    if (typeof OpenCC === 'undefined') {
-      console.error('❌ opencc-js 未加载，请检查网络或 CDN');
-    }
+    
+    // 修改默认路径（如果字典不在 dist/dictionary/ 下）
+    OpenCC.setDictionaryPath('./assets/js/opencc-js/'); // 指向你存放 .json 的目录
 
-    // 创建转换器实例
-    let opencc = null;
-    try {
-      opencc = new OpenCC(['s2t.json', 't2s.json']); // 支持简转繁、繁转简
-      console.log('✅ OpenCC 初始化成功');
-    } catch (e) {
-      console.error('❌ OpenCC 初始化失败:', e);
-      // 降级：不进行转换，仅支持原始文本搜索
-      opencc = {
-        convertSync: text => text
-      };
-    }
+    OpenCC.load(['cn2t.json', 't2cn.json']).then(opencc => {
+      window.opencc = opencc;
+      console.log('✅ OpenCC 已就绪');
+    }).catch(err => {
+      console.error('❌ 初始化失败:', err);
+      window.opencc = { convertSync: text => text };
+    });
 
     // 辅助函数：将文本转换为“简体+繁体”混合关键词
     function getSearchKeywords(query) {
@@ -568,14 +561,15 @@
 
     function searchIdiom() {
       const input = document.getElementById('search-input').value.trim();
-      if (!input) return;
+      if (!input || !window.opencc) {
+        if (!window.opencc) console.warn('OpenCC 尚未初始化');
+        return;
+      }
 
       let inputT = input;
       try {
         inputT = opencc.convertSync(input);
-      } catch (e) {
-        console.warn('输入转换失败:', e);
-      }
+      } catch (e) {}
 
       const results = allIdioms.filter(idiom => {
         if (!idiom.idiom) return false;
