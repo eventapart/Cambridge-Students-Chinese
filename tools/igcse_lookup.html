@@ -24,6 +24,14 @@
     line-height: 1.6;
   }
 
+.card-chinese{
+    margin:0 auto;
+    border-width:18px 18px;
+    border-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQBAMAAAAVaP+LAAAAKlBMVEUlTjyLkYMlTjyusqeLkYOQloeMk4Ssr6Srr6Orr6OQloeMk4Susqesr6S4aju3AAAADnRSTlP/PABYDhAPHFQcPz0eVXg9TJUAAAI+SURBVHgB7ZnBbdtAEEW3hWUHGmyUKMktHSyoQ66BKshB6SB3uQTDFbgEl6CzT67I5hCfGGEGXJqksTS5D8hgIi0exPn0ili5WyoicgMgtW7dIt8Bkb/hlz+eT7UEIvEKPgWzg6iiXgJEsXuliDKIdp7h4Kv3xh+lyE1gO6Ju2IRhtwPlYf8/NQM2h61ElRk/ekQueyhyiIoIwev4lSjo+FF7sEQuzQpFSEfWdvC2yBg2Y4hwK9iiaMTf8ElEd0TfRL/kSyMpQp1NBIMCIvTMAf+/R2+SFgX1nbF4kd7Y/MW3Is9AhC0ttv1v/JWh6q2WQS/BfSR71HyiIkL8DbaoDRvx94gEtkiwTZH38iFCi+RDBDBEQPQ2YaKoiGhpIklaJNiSyHdcfErUbmwtxn00ivARokei71ynip6IfnAdw0/nrlw70ctkES5tMcNGEzOLvjj3h6vDsK40iq/O/SXaTxftIZrx0iBaXGrYFh7e/iWkAZtIgxJJUiIn2JKIOtIiuXpxojBRVEQ1E/sej7FCiwbclmrFNkW8sTGmiFfg6cgUiSpiVagVmURFJA5vEL/8povGsQ/iF9WGRegnnGgtT4QjQvS2KH2ejcXoBx5oYtlsIvswd37RAe/x/DJ8opyimrF+prBFWKdECmCLEqxVZAybsUSIhqyNLVrxM1qEXm21OURFpOJnmv7471Q/4z0dvxKNZTMi9WO34HjmYUucC1xrRor0dmqj4mcyiIqoBoPjh0i8cgtEKSASrFn0Cqmuwdfqu2U4AAAAAElFTkSuQmCC) 66 66 stretch;
+    border-style:solid;
+}
+.card-chinese p{ text-align:justify; }
+
   /* 主色调：柔和蓝色 */
   :root {
     --primary-color: #244f3d; /* 柔和蓝色 */
@@ -246,12 +254,13 @@
       <div class="tab-pane fade show active" id="home">
         <h4 class="text-center mb-3">今日成语</h4>
 
-        <!-- 计分栏 -->
+        <div class="card-chinese" style="max-width:900px">
+          <p>中国的成语承载着深厚的文化底蕴，历经千百年沉淀，在跨文化交流中展现出强大的表达力和传意功能。在中文走向国际化的今天，成语是不可或缺的文化桥梁。作为一场国际化的中文考试，剑桥IGCSE中文第一语言（0509）的考试大纲要求我们掌握“恰当使用词汇”和“清晰有效传达信息”的能力，而成语正是实现这一目标的有力工具。让我们从今天开始，每天积累，让成语为我们的表达增光添彩！</p>
+        </div>
         <div class="card text-center text-dark bg-light" style="max-width:900px; margin:0 auto">
           <div class="card-body">
             <h5 class="card-title">
             </h5>
-            <p class="card-text" style="text-align:justify;">中国的成语承载着深厚的文化底蕴，历经千百年沉淀，在跨文化交流中展现出强大的表达力和传意功能。在中文走向国际化的今天，成语是不可或缺的文化桥梁。作为一场国际化的中文考试，剑桥IGCSE中文第一语言（0509）的考试大纲要求我们掌握“恰当使用词汇”和“清晰有效传达信息”的能力，而成语正是实现这一目标的有力工具。让我们从今天开始，每天积累，让成语为我们的表达增光添彩！</p>
           </div>
         </div>
 
@@ -365,9 +374,9 @@
           </div>
         </div>
       </div>
+      <p class="fs-6"><center class="card-text mt-5 ml-3 mr-3" style="font-size:.875rem">Copyright &copy; 2025 Mr. Z-Benjamin<br />数据来源：码谱mapull's chinese-dictionary & IGCSE0509历年真题</center></p>
 
     </div>
-    <p class="fs-6"><center class="card-text mt-5 ml-3 mr-3" style="font-size:.875rem">Copyright &copy; 2025 Mr. Z-Benjamin<br />数据来源：码谱mapull's chinese-dictionary & IGCSE0509历年真题</center></p>
   </div>
 
 <!-- 居中 Toast 容器 -->
