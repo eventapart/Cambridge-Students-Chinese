@@ -279,7 +279,7 @@
           <!-- Skeleton Screen -->
           <div class="col">
             <div class="card h-100">
-              <div class="card-body">
+              <div class="card-body card-chinese">
                 <div class="skeleton-title"></div>
                 <div class="skeleton-pinyin mt-2"></div>
                 <div class="skeleton-definition mt-3"></div>
@@ -288,7 +288,7 @@
           </div>
           <div class="col">
             <div class="card h-100">
-              <div class="card-body">
+              <div class="card-body card-chinese">
                 <div class="skeleton-title"></div>
                 <div class="skeleton-pinyin mt-2"></div>
                 <div class="skeleton-definition mt-3"></div>
@@ -297,7 +297,7 @@
           </div>
           <div class="col">
             <div class="card h-100">
-              <div class="card-body">
+              <div class="card-body card-chinese">
                 <div class="skeleton-title"></div>
                 <div class="skeleton-pinyin mt-2"></div>
                 <div class="skeleton-definition mt-3"></div>
@@ -306,7 +306,7 @@
           </div>
           <div class="col">
             <div class="card h-100">
-              <div class="card-body">
+              <div class="card-body card-chinese">
                 <div class="skeleton-title"></div>
                 <div class="skeleton-pinyin mt-2"></div>
                 <div class="skeleton-definition mt-3"></div>
@@ -315,7 +315,7 @@
           </div>
           <div class="col">
             <div class="card h-100">
-              <div class="card-body">
+              <div class="card-body card-chinese">
                 <div class="skeleton-title"></div>
                 <div class="skeleton-pinyin mt-2"></div>
                 <div class="skeleton-definition mt-3"></div>
@@ -324,7 +324,7 @@
           </div>
           <div class="col">
             <div class="card h-100">
-              <div class="card-body">
+              <div class="card-body card-chinese">
                 <div class="skeleton-title"></div>
                 <div class="skeleton-pinyin mt-2"></div>
                 <div class="skeleton-definition mt-3"></div>
@@ -498,7 +498,7 @@
       col.className = 'col';
       col.innerHTML = `
         <div class="card shadow-sm h-100">
-          <div class="card-body d-flex flex-column">
+          <div class="card-body d-flex flex-column card-chinese">
             <h5 class="card-title mb-4">${title}<br><small class="text-muted" style="font-family:Helvetica, Arial, sans-serif">${pinyin}</small></h5>
             <p class="card-text mt-auto">${content}</p>
           </div>
@@ -767,7 +767,7 @@
         return `
           <div class="col">
             <button class="btn btn-outline-dark option card h-100" onclick="checkAnswer(${index})">
-              <span class="card-body d-flex flex-column text-center" style="justify-content: center; line-height:1.2">
+              <span class="card-body d-flex flex-column text-center card-chinese" style="justify-content: center; line-height:1.2">
                 <span class="card-title mb-0">${idiom}<br /><small class="text-muted">${pinyin}</small></span>
               </span>
             </button>
