@@ -412,7 +412,15 @@
     appContainer.classList.add('loading-state');
 
     // 初始化简繁转换器
-    const opencc = OpenCC('s2t', 't2s'); // 支持双向：简→繁 和 繁→简
+    const OpenCC = window.OpenCC; // 确保从全局加载
+
+    // 检查是否加载成功
+    if (!OpenCC) {
+      console.error('OpenCC 未加载，请检查 CDN 是否正确引入');
+    }
+
+    // 创建转换器实例
+    const opencc = OpenCC.create('s2t.json', 't2s.json'); // 简体 → 繁体，繁体 → 简体
 
     // 辅助函数：将文本转换为“简体+繁体”混合关键词
     function getSearchKeywords(query) {
@@ -553,33 +561,33 @@
 
     function searchIdiom() {
       const input = document.getElementById('search-input').value.trim();
-
-      // 如果输入为空，不搜索
       if (!input) return;
 
-      // 将输入词转换为简体和繁体两种形式用于匹配
-      const inputS = input;                    // 用户输入（可能是简体或繁体）
-      const inputT = opencc.convertSync(input); // 转为对应繁体/简体
+      let inputT = input;
+      try {
+        inputT = opencc.convertSync(input); // ✅ 使用 .convertSync
+      } catch (e) {
+        console.warn('转换失败:', e);
+      }
 
       const results = allIdioms.filter(idiom => {
-        // 确保 idiom.idiom 存在
         if (!idiom.idiom) return false;
 
-        // 将成语字段转为简体和繁体
-        const idiomS = idiom.idiom;
-        const idiomT = opencc.convertSync(idiom.idiom);
+        let idiomT, defT;
+        try {
+          idiomT = opencc.convertSync(idiom.idiom);
+          defT = opencc.convertSync(idiom.definition || '');
+        } catch (e) {
+          idiomT = idiom.idiom;
+          defT = idiom.definition || '';
+        }
 
-        // 处理 definition，确保为字符串
         const defS = typeof idiom.definition === 'string' ? idiom.definition : '';
-        const defT = opencc.convertSync(defS);
-
-        // 转为小写进行不区分大小写匹配
-        const inputSLower = inputS.toLowerCase();
+        const inputSLower = input.toLowerCase();
         const inputTLower = inputT.toLowerCase();
 
-        // 检查是否在 成语 或 释义 中匹配（简体或繁体）
         return (
-          idiomS.toLowerCase().includes(inputSLower) ||
+          idiom.idiom.toLowerCase().includes(inputSLower) ||
           idiomT.toLowerCase().includes(inputTLower) ||
           defS.toLowerCase().includes(inputSLower) ||
           defT.toLowerCase().includes(inputTLower)
@@ -593,7 +601,6 @@
         container.innerHTML = '<p></p><p class="text-muted text-center">未找到相关成语。</p><p></p>';
       } else {
         results.forEach(idiom => {
-          // 高亮时仍使用原始文本（不转换），只对显示内容高亮
           const highlightedIdiom = highlightText(idiom.idiom, input);
           const highlightedDef = highlightText(idiom.definition, input);
           renderCard(container, highlightedIdiom, idiom.pinyin, highlightedDef);
