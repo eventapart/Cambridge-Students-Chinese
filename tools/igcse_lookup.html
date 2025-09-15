@@ -599,11 +599,6 @@
           renderCard(container, highlightedIdiom, idiom.pinyin, highlightedDef);
         });
       }
-
-        // 确保 idiom.definition 存在且为字符串，然后再调用 toLowerCase 和 includes
-        idiom.idiom && idiom.idiom.toLowerCase().includes(input.toLowerCase()) ||
-        (idiom.definition && typeof idiom.definition === 'string' && idiom.definition.toLowerCase().includes(input.toLowerCase()))
-      );
     }
 
     // 显示 IGCSE 成语
