@@ -410,17 +410,24 @@
 
     // 初始化：进入加载状态
     appContainer.classList.add('loading-state');
-
-    // 初始化简繁转换器
-    const OpenCC = window.OpenCC; // 确保从全局加载
-
-    // 检查是否加载成功
-    if (!OpenCC) {
-      console.error('OpenCC 未加载，请检查 CDN 是否正确引入');
+      
+    // 检查 OpenCC 是否加载成功
+    if (typeof OpenCC === 'undefined') {
+      console.error('❌ opencc-js 未加载，请检查网络或 CDN');
     }
 
     // 创建转换器实例
-    const opencc = OpenCC.create('s2t.json', 't2s.json'); // 简体 → 繁体，繁体 → 简体
+    let opencc = null;
+    try {
+      opencc = new OpenCC(['s2t.json', 't2s.json']); // 支持简转繁、繁转简
+      console.log('✅ OpenCC 初始化成功');
+    } catch (e) {
+      console.error('❌ OpenCC 初始化失败:', e);
+      // 降级：不进行转换，仅支持原始文本搜索
+      opencc = {
+        convertSync: text => text
+      };
+    }
 
     // 辅助函数：将文本转换为“简体+繁体”混合关键词
     function getSearchKeywords(query) {
@@ -565,9 +572,9 @@
 
       let inputT = input;
       try {
-        inputT = opencc.convertSync(input); // ✅ 使用 .convertSync
+        inputT = opencc.convertSync(input);
       } catch (e) {
-        console.warn('转换失败:', e);
+        console.warn('输入转换失败:', e);
       }
 
       const results = allIdioms.filter(idiom => {
