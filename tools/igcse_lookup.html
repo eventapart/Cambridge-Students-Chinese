@@ -400,9 +400,6 @@
   <!-- Bootstrap JS Bundle with Popper -->
   <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- 繁簡轉換 -->
-<script src="./assets/js/opencc-js/full.js"></script>
-
   <script>
 
     // 获取根容器
@@ -410,25 +407,6 @@
 
     // 初始化：进入加载状态
     appContainer.classList.add('loading-state');
-    
-    // 修改默认路径（如果字典不在 dist/dictionary/ 下）
-    OpenCC.setDictionaryPath('./assets/js/opencc-js/'); // 指向你存放 .json 的目录
-
-    OpenCC.load(['cn2t.json', 't2cn.json']).then(opencc => {
-      window.opencc = opencc;
-      console.log('✅ OpenCC 已就绪');
-    }).catch(err => {
-      console.error('❌ 初始化失败:', err);
-      window.opencc = { convertSync: text => text };
-    });
-
-    // 辅助函数：将文本转换为“简体+繁体”混合关键词
-    function getSearchKeywords(query) {
-      if (!query) return [];
-      const s = query; // 简体
-      const t = opencc.convertSync(s); // 转为繁体
-      return [s, t];
-    }
 
     // 声明igcse成语
     let igcseData = null;
@@ -561,40 +539,11 @@
 
     function searchIdiom() {
       const input = document.getElementById('search-input').value.trim();
-      if (!input || !window.opencc) {
-        if (!window.opencc) console.warn('OpenCC 尚未初始化');
-        return;
-      }
-
-      let inputT = input;
-      try {
-        inputT = opencc.convertSync(input);
-      } catch (e) {}
-
-      const results = allIdioms.filter(idiom => {
-        if (!idiom.idiom) return false;
-
-        let idiomT, defT;
-        try {
-          idiomT = opencc.convertSync(idiom.idiom);
-          defT = opencc.convertSync(idiom.definition || '');
-        } catch (e) {
-          idiomT = idiom.idiom;
-          defT = idiom.definition || '';
-        }
-
-        const defS = typeof idiom.definition === 'string' ? idiom.definition : '';
-        const inputSLower = input.toLowerCase();
-        const inputTLower = inputT.toLowerCase();
-
-        return (
-          idiom.idiom.toLowerCase().includes(inputSLower) ||
-          idiomT.toLowerCase().includes(inputTLower) ||
-          defS.toLowerCase().includes(inputSLower) ||
-          defT.toLowerCase().includes(inputTLower)
-        );
-      });
-
+      const results = allIdioms.filter(idiom =>
+        // 确保 idiom.definition 存在且为字符串，然后再调用 toLowerCase 和 includes
+        idiom.idiom && idiom.idiom.toLowerCase().includes(input.toLowerCase()) ||
+        (idiom.definition && typeof idiom.definition === 'string' && idiom.definition.toLowerCase().includes(input.toLowerCase()))
+      );
       const container = document.getElementById('search-results');
       container.innerHTML = '';
 
@@ -604,6 +553,7 @@
         results.forEach(idiom => {
           const highlightedIdiom = highlightText(idiom.idiom, input);
           const highlightedDef = highlightText(idiom.definition, input);
+
           renderCard(container, highlightedIdiom, idiom.pinyin, highlightedDef);
         });
       }
