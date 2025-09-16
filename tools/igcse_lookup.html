@@ -1,41 +1,54 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Cambridge IGCSE 中文成语词典</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cambridge IGCSE 中文成语词典</title>
 
-<!-- Bootstrap 5 CDN -->
-<link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="./assets/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-<link href="./assets/css/style.min.css" rel="stylesheet">
-
+  <!-- Bootstrap 5 样式 -->
+  <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/css/style.min.css" rel="stylesheet">
 </head>
 <body>
 
 <div id="app" class="container-lg py-4">
 
-  <h1 class="text-center mb-5 mt-5">Cambridge IGCSE<br />中文成语词典</h1>
+  <h1 class="text-center my-5">
+    Cambridge IGCSE<br>中文成语词典
+  </h1>
 
-  <ul class="nav nav-tabs justify-content-center mb-4" id="myTabs">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#home">首页</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#dictionary">成语词典</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#igcse">真题成语</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#game">成语挑战</a></li>
+  <!-- 导航标签 -->
+  <ul class="nav nav-tabs justify-content-center mb-4" id="myTabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab">首页</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#dictionary" role="tab">成语词典</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#igcse" role="tab">真题成语</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#game" role="tab">成语挑战</a>
+    </li>
   </ul>
 
   <div class="tab-content" style="min-height: 400px;">
 
     <!-- 首页 -->
-    <div class="tab-pane fade show active" id="home">
-
+    <div class="tab-pane fade show active" id="home" role="tabpanel">
       <div class="card-chinese">
         <h4 class="text-center mb-2">今日成语</h4>
-        <p class="mb-0">中国的成语承载着深厚的文化底蕴，历经千百年沉淀，在跨文化交流中展现出强大的表达力和传意功能。在中文走向国际化的今天，成语是不可或缺的文化桥梁。作为一场国际化的中文考试，剑桥IGCSE中文第一语言（0509）的考试大纲要求我们掌握“恰当使用词汇”和“清晰有效传达信息”的能力，而成语正是实现这一目标的有力工具。让我们从今天开始，每天积累，让成语为我们的表达增光添彩！</p>
+        <p class="mb-0">
+          中国的成语承载着深厚的文化底蕴，历经千百年沉淀，在跨文化交流中展现出强大的表达力和传意功能。
+          在中文走向国际化的今天，成语是不可或缺的文化桥梁。
+          剑桥IGCSE中文第一语言（0509）的考试大纲要求我们掌握“恰当使用词汇”和“清晰有效传达信息”的能力，
+          而成语正是实现这一目标的有力工具。让我们从今天开始，每天积累，让成语为我们的表达增光添彩！
+        </p>
       </div>
 
+      <!-- 随机成语骨架屏 -->
       <div id="random-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3">
-        <!-- Skeleton Screen -->
         <div class="col">
           <div class="card h-100">
             <div class="card-body card-chinese">
@@ -76,12 +89,12 @@
     </div>
 
     <!-- 成语词典 -->
-    <div class="tab-pane fade" id="dictionary">
+    <div class="tab-pane fade" id="dictionary" role="tabpanel">
       <div class="card-chinese">
         <h4 class="text-center mb-4">查成语</h4>
         <div class="d-flex justify-content-center mb-3">
-          <form class="input-group input-group-lg" style="max-width:600px" onsubmit="return false;">
-            <input id="search-input" type="text" class="form-control" placeholder="请输入成语搜索" aria-label="请输入成语搜索" aria-describedby="button-addon2" minlength="2">
+          <form class="input-group input-group-lg" style="max-width:600px" role="search" onsubmit="return false;">
+            <input id="search-input" type="text" class="form-control" placeholder="请输入成语搜索" aria-label="请输入成语搜索" minlength="2">
             <button class="btn btn-outline-dark" type="submit" id="button-addon2" onclick="searchIdiom()" disabled>搜索</button>
           </form>
         </div>
@@ -93,24 +106,27 @@
     </div>
 
     <!-- IGCSE真题 -->
-    <div class="tab-pane fade" id="igcse">
+    <div class="tab-pane fade" id="igcse" role="tabpanel">
       <div class="card-chinese">
         <h4 class="text-center mb-2">教材和真题中的成语</h4>
-        <p class="mb-0">根据对剑桥IGCSE中文第一语言（0509）官方教材及历年真题（截至2025年）的统计，共出现482条成语，其中绝大多数成语仅出现一次。这说明课程鼓励我们广泛积累，不断拓展成语词汇量。因此，我们不仅要掌握成语的字面含义，更要理解其在现代语境中的实际用法——了解人们通常在什么场合、表达何种情感时使用它。只有这样，我们才能真正领悟成语背后的深层文化意涵和语用功能，继而在阅读中准确把握文意，在写作中自然、恰当地运用成语，做到得心应手，游刃有余。</p>
+        <p class="mb-0">
+          根据对剑桥IGCSE中文第一语言（0509）官方教材及历年真题（截至2025年）的统计，共出现482条成语，其中绝大多数成语仅出现一次。
+          这说明课程鼓励我们广泛积累，不断拓展成语词汇量。
+          因此，我们不仅要掌握成语的字面含义，更要理解其在现代语境中的实际用法——了解人们通常在什么场合、表达何种情感时使用它。
+          只有这样，我们才能真正领悟成语背后的深层文化意涵和语用功能，继而在阅读中准确把握文意，在写作中自然、恰当地运用成语，做到得心应手，游刃有余。
+        </p>
       </div>
-
       <div id="igcse-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3"></div>
       <nav aria-label="真题成语分页" class="mt-5">
         <ul class="pagination pagination-custom justify-content-center" id="pagination-controls-igcse"></ul>
       </nav>
-      <div></div>
     </div>
 
     <!-- 成语游戏 -->
-    <div class="tab-pane fade" id="game">
+    <div class="tab-pane fade" id="game" role="tabpanel">
       <div class="card-chinese">
         <h4 class="text-center mb-2">50000条成语随机挑战</h4>
-        <div style="text-align:center;">
+        <div class="text-center">
           <span class="fs-5">当前得分：</span>
           <strong id="current-score" class="text-primary fs-4">0</strong>
           <span class="mx-3">|</span>
@@ -131,17 +147,21 @@
     </div>
   </div>
 
-  <center class="card-text mt-5 ml-3 mr-3 fs-6" style="font-size:.75rem!important; color:#999">Copyright &copy;2025 翟老师（Benjamin Z.）<br />数据来源：Mapull Chinese-dictionary & 剑桥真题</center>
-
+  <!-- 页脚 -->
+  <footer class="text-center mt-5 small text-muted">
+    Copyright &copy; 2025 翟老师（Benjamin Z.）
+    <br>数据来源：Mapull Chinese-dictionary & 剑桥真题
+  </footer>
 </div>
 
-<!-- 居中 Toast 容器 -->
+<!-- Toast 提示 -->
 <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 start-50 translate-middle-x" style="z-index: 1050;">
   <div id="check-toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
     <div id="toast-body" class="d-flex align-items-center justify-content-center text-center"></div>
   </div>
 </div>
 
+<!-- JS 脚本 -->
 <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="./assets/js/script.min.js"></script>
 
