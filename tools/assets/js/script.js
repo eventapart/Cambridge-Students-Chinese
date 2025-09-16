@@ -427,6 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * 显示一个带故事的成语（随机）
  */
+let lastStoryIdiom = '';
+
 function showRandomStory() {
   // 1. 筛选出所有包含 story 且 story 数组非空的成语
   const itemsWithStory = allIdioms.filter(item => 
