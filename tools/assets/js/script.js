@@ -141,6 +141,27 @@ fetch('./dictionaries/idioms.min.json')
   .then(res => res.json())
   .then(data => {
     allIdioms = data;
+    
+    // 监听搜索框至少输入两个字符
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('button-addon2');
+
+    // 监听输入框内容变化
+    searchInput.addEventListener('input', function () {
+      const query = this.value.trim(); // 去除首尾空格
+
+      // 如果输入字符数 >= 2，启用按钮；否则禁用
+      if (query.length >= 2) {
+        searchBtn.disabled = false;
+      } else {
+        searchBtn.disabled = true;
+      }
+      const resultsContainer = document.getElementById('search-results');
+      if (query === '') {
+        // 输入为空：显示3个成语故事
+        showRandomStory();
+      }
+    });
 
     // 数据加载成功：移除加载状态
     appContainer.classList.remove('loading-state');
@@ -309,29 +330,6 @@ function highlightText(text, keyword) {
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
-
-// 搜索成语
-// 监听搜索框至少输入两个字符
-const searchInput = document.getElementById('search-input');
-const searchBtn = document.getElementById('button-addon2');
-
-// 监听输入框内容变化
-searchInput.addEventListener('input', function () {
-  const query = this.value.trim(); // 去除首尾空格
-
-  // 如果输入字符数 >= 2，启用按钮；否则禁用
-  if (query.length >= 2) {
-    searchBtn.disabled = false;
-  } else {
-    searchBtn.disabled = true;
-  }
-  const resultsContainer = document.getElementById('search-results');
-  if (query === '') {
-    // 输入为空：显示3个成语故事
-    showRandomStory();
-  }
-});
-
 
 // 可选：页面加载时确保按钮初始状态
 searchBtn.disabled = true;
