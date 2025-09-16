@@ -24,6 +24,8 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
   --info-color: #007bff;
   --shadow-light: rgba(0, 0, 0, 0.05);
   --shadow-strong: rgba(0, 0, 0, 0.18);
+  --skeleton-base: #e5e5e5;
+  --skeleton-highlight: #e0e0e0;
 }
 
 /* ================================
@@ -47,6 +49,8 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
     --info-color: #42a5f5;
     --shadow-light: rgba(0, 0, 0, 0.4);
     --shadow-strong: rgba(0, 0, 0, 0.6);
+    --skeleton-base: #2a2a2a;
+    --skeleton-highlight: #3a3a3a;
   }
 }
 
@@ -265,7 +269,7 @@ mark {
 .skeleton-title,
 .skeleton-pinyin,
 .skeleton-definition {
-  background: linear-gradient(90deg, #e5e5e5 25%, #e0e0e0 50%, #e5e5e5 75%);
+  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-highlight) 50%, var(--skeleton-base) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite linear;
   border-radius: 4px;
