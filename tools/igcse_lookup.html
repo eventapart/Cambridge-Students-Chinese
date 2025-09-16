@@ -307,33 +307,6 @@
               </div>
             </div>
           </div>
-          <div class="col">
-            <div class="card h-100">
-              <div class="card-body card-chinese">
-                <div class="skeleton-title"></div>
-                <div class="skeleton-pinyin mt-2"></div>
-                <div class="skeleton-definition mt-3"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card h-100">
-              <div class="card-body card-chinese">
-                <div class="skeleton-title"></div>
-                <div class="skeleton-pinyin mt-2"></div>
-                <div class="skeleton-definition mt-3"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card h-100">
-              <div class="card-body card-chinese">
-                <div class="skeleton-title"></div>
-                <div class="skeleton-pinyin mt-2"></div>
-                <div class="skeleton-definition mt-3"></div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -488,7 +461,7 @@
       container.innerHTML = ''; // 🔥 自动移除骨架屏
 
       // 数据已加载，生成随机成语
-      const randomIds = shuffle(allIdioms).slice(0, 6);
+      const randomIds = shuffle(allIdioms).slice(0, 3);
       container.innerHTML = '';
       randomIds.forEach(idiom => {
         renderCard(container, idiom.idiom, idiom.pinyin, idiom.definition);
