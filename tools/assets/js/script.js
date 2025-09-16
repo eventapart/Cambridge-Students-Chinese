@@ -350,6 +350,9 @@ function searchIdiom() {
   if (input.length < 2) {
     resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
     // 输入 1 个字符也视为不足，不显示结果
+      if (input.length < 1) {
+        showRandomStory();
+      }
     return;
   }
 
