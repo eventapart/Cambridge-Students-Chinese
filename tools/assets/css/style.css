@@ -1,77 +1,113 @@
-/* 基础重置 */
+/* ================================
+   基础重置 & 全局变量
+================================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color: #fafafa; color: #333; line-height: 1.6; }
-.card { border: none }
-.card-chinese { width: 100%; margin: 0 auto; padding: 1rem; background-color: #d9f3ea; border-width: 18px 18px; border-image: url(../images/corner.png) 66 66 stretch; border-style: solid; }
-.card-chinese p { color: #666; font-size: .875rem }
-.card-chinese p strong{ padding:0 .375rem; background-color:#d9f3ea; /*box-shadow:var(--primary-color) 0 0 0 1px inset;*/ border-radius:3px}
-.card .card-chinese { padding: 0; background-color: #fff }
 
-/* 主色调：柔和蓝色 */
-:root { --primary-color: #244f3d; /* 柔和蓝色 */ --secondary-color: #75d1ae; /* 浅蓝色背景 */ --card-bg: #ffffff; --text-muted: #666; --border-color: #ddd; --highlight-color: #ffc107; }
-h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
-.nav-tabs .nav-link { color: var(--primary-color); font-weight: 500; border: 1px solid var(--border-color); border-bottom-color: var(--primary-color); }
-.nav-tabs .nav-link.active { background-color: var(--secondary-color); color: var(--primary-color); border-color: var(--primary-color) var(--primary-color) var(--secondary-color); }
-.nav-tabs .nav-link:focus,
-.nav-tabs .nav-link:hover { border-bottom-color: var(--primary-color); }
-.nav-tabs .nav-link.active:focus,
-.nav-tabs .nav-link.active:hover { border-bottom-color: var(--secondary-color); }
+/* 全局变量 */
+:root { --primary-color: #244f3d;     /* 主色 */ --secondary-color: #75d1ae;  /* 副色 */ --card-bg: #ffffff; --text-muted: #666; --border-color: #ddd; --border-light: #ccc; --border-dark: #aaa; --highlight-color: #ffc107; --danger-color: #dc3545; --info-color: #007bff; --shadow-light: rgba(0, 0, 0, 0.05); --shadow-strong: rgba(0, 0, 0, 0.18); }
 
-.justify-content-center { border-bottom-color: var(--primary-color); }
+/* ================================
+   标题样式
+================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 { color: var(--primary-color); margin-bottom: 1rem; }
+
+/* ================================
+   卡片组件
+================================ */
 .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; transition: box-shadow 0.3s ease; }
-.card:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
+.card:hover { box-shadow: 0 2px 8px var(--shadow-light); }
 .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
 .card-text { font-size: 0.95rem; color: var(--text-muted); }
-.btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); color: white; font-weight: 500; border-radius: 6px; padding: 0.4rem 1rem; }
+
+/* 特殊卡片：中文卡片 */
+.card-chinese { width: 100%; margin: 0 auto; padding: 1rem; background-color: #d9f3ea; border: solid 18px transparent; border-image: url(../images/corner.png) 66 stretch; }
+.card-chinese p { color: var(--text-muted); font-size: 0.875rem; }
+.card-chinese p strong { padding: 0 0.375rem; background-color: #d9f3ea; border-radius: 3px; }
+.card .card-chinese { padding: 0; background-color: #fff; }
+
+/* ================================
+   导航标签页
+================================ */
+.nav-tabs .nav-link { color: var(--primary-color); font-weight: 500; border: 1px solid var(--border-color); border-bottom-color: var(--primary-color); transition: all 0.2s ease; }
+.nav-tabs .nav-link.active { background-color: var(--secondary-color); color: var(--primary-color); border-color: var(--primary-color) var(--primary-color) var(--secondary-color); }
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus { border-bottom-color: var(--primary-color); }
+.nav-tabs .nav-link.active:hover,
+.nav-tabs .nav-link.active:focus { border-bottom-color: var(--secondary-color); }
+
+/* ================================
+   按钮
+================================ */
+.btn-primary { background-color: var(--primary-color); border: 1px solid var(--primary-color); color: #fff; font-weight: 500; border-radius: 6px; padding: 0.4rem 1rem; transition: background-color 0.2s ease, border-color 0.2s ease; }
 .btn-primary:hover { background-color: #3a75c0; border-color: #3a75c0; }
-.form-control { border-radius: 6px; border: 1px solid #ccc; }
+
+/* ================================
+   表单
+================================ */
+.form-control { border-radius: 6px; border: 1px solid var(--border-light); transition: border-color 0.2s ease, box-shadow 0.2s ease; }
 .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2); }
 
-/* Dark Pagination with custom colors */
-.pagination-custom .page-link { color: #333; background-color: #fff; border: 1px solid #75d1ae; transition: background-color 0.2s, color 0.2s; }
-.pagination-custom .page-link:hover { opacity:.9; border-color: #666; }
-.pagination-custom .active .page-link{ background-color: #244f3d; color:#fff; border-color:#333}
+/* ================================
+   分页
+================================ */
+.pagination-custom .page-link { color: #333; background-color: #fff; border: 1px solid var(--secondary-color); transition: background-color 0.2s ease, color 0.2s ease; }
+.pagination-custom .page-link:hover { opacity: 0.9; border-color: var(--text-muted); }
+.pagination-custom .active .page-link { background-color: var(--primary-color); color: #fff; border-color: #333; }
 
-/* 高亮样式 */
-mark { background-color: var(--highlight-color); padding: 0 2px; font-weight: bold; color: #333; }
-
-/* 游戏选项按钮 */
-.option { border-radius: 6px; border: 1px solid #ccc; width: 100%; display: inline-block; margin: 0; padding: 0; border-radius: 6px; border: 1px solid #ccc;  /*  width: calc(40% - 1rem); */ min-height: 3.5rem; /* 固定最小高度 */ display: inline-flex; align-items: center; justify-content: flex-start; white-space: normal; word-wrap: break-word; text-align: left; }
-.option:hover { background-color: #f0f0f0; border-color: #aaa; color: #000; }
-#check-toast { min-width: 240px; max-width: 320px; border: none; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);  /* 避免被其他元素遮挡 */ pointer-events: auto; }
-#toast-body { padding: 1rem; font-size: 1.05rem; line-height: 1.5; font-weight: 500; }
-#current-score,
-#best-score { font-size: 1.2rem; font-weight: bold; }
-.text-primary { color: #007bff; }
-.text-danger { color: #dc3545; }
-
-/* 分页按钮样式 */
+/* 简单分页 */
 #pagination button { margin: 5px; padding: 10px; cursor: pointer; }
 #pagination button.active { background-color: lightblue; }
 
-/* 骨架屏容器 */
+/* ================================
+   文字 & 高亮
+================================ */
+mark { background-color: var(--highlight-color); padding: 0 2px; font-weight: bold; color: #333; }
+.text-primary { color: var(--info-color); }
+.text-danger { color: var(--danger-color); }
 
-/* 骨架元素通用样式 */
+/* ================================
+   游戏选项按钮
+================================ */
+.option { width: 100%; min-height: 3.5rem; margin: 0; padding: 0; display: inline-flex; align-items: center; justify-content: flex-start; border-radius: 6px; border: 1px solid var(--border-light); white-space: normal; word-wrap: break-word; text-align: left; transition: background-color 0.2s ease, border-color 0.2s ease; }
+.option:hover { background-color: #f0f0f0; border-color: var(--border-dark); color: #000; }
+
+/* ================================
+   Toast 提示
+================================ */
+#check-toast { min-width: 240px; max-width: 320px; border: none; border-radius: 12px; box-shadow: 0 8px 24px var(--shadow-strong); pointer-events: auto; }
+#toast-body { padding: 1rem; font-size: 1.05rem; line-height: 1.5; font-weight: 500; }
+#current-score,
+#best-score { font-size: 1.2rem; font-weight: bold; }
+
+/* ================================
+   骨架屏
+================================ */
 .skeleton-title,
 .skeleton-pinyin,
 .skeleton-definition { background: linear-gradient(90deg, #e5e5e5 25%, #e0e0e0 50%, #e5e5e5 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite linear; border-radius: 4px; }
 .skeleton-title { width: 80px; height: 32px; }
 .skeleton-pinyin { width: 120px; height: 16px; }
-.skeleton-definition { width: 100%; height: 16px; max-width: 300px; }
-
-/* 动画：模拟加载光扫过的效果 */
+.skeleton-definition { width: 100%; max-width: 300px; height: 16px; }
 @keyframes skeleton-loading {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
-/* 全局加载状态：禁用所有点击 */
+/* ================================
+   全局加载状态
+================================ */
 .loading-state { pointer-events: none; opacity: 0.75; transition: opacity 0.2s ease; }
-
-/* 可选：鼠标样式 */
 .loading-state * { cursor: not-allowed !important; }
 
-/* 响应式优化 */
+/* ================================
+   响应式
+================================ */
 @media (max-width:768px) {
   .card-title { font-size: 1rem; }
   .card-text { font-size: 0.9rem; }
