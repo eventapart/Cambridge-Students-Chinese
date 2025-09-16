@@ -149,11 +149,28 @@ fetch('./dictionaries/idioms.min.json')
     showHome();
     showIgcseIdioms();
 
+    // 加载完成后显示一个随机故事
+    showRandomStory();
+
     // 监听 tab 切换事件，自动加载游戏第一题
     const tabEl = document.querySelector('#myTabs a[href="#game"]');
     tabEl.addEventListener('shown.bs.tab', () => {
       nextQuestion();
     });
+
+    // 监听切换到 “首页” 或 “词典” 时也刷新故事
+    const homeTab = document.querySelector('#myTabs a[href="#home"]');
+    const dictTab = document.querySelector('#myTabs a[href="#dictionary"]');
+
+    [homeTab, dictTab].forEach(tab => {
+      tab?.addEventListener('shown.bs.tab', () => {
+        // 只有在切换到非“游戏”页时才显示故事
+        const activeTab = document.querySelector('#myTabs .nav-link.active');
+        if (activeTab.getAttribute('href') !== '#game') {
+          showRandomStory();
+        }
+      });
+    });    
   })
   .catch(err => {
     console.error('数据加载失败:', err);
@@ -406,6 +423,51 @@ document.addEventListener('DOMContentLoaded', () => {
     searchIdiom();
   });
 });
+
+/**
+ * 显示一个带故事的成语（随机）
+ */
+function showRandomStory() {
+  // 1. 筛选出所有包含 story 且 story 数组非空的成语
+  const itemsWithStory = allIdioms.filter(item => 
+    Array.isArray(item.story) && item.story.length > 0
+  );
+
+  // 2. 如果没有带故事的成语，显示提示
+  if (itemsWithStory.length === 0) {
+    document.getElementById('search-results').innerHTML = 
+      '<div class="alert alert-info">暂无成语故事</div>';
+    return;
+  }
+
+  // 尝试避免重复（至少有两个故事时）
+  let candidates = itemsWithStory;
+  if (itemsWithStory.length > 1) {
+    candidates = itemsWithStory.filter(item => item.idiom !== lastStoryIdiom);
+  }
+
+  // 3. 随机选一个
+  const randomItem = itemsWithStory[Math.floor(Math.random() * itemsWithStory.length)];
+  lastStoryIdiom = randomItem.idiom; // 记录
+
+  // 4. 提取并格式化故事（可能有多段）
+  const storyText = randomItem.story.map(paragraph => `<p>${paragraph}</p>`).join('');
+
+  // 5. 渲染到 #search-results
+  document.getElementById('search-results').innerHTML = `
+    <div class="card border-warning bg-light">
+      <div class="card-body">
+        <h5 class="card-title text-warning">
+          📖 成语故事：${randomItem.idiom}
+          <small class="text-muted">（${randomItem.pinyin}）</small>
+        </h5>
+        <div class="story-content">
+          ${storyText}
+        </div>
+      </div>
+    </div>
+  `;
+}
 
 // 显示 IGCSE 成语
 // 全局变量用于存储当前页码
