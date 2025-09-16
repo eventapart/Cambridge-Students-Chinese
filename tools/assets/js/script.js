@@ -347,7 +347,7 @@ function showIgcseIdioms() {
       if (!ex || (!ex.text && !ex.book)) return '';
       const textPart = ex.text ? ex.text : '';
       const bookPart = ex.book ? `（${ex.book}）` : '';
-      return `<strong>词典例句：</strong>${textPart}${bookPart}<br />`;
+      return `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
     })();
 
     // 安全构建近义词
