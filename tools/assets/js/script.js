@@ -319,18 +319,16 @@ const searchBtn = document.getElementById('button-addon2');
 searchInput.addEventListener('input', function () {
   const query = this.value.trim(); // 去除首尾空格
 
-  // 启用/禁用按钮
-  searchBtn.disabled = query.length < 2;
-
-  if (query < 1) {
-    showRandomStory();
-
-  } else if (query.length < 2) {
-    // 输入1个字符：提示
-    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
-    return;
+  // 如果输入字符数 >= 2，启用按钮；否则禁用
+  if (query.length >= 2) {
+    searchBtn.disabled = false;
   } else {
-    const resultsContainer = document.getElementById('search-results');
+    searchBtn.disabled = true;
+  }
+  const resultsContainer = document.getElementById('search-results');
+  if (query === '') {
+    // 输入为空：显示3个成语故事
+    showRandomStory();
   }
 });
 
@@ -348,17 +346,11 @@ function searchIdiom() {
   resultsContainer.innerHTML = '';
   if (paginationContainer) paginationContainer.innerHTML = '';
 
-  const query = this.value.trim(); // 去除首尾空格
-  
-  if (query < 1) {
-    showRandomStory();
-
-  } else if (query.length < 2) {
-    // 输入1个字符：提示
+  // 🔍 输入字符少于 2 个：清空，显示提示
+  if (input.length < 2) {
     resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
+    // 输入 1 个字符也视为不足，不显示结果
     return;
-  } else {
-    const resultsContainer = document.getElementById('search-results');
   }
 
   // ✅ 开始搜索：过滤成语（匹配 idiom 或 definition）
