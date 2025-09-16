@@ -213,32 +213,47 @@ function buildCardContent(item) {
   let content = '';
 
   // 1. 辞典释义（必有）
-  content += `<strong>辞典释义</strong>${item.definition}<br />`;
+  if (item.definition) {
+    content += `<strong>辞典释义</strong> ${item.definition}<br />`;
+  }
 
-  // 2. 词典例句（可选：含文本或出处）
+  // 2. 用法说明（可选）
+  if (item.usage && typeof item.usage === 'string') {
+    content += `<strong>用法说明</strong> ${item.usage}<br />`;
+  }
+
+  // 3. 成语出处（可选：text 或 book）
+  const source = item.source;
+  if (source?.text || source?.book) {
+    const textPart = source.text || '';
+    const bookPart = source.book ? `（${source.book}）` : '';
+    content += `<strong>成语出处</strong> ${textPart}${bookPart}<br />`;
+  }
+
+  // 4. 词典例句（可选）
   const example = item.example;
   if (example?.text || example?.book) {
     const textPart = example.text || '';
     const bookPart = example.book ? `（${example.book}）` : '';
-    content += `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
+    content += `<strong>词典例句</strong> ${textPart}${bookPart}<br />`;
   }
 
-  // 3. 官方例句（仅真题页有）
+  // 5. 官方例句（仅真题页有）
   if (item.exampleSentence) {
-    content += `<strong>官方例句</strong>${item.exampleSentence}<br />`;
+    content += `<strong>官方例句</strong> ${item.exampleSentence}<br />`;
   }
 
-  // 4. 近义词（可选）→ 放在官方例句之后
+  // 6. 近义词（可选）
   if (Array.isArray(item.similar) && item.similar.length > 0) {
-    content += `<strong>近义词</strong>${item.similar.join('、')}<br />`;
+    content += `<strong>近义词</strong> ${item.similar.join('、')}<br />`;
   }
 
-  // 5. 反义词（可选）→ 放在官方例句之后
+  // 7. 反义词（可选）
   if (Array.isArray(item.opposite) && item.opposite.length > 0) {
-    content += `<strong>反义词</strong>${item.opposite.join('、')}<br />`;
+    content += `<strong>反义词</strong> ${item.opposite.join('、')}<br />`;
   }
 
-  // 去掉末尾多余的 <br />
+  // 移除末尾多余的 <br />
   return content.replace(/<br\s*\/?>\s*$/, '');
 }
 
@@ -424,10 +439,12 @@ function showIgcseIdioms(page = 1) {
           idiom: item.idiom,
           pinyin: item.pinyin,
           definition: item.definition,
-          similar: item.similar || [],
-          opposite: item.opposite || [],
+          source: item.source || null,
+          usage: item.usage || '',
           example: item.example || {},
-          exampleSentence: `${exampleSentence} (${exam})`
+          exampleSentence: `${exampleSentence} (${exam})`,
+          similar: item.similar || [],
+          opposite: item.opposite || []
         });
       }
     }
