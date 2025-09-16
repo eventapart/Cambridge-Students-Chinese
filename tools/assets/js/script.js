@@ -325,7 +325,13 @@ searchInput.addEventListener('input', function () {
   } else {
     searchBtn.disabled = true;
   }
+  const resultsContainer = document.getElementById('search-results');
+  if (query === '') {
+    // 输入为空：显示成语故事
+    showRandomStory();
+  }
 });
+
 
 // 可选：页面加载时确保按钮初始状态
 searchBtn.disabled = true;
