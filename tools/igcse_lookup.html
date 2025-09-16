@@ -405,8 +405,8 @@ class Paginator {
   }
 
   // 渲染分页按钮到指定的 <ul>
-  render(currentPage = 1) {
-    this.currentPage = currentPage;
+  render(page = 1) {
+    this.currentPage = page;
     const container = document.getElementById(this.containerId);
     if (!container) return;
 
@@ -420,7 +420,7 @@ class Paginator {
     // 计算页码范围
     let startPage, endPage;
     const { totalPages, maxButtons, currentPage } = this;
-
+    
     if (totalPages <= maxButtons) {
       startPage = 1;
       endPage = totalPages;
