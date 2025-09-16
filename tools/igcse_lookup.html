@@ -645,9 +645,8 @@ function searchIdiom() {
   const itemsPerPage = 6;
   const totalPages = Math.ceil(results.length / itemsPerPage);
 
-  // 创建分页器实例（每个页面独立，不冲突）
-  const paginator = new Paginator(paginationContainerId, totalPages, (page) => {
-    // 回调函数：渲染当前页的成语卡片
+  // ✅ 定义渲染当前页内容的函数（可复用）
+  const renderResultsPage = (page) => {
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     const paginatedResults = results.slice(start, end);
@@ -659,10 +658,16 @@ function searchIdiom() {
       const highlightedDef = highlightText(idiom.definition, input);
       renderCard(resultsContainer, highlightedIdiom, idiom.pinyin, highlightedDef);
     });
+  };
+
+  // ✅ 创建分页器实例
+  const paginator = new Paginator(paginationContainerId, totalPages, (page) => {
+    renderResultsPage(page); // 用户点击页码时触发
   });
 
-  // 首次渲染第一页
-  paginator.render(1);
+  // 🔥 关键修复：先手动渲染第一页内容，再渲染分页控件
+  renderResultsPage(1);       // ✅ 立即显示第一页内容
+  paginator.render(1);        // ✅ 渲染分页按钮（当前页为1）
 }
 
 // 显示 IGCSE 成语
