@@ -141,10 +141,9 @@ fetch('./dictionaries/idioms.min.json')
   .then(res => res.json())
   .then(data => {
     allIdioms = data;
-    
+
     // 监听搜索框至少输入两个字符
     const searchInput = document.getElementById('search-input');
-    const searchBtn = document.getElementById('button-addon2');
 
     // 监听输入框内容变化
     searchInput.addEventListener('input', function () {
@@ -333,6 +332,8 @@ function escapeRegExp(string) {
 
 // 可选：页面加载时确保按钮初始状态
 searchBtn.disabled = true;
+
+const searchBtn = document.getElementById('button-addon2');
 
 function searchIdiom() {
   const inputElement = document.getElementById('search-input');
