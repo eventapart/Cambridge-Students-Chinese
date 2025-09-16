@@ -315,6 +315,7 @@ function showIgcseIdioms() {
           idiom: item.idiom,
           pinyin: item.pinyin,
           definition: item.definition,
+          example: item.example,
           exampleSentence: `${exampleSentence} (${exam})`
         });
       }
@@ -322,7 +323,7 @@ function showIgcseIdioms() {
   });
 
   // 4. 计算总页数
-  const pageSize = 3; // 假设每页6条（与之前的逻辑一致）
+  const pageSize = 3; // 假设每页3条（与之前的逻辑一致）
   const totalPages = Math.ceil(allItems.length / pageSize);
 
   // 确保 currentPage 合法
@@ -346,9 +347,7 @@ function showIgcseIdioms() {
 
   // 使用 Paginator
   const paginator = new Paginator('pagination-controls-igcse', totalPages, (page) => {
-    // 分页回调：更新 currentPage 并重新渲染
-    currentPage = page;
-    showIgcseIdioms(); // 重新调用自身，刷新内容和分页
+      showIgcseIdioms(newPage);
   });
 
   // 渲染分页控件
