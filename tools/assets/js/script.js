@@ -180,20 +180,27 @@ fetch('./dictionaries/idioms.min.json')
     container.innerHTML = '<p></p><p class="text-danger text-center">加载失败</p><p></p>';
   });
 
-// 显示首页随机成语
-function showHome() {
-  const container = document.getElementById('random-idioms');
+/**
+ * 展示 3 个随机成语（普通卡片，用于词典页空状态）
+ * 使用统一的 renderCard 和 buildCardContent 渲染，保持样式一致
+ */
+function showRandomIdioms() {
+  // 🔍 注意：根据您的页面结构，这里可能是：
+  // - 首页的推荐区：'#random-idioms'
+  // - 搜索结果区：'#search-results'
+  // 我们统一使用 '#search-results' 作为搜索页容器（请根据实际情况调整）
+  const container = document.getElementById('search-results');
 
-  // 如果数据未加载，确保骨架屏已存在（通常 HTML 已写好）
+  // 如果数据未加载，不执行
   if (!allIdioms || allIdioms.length === 0) {
-    // 骨架屏已在 HTML 中，无需操作
+    console.warn('成语数据尚未加载，跳过随机展示');
     return;
   }
 
-  // ✅ 数据已加载：清空容器，渲染真实内容
-  container.innerHTML = ''; // 🔥 自动移除骨架屏
+  // 🔥 清空容器：自动移除骨架屏或旧内容
+  container.innerHTML = '';
 
-  // 数据已加载，生成随机成语
+  // 打乱并取前 3 个
   const randomItems = shuffle(allIdioms).slice(0, 3);
 
   // 渲染卡片
@@ -202,7 +209,7 @@ function showHome() {
       container,
       idiom.idiom,
       idiom.pinyin,
-      buildCardContent(idiom) // 使用统一内容构建函数
+      buildCardContent(idiom) // 使用统一的内容构建函数
     );
   });
 }
