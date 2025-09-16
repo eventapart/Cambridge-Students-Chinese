@@ -642,7 +642,7 @@ function searchIdiom() {
   }
 
   // ✅ 分页逻辑开始
-  const itemsPerPage = 6;
+  const itemsPerPage = 3;
   const totalPages = Math.ceil(results.length / itemsPerPage);
 
   // ✅ 定义渲染当前页内容的函数（可复用）
@@ -673,7 +673,7 @@ function searchIdiom() {
 // 显示 IGCSE 成语
 // 全局变量用于存储当前页码
 let currentPage = 1;
-const pageSize = 6; // 每页显示的成语数量
+const pageSize = 3; // 每页显示的成语数量
 
 function showIgcseIdioms() {
   const container = document.getElementById('igcse-idioms');
@@ -706,7 +706,7 @@ function showIgcseIdioms() {
   });
 
   // 4. 计算总页数
-  const pageSize = 6; // 假设每页6条（与之前的逻辑一致）
+  const pageSize = 3; // 假设每页6条（与之前的逻辑一致）
   const totalPages = Math.ceil(allItems.length / pageSize);
 
   // 确保 currentPage 合法
@@ -746,7 +746,7 @@ function goToPage(page) {
     (acc, [exam, map]) => acc + Object.keys(map).length,
     0
   );
-  const totalPages = Math.ceil(totalItems / 6);
+  const totalPages = Math.ceil(totalItems / 3);
 
   // 安全检查
   if (Number.isInteger(page) && page >= 1 && page <= totalPages && page !== currentPage) {
