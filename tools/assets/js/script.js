@@ -145,12 +145,12 @@ fetch('./dictionaries/idioms.min.json')
     // 数据加载成功：移除加载状态
     appContainer.classList.remove('loading-state');
 
+    // 加载完成后显示3个随机故事
+    showRandomStory();
+
     // 渲染页面
     showRandomIdioms();
     showIgcseIdioms();
-
-    // 加载完成后显示3个随机故事
-    showRandomStory();
 
     // 监听 tab 切换事件，自动加载游戏第一题
     const tabEl = document.querySelector('#myTabs a[href="#game"]');
@@ -438,7 +438,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 显示3个带故事的成语（随机）
+ * 在首页展示 3 个随机成语故事
+ * 渲染到：#random-idioms
  */
 function showRandomStory() {
   // 1. 筛选有 story 的成语
@@ -446,11 +447,18 @@ function showRandomStory() {
     item => Array.isArray(item.story) && item.story.length > 0
   );
 
-  const resultsContainer = document.getElementById('search-results');
-  resultsContainer.innerHTML = ''; // 清空原有内容
+  // ✅ 修改容器：从 #search-results 改为 #random-idioms
+  const container = document.getElementById('random-idioms');
+  
+  if (!container) {
+    console.error('未找到 #random-idioms 容器，请检查 HTML');
+    return;
+  }
+
+  container.innerHTML = ''; // 清空原有内容
 
   if (itemsWithStory.length === 0) {
-    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">暂无成语故事</p><p></p>';
+    container.innerHTML = '<p></p><p class="text-muted text-center">暂无成语故事</p><p></p>';
     return;
   }
 
@@ -458,13 +466,17 @@ function showRandomStory() {
   const shuffled = [...itemsWithStory].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 3);
 
-  // 3. 直接为每个成语创建 col 并用 renderCard 渲染
+  // 3. 为每个成语创建卡片
   selected.forEach(item => {
-    // 拼接所有故事段落
     const storyContent = item.story.join('<br /><br />');
     
     // 使用您现有的 renderCard 函数
-    renderCard(resultsContainer, item.idiom, item.pinyin, `<strong style="margin-left:-2.75rem">故事</strong> ${storyContent}`);
+    renderCard(
+      container,
+      item.idiom,
+      item.pinyin,
+      `<strong style="margin-left:-2.75rem">故事</strong> ${storyContent}`
+    );
   });
 }
 
