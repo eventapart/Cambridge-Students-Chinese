@@ -146,7 +146,7 @@ fetch('./dictionaries/idioms.min.json')
     appContainer.classList.remove('loading-state');
 
     // 渲染页面
-    showHome();
+    showRandomIdioms();
     showIgcseIdioms();
 
     // 加载完成后显示3个随机故事
