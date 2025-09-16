@@ -16,6 +16,7 @@ h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
 .nav-tabs .nav-link:hover { border-bottom-color: var(--primary-color); }
 .nav-tabs .nav-link.active:focus,
 .nav-tabs .nav-link.active:hover { border-bottom-color: var(--secondary-color); }
+
 .justify-content-center { border-bottom-color: var(--primary-color); }
 .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; transition: box-shadow 0.3s ease; }
 .card:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
@@ -25,6 +26,10 @@ h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
 .btn-primary:hover { background-color: #3a75c0; border-color: #3a75c0; }
 .form-control { border-radius: 6px; border: 1px solid #ccc; }
 .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2); }
+
+/* Dark Pagination with custom colors */
+.pagination-custom .page-link { color: #75d1ae; background-color: #244f3d; border: 1px solid #244f3d; transition: background-color 0.2s, color 0.2s; }
+.pagination-custom .page-link:hover { color: #244f3d; background-color: #75d1ae; border-color: #75d1ae; }
 
 /* 高亮样式 */
 mark { background-color: var(--highlight-color); padding: 0 2px; font-weight: bold; color: #333; }
