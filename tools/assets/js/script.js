@@ -326,6 +326,10 @@ searchInput.addEventListener('input', function () {
     searchBtn.disabled = true;
   }
   const resultsContainer = document.getElementById('search-results');
+  if (query === '') {
+    // 输入为空：显示3个成语故事
+    showRandomStory();
+  }
 });
 
 
