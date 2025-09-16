@@ -160,7 +160,7 @@ fetch('./dictionaries/idioms.min.json')
     // 即使失败，也应恢复交互（否则页面完全不可用）
     appContainer.classList.remove('loading-state');
     const container = document.getElementById('random-idioms');
-    container.innerHTML = '<p></p><p class="text-danger">加载失败</p><p></p>';
+    container.innerHTML = '<p></p><p class="text-danger text-center">加载失败</p><p></p>';
   });
 
 // 显示首页随机成语
