@@ -3,7 +3,7 @@
 body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color: #fafafa; color: #333; line-height: 1.6; }
 .card { border: none }
 .card-chinese { width: 100%; margin: 0 auto; padding: 1rem; background-color: #d9f3ea; border-width: 18px 18px; border-image: url(../assets/images/corner.png) 66 66 stretch; border-style: solid; }
-.card-chinese p { text-align: justify; color: #666; font-size: .875rem }
+.card-chinese p { color: #666; font-size: .875rem }
 .card .card-chinese { padding: 0; background-color: #fff }
 
 /* 主色调：柔和蓝色 */
