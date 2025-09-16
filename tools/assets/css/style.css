@@ -32,17 +32,6 @@ h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
 .pagination-custom .page-link:hover { opacity:.9; border-color: #666; }
 .pagination-custom .active .page-link{ background-color: #244f3d; color:#fff; border-color:#333}
 
-/*成语故事*/
-#search-results .story-content p {
-  line-height: 1.8;
-  text-align: justify;
-  margin-bottom: 1em;
-}
-
-#search-results .card-title {
-  margin-bottom: 1rem;
-}
-
 /* 高亮样式 */
 mark { background-color: var(--highlight-color); padding: 0 2px; font-weight: bold; color: #333; }
 
