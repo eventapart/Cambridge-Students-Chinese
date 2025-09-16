@@ -341,12 +341,14 @@ function showIgcseIdioms() {
     const example = item.example;
     let exampleHtml = '';
 
-    // 构建词典例句（含出处）
-    if (example?.text || example?.book) {
-      const textPart = example.text ? example.text : '';
-      const bookPart = example.book ? `（${example.book}）` : '';
-      exampleHtml = `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
-    }
+    // 安全构建词典例句
+    const dictExample = (() => {
+      const ex = item.example;
+      if (!ex || (!ex.text && !ex.book)) return '';
+      const textPart = ex.text ? ex.text : '';
+      const bookPart = ex.book ? `（${ex.book}）` : '';
+      return `<strong>词典例句：</strong>${textPart}${bookPart}<br />`;
+    })();
 
     // 安全构建近义词
     const similarHtml = Array.isArray(item.similar) && item.similar.length > 0
