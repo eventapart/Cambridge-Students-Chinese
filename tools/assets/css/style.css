@@ -4,7 +4,7 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
 .card { border: none }
 .card-chinese { width: 100%; margin: 0 auto; padding: 1rem; background-color: #d9f3ea; border-width: 18px 18px; border-image: url(../images/corner.png) 66 66 stretch; border-style: solid; }
 .card-chinese p { color: #666; font-size: .875rem }
-.card-chinese p strong{ padding:0 .375rem; margin-right:.375rem; background-color:var(--primary-color); color:#fff; border-radius:3px}
+.card-chinese p strong{ padding:0 .375rem; margin-right:.375rem; box-shadow:var(--primary-color) 0 0 0 1px; border-radius:3px}
 .card .card-chinese { padding: 0; background-color: #fff }
 
 /* 主色调：柔和蓝色 */
