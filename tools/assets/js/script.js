@@ -337,11 +337,23 @@ function showIgcseIdioms() {
 
   // 渲染当前页的成语卡片
   currentItems.forEach(item => {
+    
+    const example = item.example;
+    let exampleHtml = '';
+
+    if (example?.text || example?.book) {
+      const textPart = example.text ? example.text : '';
+      const bookPart = example.book ? `（${example.book}）` : '';
+      exampleHtml = `<strong>词典例句：</strong>${textPart}${bookPart}<br />`;
+    }
+
     renderCard(
       container,
       item.idiom,
       item.pinyin,
-      `<strong>辞典释义：</strong>${item.definition}<br />${item.example?.text ? `<strong>词典例句：</strong>${item.example.text}<br />` : ''}<strong>官方例句：</strong>${item.exampleSentence}`
+      `<strong>辞典释义：</strong>${item.definition}<br />` +
+      exampleHtml +
+      `<strong>官方例句：</strong>${item.exampleSentence}`
     );
   });
 
