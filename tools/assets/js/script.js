@@ -247,6 +247,8 @@ function searchIdiom() {
     resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
     if (!input) showRandomStory();
     return;
+  } else {
+    document.getElementById('button-addon2').disabled = false;
   }
 
   const results = allIdioms.filter(idiom =>
@@ -254,7 +256,7 @@ function searchIdiom() {
   );
 
   if (!results.length) {
-    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">未找到相关成语。</p><p></p>';
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">未找到相关成语</p><p></p>';
     return;
   }
 
