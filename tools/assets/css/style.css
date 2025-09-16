@@ -10,6 +10,7 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
 /* 主色调：柔和蓝色 */
 :root { --primary-color: #244f3d; /* 柔和蓝色 */ --secondary-color: #75d1ae; /* 浅蓝色背景 */ --card-bg: #ffffff; --text-muted: #666; --border-color: #ddd; --highlight-color: #ffc107; }
 h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
+.nav-tabs{border-bottom-color:var(--primary-color)}
 .nav-tabs .nav-link { color: var(--primary-color); font-weight: 500; border: 1px solid var(--border-color); border-bottom-color: var(--primary-color); }
 .nav-tabs .nav-link.active { background-color: var(--secondary-color); color: var(--primary-color); border-color: var(--primary-color) var(--primary-color) var(--secondary-color); }
 .nav-tabs .nav-link:focus,
