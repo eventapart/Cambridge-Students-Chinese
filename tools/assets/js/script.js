@@ -178,10 +178,68 @@ function showHome() {
 
   // 数据已加载，生成随机成语
   const randomIds = shuffle(allIdioms).slice(0, 3);
-  container.innerHTML = '';
-  randomIds.forEach(idiom => {
-    renderCard(container, idiom.idiom, idiom.pinyin, idiom.definition);
+
+  // 渲染卡片
+  randomItems.forEach(idiom => {
+    renderCard(
+      container,
+      idiom.idiom,
+      idiom.pinyin,
+      buildCardContent(idiom) // 使用统一内容构建函数
+    );
   });
+}
+
+/**
+ * Fisher-Yates 洗牌算法：打乱数组
+ * @param {Array} array - 要打乱的数组
+ * @returns {Array} 打乱后的新数组
+ */
+function shuffle(array) {
+  const arr = [...array]; // 不修改原数组
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/**
+ * 构建成语卡片的详细内容 HTML
+ * @param {Object} item - 成语数据对象
+ * @returns {string} 渲染后的 HTML 字符串
+ */
+function buildCardContent(item) {
+  let content = '';
+
+  // 1. 辞典释义（必有）
+  content += `<strong>辞典释义：</strong>${item.definition}<br />`;
+
+  // 2. 词典例句（可选：含文本或出处）
+  const example = item.example;
+  if (example?.text || example?.book) {
+    const textPart = example.text || '';
+    const bookPart = example.book ? `（${example.book}）` : '';
+    content += `<strong>词典例句：</strong>${textPart}${bookPart}<br />`;
+  }
+
+  // 3. 官方例句（仅真题页有）
+  if (item.exampleSentence) {
+    content += `<strong>官方例句：</strong>${item.exampleSentence}<br />`;
+  }
+
+  // 4. 近义词（可选）→ 放在官方例句之后
+  if (Array.isArray(item.similar) && item.similar.length > 0) {
+    content += `<strong>近义词：</strong>${item.similar.join('、')}<br />`;
+  }
+
+  // 5. 反义词（可选）→ 放在官方例句之后
+  if (Array.isArray(item.opposite) && item.opposite.length > 0) {
+    content += `<strong>反义词：</strong>${item.opposite.join('、')}<br />`;
+  }
+
+  // 去掉末尾多余的 <br />
+  return content.replace(/<br\s*\/?>\s*$/, '');
 }
 
 // 渲染卡片函数
@@ -199,13 +257,25 @@ function renderCard(container, title, pinyin, content) {
   container.appendChild(col);
 }
 
-// 高亮关键词函数
+/**
+ * 高亮文本中的关键词
+ * @param {string} text - 原始文本
+ * @param {string} keyword - 搜索关键词
+ * @returns {string} 包含 <mark> 标签的高亮文本
+ */
 function highlightText(text, keyword) {
-  if (!keyword || !text) return text;
+  if (!keyword) return text;
+  const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+  return text.replace(regex, '<mark>$1</mark>');
+}
 
-  const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
-  return text.replace(pattern, '<mark>$1</mark>');
+/**
+ * 转义正则表达式特殊字符
+ * @param {string} string - 原始字符串
+ * @returns {string} 转义后的字符串
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // 搜索成语
@@ -267,12 +337,28 @@ function searchIdiom() {
     const end = start + itemsPerPage;
     const paginatedResults = results.slice(start, end);
 
-    resultsContainer.innerHTML = ''; // 清空当前显示
+    // 清空当前显示
+    resultsContainer.innerHTML = '';
 
+    // 渲染当前页的每个成语
     paginatedResults.forEach(idiom => {
+      // 高亮搜索关键词（idiom 和 definition）
       const highlightedIdiom = highlightText(idiom.idiom, input);
       const highlightedDef = highlightText(idiom.definition, input);
-      renderCard(resultsContainer, highlightedIdiom, idiom.pinyin, highlightedDef);
+
+      // 构建完整卡片内容
+      const cardContent = buildCardContent({
+        ...idiom,
+        definition: highlightedDef // 替换 definition 为高亮版本
+      });
+
+      // 渲染卡片
+      renderCard(
+        resultsContainer,
+        highlightedIdiom,
+        idiom.pinyin,
+        cardContent
+      );
     });
   };
 
