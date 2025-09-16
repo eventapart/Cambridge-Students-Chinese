@@ -288,7 +288,7 @@ function nextQuestion() {
   options = shuffle(options);
 
   currentQuestion = { definition: idiom.definition, correctIndex: options.indexOf(idiom.idiom) };
-  $('question').innerHTML = `<strong style="border-bottom:#333 1px dashed">“${idiom.definition}” 对应的成语是？</strong>`;
+  $('question').innerHTML = `<strong style="border-bottom:var(--text-color) 1px dashed">“${idiom.definition}” 对应的成语是？</strong>`;
   $('options').innerHTML = options.map((word, i) => {
     const item = allIdioms.find(x => x.idiom === word);
     return `
