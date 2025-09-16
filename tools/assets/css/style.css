@@ -191,7 +191,7 @@ h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
   transition: background-color 0.2s, color 0.2s;
 }
 .pagination-custom .page-link:hover { opacity: 0.9; border-color: var(--text-muted); }
-.pagination-custom .active .page-link { background-color: var(--primary-color); color: #fff; border-color: #333; }
+.pagination-custom .active .page-link { background-color: var(--primary-color); color: var(--strong-color); border-color: var(--text-color); }
 
 /* 简单分页按钮 */
 #pagination button {
