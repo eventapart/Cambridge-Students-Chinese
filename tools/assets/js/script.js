@@ -352,8 +352,8 @@ function searchIdiom() {
     // 输入 1 个字符也视为不足，不显示结果
       if (input.length < 1) {
         showRandomStory();
+      return;
       }
-    return;
   }
 
   // ✅ 开始搜索：过滤成语（匹配 idiom 或 definition）
