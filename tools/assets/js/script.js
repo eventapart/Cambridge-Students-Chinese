@@ -341,11 +341,21 @@ function showIgcseIdioms() {
     const example = item.example;
     let exampleHtml = '';
 
+    // 构建词典例句（含出处）
     if (example?.text || example?.book) {
       const textPart = example.text ? example.text : '';
       const bookPart = example.book ? `（${example.book}）` : '';
       exampleHtml = `<strong>词典例句：</strong>${textPart}${bookPart}<br />`;
     }
+    // 构建近义词
+    const similarHtml = Array.isArray(item.similar) && item.similar.length > 0
+      ? `<strong>近义词：</strong>${item.similar.join('、')}<br />`
+      : '';
+
+    // 构建反义词
+    const oppositeHtml = Array.isArray(item.opposite) && item.opposite.length > 0
+      ? `<strong>反义词：</strong>${item.opposite.join('、')}<br />`
+      : '';
 
     renderCard(
       container,
@@ -353,6 +363,8 @@ function showIgcseIdioms() {
       item.pinyin,
       `<strong>辞典释义：</strong>${item.definition}<br />` +
       exampleHtml +
+      similarHtml +
+      oppositeHtml +
       `<strong>官方例句：</strong>${item.exampleSentence}`
     );
   });
