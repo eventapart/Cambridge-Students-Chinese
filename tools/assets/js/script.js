@@ -149,7 +149,7 @@ fetch('./dictionaries/idioms.min.json')
     showHome();
     showIgcseIdioms();
 
-    // 加载完成后显示一个随机故事
+    // 加载完成后显示3个随机故事
     showRandomStory();
 
     // 监听 tab 切换事件，自动加载游戏第一题
@@ -327,7 +327,7 @@ searchInput.addEventListener('input', function () {
   }
   const resultsContainer = document.getElementById('search-results');
   if (query === '') {
-    // 输入为空：显示成语故事
+    // 输入为空：显示3个成语故事
     showRandomStory();
   }
 });
@@ -431,50 +431,40 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 显示一个带故事的成语（随机）
+ * 显示3个带故事的成语（随机）
  */
-let lastStoryIdiom = '';
-
 function showRandomStory() {
-  // 1. 筛选出所有包含 story 且 story 数组非空的成语
-  const itemsWithStory = allIdioms.filter(item => 
-    Array.isArray(item.story) && item.story.length > 0
+  // 1. 筛选有 story 的成语
+  const itemsWithStory = allIdioms.filter(
+    item => Array.isArray(item.story) && item.story.length > 0
   );
 
-  // 2. 如果没有带故事的成语，显示提示
+  const resultsContainer = document.getElementById('search-results');
+  resultsContainer.innerHTML = ''; // 清空内容
+
   if (itemsWithStory.length === 0) {
-    document.getElementById('search-results').innerHTML = 
-      '<div class="alert alert-info">暂无成语故事</div>';
+    resultsContainer.innerHTML = '<div class="alert alert-info">暂无成语故事</div>';
     return;
   }
 
-  // 尝试避免重复（至少有两个故事时）
-  let candidates = itemsWithStory;
-  if (itemsWithStory.length > 1) {
-    candidates = itemsWithStory.filter(item => item.idiom !== lastStoryIdiom);
-  }
+  // 2. 随机打乱并取前 3 个
+  const shuffled = [...itemsWithStory].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, 3);
 
-  // 3. 随机选一个
-  const randomItem = itemsWithStory[Math.floor(Math.random() * itemsWithStory.length)];
-  lastStoryIdiom = randomItem.idiom; // 记录
+  // 3. 创建容器（Bootstrap row + auto-col 布局）
+  const row = document.createElement('div');
+  row.className = 'row row-cols-1 row-cols-md-3 g-3'; // 自动适配：手机单列，中屏以上三列
 
-  // 4. 提取并格式化故事（可能有多段）
-  const storyText = randomItem.story.map(paragraph => `<p>${paragraph}</p>`).join('');
+  // 4. 遍历并用 renderCard 渲染每张卡片
+  selected.forEach(item => {
+    // 拼接所有段落，或只取第一段（防止过长）
+    const fullStoryText = item.story.join('<br><br>');
+    
+    renderCard(row, item.idiom, item.pinyin, fullStoryText);
+  });
 
-  // 5. 渲染到 #search-results
-  document.getElementById('search-results').innerHTML = `
-    <div class="card border-warning bg-light">
-      <div class="card-body">
-        <h5 class="card-title text-warning">
-          📖 成语故事：${randomItem.idiom}
-          <small class="text-muted">（${randomItem.pinyin}）</small>
-        </h5>
-        <div class="story-content">
-          ${storyText}
-        </div>
-      </div>
-    </div>
-  `;
+  // 5. 将整行添加到页面
+  resultsContainer.appendChild(row);
 }
 
 // 显示 IGCSE 成语
