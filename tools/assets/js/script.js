@@ -363,11 +363,11 @@ function showIgcseIdioms() {
       : '';
 
     const content = `
+      ${similarHtml}
+      ${oppositeHtml}
       <strong>辞典释义</strong>${item.definition}<br />
       ${dictExample}
       <strong>官方例句</strong>${item.exampleSentence}
-      ${similarHtml}
-      ${oppositeHtml}
     `;
 
     renderCard(container, item.idiom, item.pinyin, content);
