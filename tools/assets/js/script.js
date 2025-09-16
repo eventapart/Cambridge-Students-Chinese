@@ -176,7 +176,7 @@ fetch('./dictionaries/idioms.min.json')
     console.error('数据加载失败:', err);
     // 即使失败，也应恢复交互（否则页面完全不可用）
     appContainer.classList.remove('loading-state');
-    const container = document.getElementById('random-idioms');
+    const container = document.getElementById('search-results');
     container.innerHTML = '<p></p><p class="text-danger text-center">加载失败</p><p></p>';
   });
 
@@ -325,7 +325,7 @@ searchInput.addEventListener('input', function () {
   } else {
     searchBtn.disabled = true;
   }
-  const resultsContainer = document.getElementById('search-results');
+  const resultsContainer = document.getElementById('random-idioms');
   if (query === '') {
     // 输入为空：显示3个成语故事
     showRandomStory();
@@ -339,7 +339,7 @@ searchBtn.disabled = true;
 function searchIdiom() {
   const inputElement = document.getElementById('search-input');
   const input = inputElement.value.trim();
-  const resultsContainer = document.getElementById('search-results');
+  const resultsContainer = document.getElementById('random-idioms');
   const paginationContainer = document.getElementById('pagination-controls-dict');
 
   // 清空内容
@@ -443,7 +443,7 @@ function showRandomStory() {
     item => Array.isArray(item.story) && item.story.length > 0
   );
 
-  const resultsContainer = document.getElementById('search-results');
+  const resultsContainer = document.getElementById('random-idioms');
   resultsContainer.innerHTML = ''; // 清空原有内容
 
   if (itemsWithStory.length === 0) {
