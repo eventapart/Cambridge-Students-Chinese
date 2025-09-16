@@ -145,12 +145,12 @@ fetch('./dictionaries/idioms.min.json')
     // 数据加载成功：移除加载状态
     appContainer.classList.remove('loading-state');
 
+    // 渲染页面
+    showHome();
+    showIgcseIdioms();
+
     // 加载完成后显示3个随机故事
     showRandomStory();
-
-    // 渲染页面
-    showRandomIdioms();
-    showIgcseIdioms();
 
     // 监听 tab 切换事件，自动加载游戏第一题
     const tabEl = document.querySelector('#myTabs a[href="#game"]');
@@ -180,27 +180,20 @@ fetch('./dictionaries/idioms.min.json')
     container.innerHTML = '<p></p><p class="text-danger text-center">加载失败</p><p></p>';
   });
 
-/**
- * 展示 3 个随机成语（普通卡片，用于词典页空状态）
- * 使用统一的 renderCard 和 buildCardContent 渲染，保持样式一致
- */
-function showRandomIdioms() {
-  // 🔍 注意：根据您的页面结构，这里可能是：
-  // - 首页的推荐区：'#random-idioms'
-  // - 搜索结果区：'#search-results'
-  // 我们统一使用 '#search-results' 作为搜索页容器（请根据实际情况调整）
-  const container = document.getElementById('search-results');
+// 显示首页随机成语
+function showHome() {
+  const container = document.getElementById('random-idioms');
 
-  // 如果数据未加载，不执行
+  // 如果数据未加载，确保骨架屏已存在（通常 HTML 已写好）
   if (!allIdioms || allIdioms.length === 0) {
-    console.warn('成语数据尚未加载，跳过随机展示');
+    // 骨架屏已在 HTML 中，无需操作
     return;
   }
 
-  // 🔥 清空容器：自动移除骨架屏或旧内容
-  container.innerHTML = '';
+  // ✅ 数据已加载：清空容器，渲染真实内容
+  container.innerHTML = ''; // 🔥 自动移除骨架屏
 
-  // 打乱并取前 3 个
+  // 数据已加载，生成随机成语
   const randomItems = shuffle(allIdioms).slice(0, 3);
 
   // 渲染卡片
@@ -209,7 +202,7 @@ function showRandomIdioms() {
       container,
       idiom.idiom,
       idiom.pinyin,
-      buildCardContent(idiom) // 使用统一的内容构建函数
+      buildCardContent(idiom) // 使用统一内容构建函数
     );
   });
 }
@@ -438,8 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 在首页展示 3 个随机成语故事
- * 渲染到：#random-idioms
+ * 显示3个带故事的成语（随机）
  */
 function showRandomStory() {
   // 1. 筛选有 story 的成语
@@ -447,18 +439,11 @@ function showRandomStory() {
     item => Array.isArray(item.story) && item.story.length > 0
   );
 
-  // ✅ 修改容器：从 #search-results 改为 #random-idioms
-  const container = document.getElementById('random-idioms');
-  
-  if (!container) {
-    console.error('未找到 #random-idioms 容器，请检查 HTML');
-    return;
-  }
-
-  container.innerHTML = ''; // 清空原有内容
+  const resultsContainer = document.getElementById('search-results');
+  resultsContainer.innerHTML = ''; // 清空原有内容
 
   if (itemsWithStory.length === 0) {
-    container.innerHTML = '<p></p><p class="text-muted text-center">暂无成语故事</p><p></p>';
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">暂无成语故事</p><p></p>';
     return;
   }
 
@@ -466,17 +451,13 @@ function showRandomStory() {
   const shuffled = [...itemsWithStory].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 3);
 
-  // 3. 为每个成语创建卡片
+  // 3. 直接为每个成语创建 col 并用 renderCard 渲染
   selected.forEach(item => {
+    // 拼接所有故事段落
     const storyContent = item.story.join('<br /><br />');
     
     // 使用您现有的 renderCard 函数
-    renderCard(
-      container,
-      item.idiom,
-      item.pinyin,
-      `<strong style="margin-left:-2.75rem">故事</strong> ${storyContent}`
-    );
+    renderCard(resultsContainer, item.idiom, item.pinyin, `<strong style="margin-left:-2.75rem">故事</strong> ${storyContent}`);
   });
 }
 
