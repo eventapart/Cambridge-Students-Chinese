@@ -377,94 +377,73 @@ function searchIdiom() {
 let currentPage = 1;
 const pageSize = 3; // 每页显示的成语数量
 
-function showIgcseIdioms() {
+/**
+ * 渲染 IGCSE 真题成语页（带分页）
+ */
+function showIgcseIdioms(page = 1) {
   const container = document.getElementById('igcse-idioms');
-  container.innerHTML = ''; // 清空容器
+  const paginationContainerId = 'pagination-controls-igcse';
 
-  // 1. 获取所有条目并转换为数组
-  const entries = Object.entries(igcseData);
+  // 清空内容
+  container.innerHTML = '';
+  const paginationContainer = document.getElementById(paginationContainerId);
+  if (paginationContainer) paginationContainer.innerHTML = '';
 
-  // 2. 按 exam（即文件名）倒序排序
-  entries.sort((a, b) => {
-    const examA = a[0];
-    const examB = b[0];
-    return examB.localeCompare(examA, 'en', { numeric: true, sensitivity: 'base' });
+  // 1. 提取并排序所有真题条目（按 exam 名称倒序）
+  const entries = Object.entries(igcseData).sort((a, b) => {
+    return b[0].localeCompare(a[0], 'en', { numeric: true, sensitivity: 'base' });
   });
 
-  // 3. 收集所有条目
-  let allItems = [];
-  entries.forEach(([exam, idiomToExampleMap]) => {
-    Object.entries(idiomToExampleMap).forEach(([idiomName, exampleSentence]) => {
+  // 2. 构建完整数据列表
+  const allItems = [];
+  for (const [exam, idiomToExampleMap] of entries) {
+    for (const [idiomName, exampleSentence] of Object.entries(idiomToExampleMap)) {
       const item = allIdioms.find(i => i.idiom === idiomName);
       if (item) {
         allItems.push({
           idiom: item.idiom,
           pinyin: item.pinyin,
           definition: item.definition,
-          similar: item.similar,
-          opposite: item.opposite,
-          example: item.example,
+          similar: item.similar || [],
+          opposite: item.opposite || [],
+          example: item.example || {},
           exampleSentence: `${exampleSentence} (${exam})`
         });
       }
-    });
-  });
+    }
+  }
 
-  // 4. 计算总页数
-  const pageSize = 3; // 假设每页3条（与之前的逻辑一致）
+  // 3. 分页设置
+  const pageSize = 3;
   const totalPages = Math.ceil(allItems.length / pageSize);
 
-  // 确保 currentPage 合法
-  if (currentPage < 1) currentPage = 1;
-  if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+  // 校正页码
+  const currentPage = Math.max(1, Math.min(page, totalPages));
 
-  // 获取当前页的数据
+  // 边界：无数据时显示提示
+  if (allItems.length === 0) {
+    container.innerHTML = '<p>暂无真题成语数据。</p>';
+    return;
+  }
+
+  // 获取当前页数据
   const startIdx = (currentPage - 1) * pageSize;
   const endIdx = startIdx + pageSize;
   const currentItems = allItems.slice(startIdx, endIdx);
 
-  // 渲染当前页的成语卡片
+  // 4. 渲染卡片
   currentItems.forEach(item => {
-
-    const example = item.example;
-    let exampleHtml = '';
-
-    // 安全构建近义词
-    const similarHtml = Array.isArray(item.similar) && item.similar.length > 0
-      ? `<strong>近义词</strong>${item.similar.join('、')}<br />`
-      : '';
-
-    // 安全构建反义词（opposite 同 similar 结构）
-    const oppositeHtml = Array.isArray(item.opposite) && item.opposite.length > 0
-      ? `<strong>反义词</strong>${item.opposite.join('、')}<br />`
-      : '';
-
-    // 安全构建词典例句
-    const dictExample = (() => {
-      const ex = item.example;
-      if (!ex || (!ex.text && !ex.book)) return '';
-      const textPart = ex.text ? ex.text : '';
-      const bookPart = ex.book ? `（${ex.book}）` : '';
-      return `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
-    })();
-
-    const content = `
-      ${similarHtml}
-      ${oppositeHtml}
-      <strong>辞典释义</strong>${item.definition}<br />
-      ${dictExample}
-      <strong>官方例句</strong>${item.exampleSentence}
-    `;
-
-    renderCard(container, item.idiom, item.pinyin, content);
-
+    renderCard(
+      container,
+      item.idiom,
+      item.pinyin,
+      buildCardContent(item) // 复用统一内容构建函数
+    );
   });
 
-  // 使用 Paginator
-  const paginator = new Paginator('pagination-controls-igcse', totalPages, (page) => {
-    // 分页回调：更新 currentPage 并重新渲染
-    currentPage = page;
-    showIgcseIdioms(); // 重新调用自身，刷新内容和分页
+  // 5. 初始化分页器
+  const paginator = new Paginator(paginationContainerId, totalPages, (newPage) => {
+    showIgcseIdioms(newPage); // 传入新页码，避免依赖外部变量
   });
 
   // 渲染分页控件
