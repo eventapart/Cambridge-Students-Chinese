@@ -724,7 +724,7 @@ function showIgcseIdioms() {
       container,
       item.idiom,
       item.pinyin,
-      `<strong>辞典释义：</strong>${item.definition}<br /><strong>官方例句：</strong>${item.exampleSentence}`
+      `<strong>辞典释义：</strong>${item.definition}<br />${item.example?.text ? `<strong>词典例句：</strong>${item.example.text}<br />` : ''}<strong>官方例句：</strong>${item.exampleSentence}`
     );
   });
 
