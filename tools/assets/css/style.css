@@ -51,7 +51,7 @@ mark { background-color: var(--highlight-color); padding: 0 2px; font-weight: bo
 .skeleton-definition { background: linear-gradient(90deg, #e5e5e5 25%, #e0e0e0 50%, #e5e5e5 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite linear; border-radius: 4px; }
 .skeleton-title { width: 80px; height: 32px; }
 .skeleton-pinyin { width: 120px; height: 16px; }
-.skeleton-definition { width: 100%; height: 16px; max-width: 200px; }
+.skeleton-definition { width: 100%; height: 16px; max-width: 300px; }
 
 /* 动画：模拟加载光扫过的效果 */
 @keyframes skeleton-loading {
