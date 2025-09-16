@@ -440,10 +440,10 @@ function showRandomStory() {
   );
 
   const resultsContainer = document.getElementById('search-results');
-  resultsContainer.innerHTML = ''; // 清空内容
+  resultsContainer.innerHTML = ''; // 清空原有内容
 
   if (itemsWithStory.length === 0) {
-    resultsContainer.innerHTML = '<div class="alert alert-info">暂无成语故事</div>';
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">暂无成语故事</p><p></p>';
     return;
   }
 
@@ -451,20 +451,14 @@ function showRandomStory() {
   const shuffled = [...itemsWithStory].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 3);
 
-  // 3. 创建容器（Bootstrap row + auto-col 布局）
-  const row = document.createElement('div');
-  row.className = 'row row-cols-1 row-cols-md-3 g-3'; // 自动适配：手机单列，中屏以上三列
-
-  // 4. 遍历并用 renderCard 渲染每张卡片
+  // 3. 直接为每个成语创建 col 并用 renderCard 渲染
   selected.forEach(item => {
-    // 拼接所有段落，或只取第一段（防止过长）
-    const fullStoryText = item.story.join('<br><br>');
+    // 拼接所有故事段落
+    const storyContent = item.story.join('<br /><br />');
     
-    renderCard(row, item.idiom, item.pinyin, fullStoryText);
+    // 使用您现有的 renderCard 函数
+    renderCard(resultsContainer, item.idiom, item.pinyin, `<strong style="margin-left:-2.75rem">故事</strong> ${storyContent}`);
   });
-
-  // 5. 将整行添加到页面
-  resultsContainer.appendChild(row);
 }
 
 // 显示 IGCSE 成语
