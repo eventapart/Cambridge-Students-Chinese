@@ -420,7 +420,7 @@ class Paginator {
     // 计算页码范围
     let startPage, endPage;
     const { totalPages, maxButtons, currentPage } = this;
-    
+
     if (totalPages <= maxButtons) {
       startPage = 1;
       endPage = totalPages;
@@ -624,7 +624,7 @@ function searchIdiom() {
 
   // 输入为空
   if (!input) {
-    resultsContainer.innerHTML = '<p class="text-muted text-center">请输入关键词搜索成语。</p>';
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入关键词搜索成语。</p><p></p>';
     return;
   }
 
@@ -637,7 +637,7 @@ function searchIdiom() {
 
   // 无结果
   if (results.length === 0) {
-    resultsContainer.innerHTML = '<p class="text-muted text-center">未找到相关成语。</p>';
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">未找到相关成语。</p><p></p>';
     return;
   }
 
