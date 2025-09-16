@@ -377,10 +377,10 @@ function debounce(func, delay) {
   };
 }
 
-// 绑定时使用防抖（延迟 300ms 执行）
+// 绑定时使用防抖（延迟 100ms 执行）
 searchInput.addEventListener('input', debounce(() => {
   searchIdiom();
-}, 300));
+}, 100));
 
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input');
