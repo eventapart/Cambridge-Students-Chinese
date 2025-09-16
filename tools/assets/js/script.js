@@ -347,6 +347,17 @@ function searchIdiom() {
   // 清空内容
   resultsContainer.innerHTML = '';
   if (paginationContainer) paginationContainer.innerHTML = '';
+  
+  if (query < 1) {
+    showRandomStory();
+
+  } else if (query.length < 2) {
+    // 输入1个字符：提示
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
+    return;
+  } else {
+    const resultsContainer = document.getElementById('search-results');
+  }
 
   // ✅ 开始搜索：过滤成语（匹配 idiom 或 definition）
   const results = allIdioms.filter(idiom =>
