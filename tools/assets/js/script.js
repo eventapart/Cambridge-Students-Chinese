@@ -347,7 +347,9 @@ function showIgcseIdioms() {
 
   // 使用 Paginator
   const paginator = new Paginator('pagination-controls-igcse', totalPages, (page) => {
-      showIgcseIdioms(newPage);
+    // 分页回调：更新 currentPage 并重新渲染
+    currentPage = page;
+    showIgcseIdioms(); // 重新调用自身，刷新内容和分页
   });
 
   // 渲染分页控件
