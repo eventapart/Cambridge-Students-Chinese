@@ -213,29 +213,29 @@ function buildCardContent(item) {
   let content = '';
 
   // 1. 辞典释义（必有）
-  content += `<strong>辞典释义：</strong>${item.definition}<br />`;
+  content += `<strong>辞典释义</strong>${item.definition}<br />`;
 
   // 2. 词典例句（可选：含文本或出处）
   const example = item.example;
   if (example?.text || example?.book) {
     const textPart = example.text || '';
     const bookPart = example.book ? `（${example.book}）` : '';
-    content += `<strong>词典例句：</strong>${textPart}${bookPart}<br />`;
+    content += `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
   }
 
   // 3. 官方例句（仅真题页有）
   if (item.exampleSentence) {
-    content += `<strong>官方例句：</strong>${item.exampleSentence}<br />`;
+    content += `<strong>官方例句</strong>${item.exampleSentence}<br />`;
   }
 
   // 4. 近义词（可选）→ 放在官方例句之后
   if (Array.isArray(item.similar) && item.similar.length > 0) {
-    content += `<strong>近义词：</strong>${item.similar.join('、')}<br />`;
+    content += `<strong>近义词</strong>${item.similar.join('、')}<br />`;
   }
 
   // 5. 反义词（可选）→ 放在官方例句之后
   if (Array.isArray(item.opposite) && item.opposite.length > 0) {
-    content += `<strong>反义词：</strong>${item.opposite.join('、')}<br />`;
+    content += `<strong>反义词</strong>${item.opposite.join('、')}<br />`;
   }
 
   // 去掉末尾多余的 <br />
@@ -429,15 +429,6 @@ function showIgcseIdioms() {
     const example = item.example;
     let exampleHtml = '';
 
-    // 安全构建词典例句
-    const dictExample = (() => {
-      const ex = item.example;
-      if (!ex || (!ex.text && !ex.book)) return '';
-      const textPart = ex.text ? ex.text : '';
-      const bookPart = ex.book ? `（${ex.book}）` : '';
-      return `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
-    })();
-
     // 安全构建近义词
     const similarHtml = Array.isArray(item.similar) && item.similar.length > 0
       ? `<strong>近义词</strong>${item.similar.join('、')}<br />`
@@ -447,6 +438,15 @@ function showIgcseIdioms() {
     const oppositeHtml = Array.isArray(item.opposite) && item.opposite.length > 0
       ? `<strong>反义词</strong>${item.opposite.join('、')}<br />`
       : '';
+
+    // 安全构建词典例句
+    const dictExample = (() => {
+      const ex = item.example;
+      if (!ex || (!ex.text && !ex.book)) return '';
+      const textPart = ex.text ? ex.text : '';
+      const bookPart = ex.book ? `（${ex.book}）` : '';
+      return `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
+    })();
 
     const content = `
       ${similarHtml}
