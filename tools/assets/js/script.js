@@ -345,29 +345,29 @@ function showIgcseIdioms() {
     if (example?.text || example?.book) {
       const textPart = example.text ? example.text : '';
       const bookPart = example.book ? `（${example.book}）` : '';
-      exampleHtml = `<strong>词典例句：</strong>${textPart}${bookPart}<br />`;
+      exampleHtml = `<strong>词典例句</strong>${textPart}${bookPart}<br />`;
     }
 
     // 安全构建近义词
     const similarHtml = Array.isArray(item.similar) && item.similar.length > 0
-      ? `<strong>近义词：</strong>${item.similar.join('、')}<br />`
+      ? `<strong>近义词</strong>${item.similar.join('、')}<br />`
       : '';
 
     // 安全构建反义词（opposite 同 similar 结构）
     const oppositeHtml = Array.isArray(item.opposite) && item.opposite.length > 0
-      ? `<strong>反义词：</strong>${item.opposite.join('、')}<br />`
+      ? `<strong>反义词</strong>${item.opposite.join('、')}<br />`
       : '';
 
     const content = `
-      <strong>辞典释义：</strong>${item.definition}<br />
+      <strong>辞典释义</strong>${item.definition}<br />
       ${dictExample}
       ${similarHtml}
       ${oppositeHtml}
-      <strong>官方例句：</strong>${item.exampleSentence}
+      <strong>官方例句</strong>${item.exampleSentence}
     `;
 
     renderCard(container, item.idiom, item.pinyin, content);
-    
+
   });
 
   // 使用 Paginator
