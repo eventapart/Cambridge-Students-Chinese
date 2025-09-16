@@ -310,9 +310,7 @@ function searchIdiom() {
 
   // 🔍 输入字符少于 2 个：清空，显示提示
   if (input.length < 2) {
-    if (input.length === 0) {
-      resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入关键词搜索成语（至少2个字符）。</p><p></p>';
-    }
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入关键词搜索成语（至少2个字符）。</p><p></p>';
     // 输入 1 个字符也视为不足，不显示结果
     return;
   }
