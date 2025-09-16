@@ -104,7 +104,7 @@ let igcseData = null;
 async function loadIgcseData() {
   try {
       // 发起网络请求，获取 JSON 文件
-      const response = await fetch('../../dictionaries/idioms_cam_masked.min.json');
+      const response = await fetch('./dictionaries/idioms_cam_masked.min.json');
       
       // 检查请求是否成功
       if (!response.ok) {
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let allIdioms = [];
 
 // 加载 JSON 数据
-fetch('../../dictionaries/idioms.min.json')
+fetch('./dictionaries/idioms.min.json')
   .then(res => res.json())
   .then(data => {
     allIdioms = data;
