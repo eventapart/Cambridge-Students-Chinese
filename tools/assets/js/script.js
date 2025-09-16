@@ -214,12 +214,12 @@ function buildCardContent(item) {
 
   // 1. 辞典释义（必有）
   if (item.definition) {
-    content += `<strong>释义</strong> ${item.definition}<br />`;
+    content += `<strong style="margin-left:-2.75rem">释义</strong> ${item.definition}<br />`;
   }
 
   // 2. 用法说明（可选）
   if (item.usage && typeof item.usage === 'string') {
-    content += `<strong>用法</strong> ${item.usage}<br />`;
+    content += `<strong style="margin-left:-2.75rem">用法</strong> ${item.usage}<br />`;
   }
 
   // 3. 成语出处（可选：text 或 book）
@@ -227,7 +227,7 @@ function buildCardContent(item) {
   if (source?.text || source?.book) {
     const textPart = source.text || '';
     const bookPart = source.book ? `（${source.book}）` : '';
-    content += `<strong>出处</strong> ${textPart}${bookPart}<br />`;
+    content += `<strong style="margin-left:-2.75rem">出处</strong> ${textPart}${bookPart}<br />`;
   }
 
   // 4. 词典例句（可选）
@@ -235,22 +235,22 @@ function buildCardContent(item) {
   if (example?.text || example?.book) {
     const textPart = example.text || '';
     const bookPart = example.book ? `（${example.book}）` : '';
-    content += `<strong>例句</strong> ${textPart}${bookPart}<br />`;
+    content += `<strong style="margin-left:-2.75rem">例句</strong> ${textPart}${bookPart}<br />`;
   }
 
   // 5. 官方例句（仅真题页有）
   if (item.exampleSentence) {
-    content += `<strong>官方</strong> ${item.exampleSentence}<br />`;
+    content += `<strong style="margin-left:-2.75rem">官方</strong> ${item.exampleSentence}<br />`;
   }
 
   // 6. 近义词（可选）
   if (Array.isArray(item.similar) && item.similar.length > 0) {
-    content += `<strong>近义</strong> ${item.similar.join('、')}<br />`;
+    content += `<strong style="margin-left:-2.75rem">近义</strong> ${item.similar.join('、')}<br />`;
   }
 
   // 7. 反义词（可选）
   if (Array.isArray(item.opposite) && item.opposite.length > 0) {
-    content += `<strong>反义</strong> ${item.opposite.join('、')}<br />`;
+    content += `<strong style="margin-left:-2.75rem">反义</strong> ${item.opposite.join('、')}<br />`;
   }
 
   // 移除末尾多余的 <br />
@@ -265,7 +265,7 @@ function renderCard(container, title, pinyin, content) {
     <div class="card shadow-sm h-100">
       <div class="card-body d-flex flex-column card-chinese">
         <h5 class="card-title mb-4">${title}<br><small class="text-muted" style="font-family:Helvetica, Arial, sans-serif">${pinyin}</small></h5>
-        <p class="card-text mt-auto">${content}</p>
+        <p class="card-text mt-auto" style="padding-left:2.75rem">${content}</p>
       </div>
     </div>
   `;
