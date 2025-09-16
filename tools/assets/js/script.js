@@ -128,11 +128,6 @@ async function loadAllIdioms() {
   try {
     const res = await fetch('./dictionaries/idioms.min.json');
     allIdioms = await res.json();
-    // 生成小写缓存字段和 Map
-    allIdioms.forEach(i => {
-      i.idiomLower = i.idiom.toLowerCase();
-      i.definitionLower = i.definition.toLowerCase();
-    });
     idiomMap = new Map(allIdioms.map(i => [i.idiom, i]));
     appContainer.classList.remove('loading-state');
     showHome();
@@ -200,7 +195,7 @@ function showRandomStory() {
 // =======================
 
 function searchIdiom() {
-  const input = $('search-input').value.trim().toLowerCase();
+  const input = $('search-input').value.trim();
   const results = $('search-results');
   const pagination = $('pagination-controls-dict');
   const button = $('button-addon2');
@@ -217,7 +212,7 @@ function searchIdiom() {
   button.disabled = false;
 
   const matched = allIdioms.filter(i =>
-    i.idiomLower.includes(input) || i.definitionLower.includes(input)
+    i.idiom?.includes(input) || i.definition?.includes(input)
   );
 
   if (!matched.length) return renderMessage(results, "未找到相关成语");
@@ -227,11 +222,7 @@ function searchIdiom() {
 
   const renderPage = page => {
     const pageItems = matched.slice((page - 1) * perPage, page * perPage)
-      .map(i => ({
-        ...i,
-        idiom: highlightText(i.idiom, input),
-        definition: highlightText(i.definition, input)
-      }));
+      .map(i => ({ ...i, definition: highlightText(i.definition, input), idiom: highlightText(i.idiom, input) }));
     renderCards(results, pageItems);
   };
 
