@@ -299,60 +299,58 @@ searchInput.addEventListener('input', function () {
 searchBtn.disabled = true;
 
 function searchIdiom() {
-  const input = document.getElementById('search-input').value.trim();
+  const inputElement = document.getElementById('search-input');
+  const input = inputElement.value.trim();
   const resultsContainer = document.getElementById('search-results');
-  const paginationContainerId = 'pagination-controls-dict'; // 对应 <ul> 的 ID
+  const paginationContainer = document.getElementById('pagination-controls-dict');
 
   // 清空内容
   resultsContainer.innerHTML = '';
-  const paginationContainer = document.getElementById(paginationContainerId);
   if (paginationContainer) paginationContainer.innerHTML = '';
 
-  // 输入为空
-  if (!input) {
-    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入关键词搜索成语。</p><p></p>';
+  // 🔍 输入字符少于 2 个：清空，显示提示
+  if (input.length < 2) {
+    if (input.length === 0) {
+      resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入关键词搜索成语（至少2个字符）。</p><p></p>';
+    }
+    // 输入 1 个字符也视为不足，不显示结果
     return;
   }
 
-  // 过滤成语：匹配成语本身或释义
+  // ✅ 开始搜索：过滤成语（匹配 idiom 或 definition）
   const results = allIdioms.filter(idiom =>
-    idiom.idiom && idiom.idiom.toLowerCase().includes(input.toLowerCase()) ||
-    (idiom.definition && typeof idiom.definition === 'string' && 
+    idiom.idiom?.toLowerCase().includes(input.toLowerCase()) ||
+    (typeof idiom.definition === 'string' &&
      idiom.definition.toLowerCase().includes(input.toLowerCase()))
   );
 
-  // 无结果
+  // 📝 无匹配结果
   if (results.length === 0) {
     resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">未找到相关成语。</p><p></p>';
     return;
   }
 
-  // ✅ 分页逻辑开始
+  // ✅ 分页设置
   const itemsPerPage = 3;
   const totalPages = Math.ceil(results.length / itemsPerPage);
 
-  // ✅ 定义渲染当前页内容的函数（可复用）
+  // ✅ 渲染当前页的函数
   const renderResultsPage = (page) => {
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     const paginatedResults = results.slice(start, end);
 
-    // 清空当前显示
-    resultsContainer.innerHTML = '';
+    resultsContainer.innerHTML = ''; // 清空
 
-    // 渲染当前页的每个成语
     paginatedResults.forEach(idiom => {
-      // 高亮搜索关键词（idiom 和 definition）
       const highlightedIdiom = highlightText(idiom.idiom, input);
       const highlightedDef = highlightText(idiom.definition, input);
 
-      // 构建完整卡片内容
       const cardContent = buildCardContent({
         ...idiom,
-        definition: highlightedDef // 替换 definition 为高亮版本
+        definition: highlightedDef
       });
 
-      // 渲染卡片
       renderCard(
         resultsContainer,
         highlightedIdiom,
@@ -362,15 +360,39 @@ function searchIdiom() {
     });
   };
 
-  // ✅ 创建分页器实例
-  const paginator = new Paginator(paginationContainerId, totalPages, (page) => {
-    renderResultsPage(page); // 用户点击页码时触发
+  // ✅ 初始化分页器
+  const paginator = new Paginator('pagination-controls-dict', totalPages, (page) => {
+    renderResultsPage(page);
   });
 
-  // 🔥 关键修复：先手动渲染第一页内容，再渲染分页控件
-  renderResultsPage(1);       // ✅ 立即显示第一页内容
-  paginator.render(1);        // ✅ 渲染分页按钮（当前页为1）
+  // 🔥 先渲染第一页，再渲染分页控件
+  renderResultsPage(1);
+  paginator.render(1);
 }
+
+// 防抖函数
+function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+// 绑定时使用防抖（延迟 300ms 执行）
+searchInput.addEventListener('input', debounce(() => {
+  searchIdiom();
+}, 300));
+
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('search-input');
+
+  // 实时监听输入（包括删除、输入、粘贴等）
+  searchInput.addEventListener('input', () => {
+    // 使用防抖（推荐）或直接调用
+    searchIdiom();
+  });
+});
 
 // 显示 IGCSE 成语
 // 全局变量用于存储当前页码
