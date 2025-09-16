@@ -240,15 +240,18 @@ function searchIdiom() {
   const input = document.getElementById('search-input').value.trim();
   const resultsContainer = document.getElementById('search-results');
   const paginationContainer = document.getElementById('pagination-controls-dict');
+  const searchButton = document.getElementById('button-addon2');
+  
   resultsContainer.innerHTML = '';
   if (paginationContainer) paginationContainer.innerHTML = '';
 
   if (input.length < 2) {
     resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
     if (!input) showRandomStory();
+    searchButton.disabled = true;
     return;
   } else {
-    document.getElementById('button-addon2').disabled = false;
+    searchButton.disabled = false;
   }
 
   const results = allIdioms.filter(idiom =>
