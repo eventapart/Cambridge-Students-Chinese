@@ -214,12 +214,12 @@ function buildCardContent(item) {
 
   // 1. 辞典释义（必有）
   if (item.definition) {
-    content += `<strong>辞典释义</strong> ${item.definition}<br />`;
+    content += `<strong>释义</strong> ${item.definition}<br />`;
   }
 
   // 2. 用法说明（可选）
   if (item.usage && typeof item.usage === 'string') {
-    content += `<strong>用法说明</strong> ${item.usage}<br />`;
+    content += `<strong>用法</strong> ${item.usage}<br />`;
   }
 
   // 3. 成语出处（可选：text 或 book）
@@ -227,7 +227,7 @@ function buildCardContent(item) {
   if (source?.text || source?.book) {
     const textPart = source.text || '';
     const bookPart = source.book ? `（${source.book}）` : '';
-    content += `<strong>成语出处</strong> ${textPart}${bookPart}<br />`;
+    content += `<strong>出处</strong> ${textPart}${bookPart}<br />`;
   }
 
   // 4. 词典例句（可选）
@@ -235,22 +235,22 @@ function buildCardContent(item) {
   if (example?.text || example?.book) {
     const textPart = example.text || '';
     const bookPart = example.book ? `（${example.book}）` : '';
-    content += `<strong>词典例句</strong> ${textPart}${bookPart}<br />`;
+    content += `<strong>例句</strong> ${textPart}${bookPart}<br />`;
   }
 
   // 5. 官方例句（仅真题页有）
   if (item.exampleSentence) {
-    content += `<strong>官方例句</strong> ${item.exampleSentence}<br />`;
+    content += `<strong>官方</strong> ${item.exampleSentence}<br />`;
   }
 
   // 6. 近义词（可选）
   if (Array.isArray(item.similar) && item.similar.length > 0) {
-    content += `<strong>近义词</strong> ${item.similar.join('、')}<br />`;
+    content += `<strong>近义</strong> ${item.similar.join('、')}<br />`;
   }
 
   // 7. 反义词（可选）
   if (Array.isArray(item.opposite) && item.opposite.length > 0) {
-    content += `<strong>反义词</strong> ${item.opposite.join('、')}<br />`;
+    content += `<strong>反义</strong> ${item.opposite.join('、')}<br />`;
   }
 
   // 移除末尾多余的 <br />
@@ -325,7 +325,7 @@ function searchIdiom() {
 
   // 🔍 输入字符少于 2 个：清空，显示提示
   if (input.length < 2) {
-    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入关键词搜索成语（至少2个字符）。</p><p></p>';
+    resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
     // 输入 1 个字符也视为不足，不显示结果
     return;
   }
