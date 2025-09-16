@@ -30,7 +30,7 @@ h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
 /* Dark Pagination with custom colors */
 .pagination-custom .page-link { color: #333; background-color: #fff; border: 1px solid #75d1ae; transition: background-color 0.2s, color 0.2s; }
 .pagination-custom .page-link:hover { opacity:.9; border-color: #666; }
-.pagination-custom .active .page-link{ background-color: #244f3d; color:#fff}
+.pagination-custom .active .page-link{ background-color: #244f3d; color:#fff; border-color:#333}
 
 /* 高亮样式 */
 mark { background-color: var(--highlight-color); padding: 0 2px; font-weight: bold; color: #333; }
