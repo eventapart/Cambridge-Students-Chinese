@@ -347,6 +347,8 @@ function searchIdiom() {
   // 清空内容
   resultsContainer.innerHTML = '';
   if (paginationContainer) paginationContainer.innerHTML = '';
+
+  const query = this.value.trim(); // 去除首尾空格
   
   if (query < 1) {
     showRandomStory();
