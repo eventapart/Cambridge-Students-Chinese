@@ -2,7 +2,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color: #fafafa; color: #333; line-height: 1.6; }
 .card { border: none }
-.card-chinese { width: 100%; margin: 0 auto; padding: 1rem; background-color: #d9f3ea; border-width: 18px 18px; border-image: url(../assets/images/corner.png) 66 66 stretch; border-style: solid; }
+.card-chinese { width: 100%; margin: 0 auto; padding: 1rem; background-color: #d9f3ea; border-width: 18px 18px; border-image: url(../images/corner.png) 66 66 stretch; border-style: solid; }
 .card-chinese p { color: #666; font-size: .875rem }
 .card .card-chinese { padding: 0; background-color: #fff }
 
