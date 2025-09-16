@@ -347,10 +347,13 @@ function searchIdiom() {
   if (paginationContainer) paginationContainer.innerHTML = '';
 
   // 🔍 输入字符少于 2 个：清空，显示提示
-  if (input.length < 2) {
+  if (input.length === 1) {
     resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
     // 输入 1 个字符也视为不足，不显示结果
     return;
+  }
+  if (input.length === 0) {
+    showRandomStory();
   }
 
   // ✅ 开始搜索：过滤成语（匹配 idiom 或 definition）
