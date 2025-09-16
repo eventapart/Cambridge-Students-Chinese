@@ -322,10 +322,10 @@ searchInput.addEventListener('input', function () {
   // 启用/禁用按钮
   searchBtn.disabled = query.length < 2;
 
-  if (query === '') {
+  if (query < 1) {
     showRandomStory();
 
-  } else if (query.length === 1) {
+  } else if (query.length < 2) {
     // 输入1个字符：提示
     resultsContainer.innerHTML = '<p></p><p class="text-muted text-center">请输入至少2个字符</p><p></p>';
     return;
