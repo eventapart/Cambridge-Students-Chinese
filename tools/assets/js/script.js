@@ -177,7 +177,7 @@ function showHome() {
   container.innerHTML = ''; // 🔥 自动移除骨架屏
 
   // 数据已加载，生成随机成语
-  const randomIds = shuffle(allIdioms).slice(0, 3);
+  const randomItems = shuffle(allIdioms).slice(0, 3);
 
   // 渲染卡片
   randomItems.forEach(idiom => {
