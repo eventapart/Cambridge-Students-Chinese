@@ -315,6 +315,8 @@ function showIgcseIdioms() {
           idiom: item.idiom,
           pinyin: item.pinyin,
           definition: item.definition,
+          similar: item.similar,
+          opposite: item.opposite,
           example: item.example,
           exampleSentence: `${exampleSentence} (${exam})`
         });
@@ -363,9 +365,9 @@ function showIgcseIdioms() {
     const content = `
       <strong>辞典释义</strong>${item.definition}<br />
       ${dictExample}
+      <strong>官方例句</strong>${item.exampleSentence}
       ${similarHtml}
       ${oppositeHtml}
-      <strong>官方例句</strong>${item.exampleSentence}
     `;
 
     renderCard(container, item.idiom, item.pinyin, content);
