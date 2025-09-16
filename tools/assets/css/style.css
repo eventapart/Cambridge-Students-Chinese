@@ -14,6 +14,7 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
   --board-bg: #d9f3ea;
   --input-bg: #fff;
   --body-bg: #fafafa;
+  --strong-color: #000;
   --text-color: #333;
   --text-muted: #666;
   --border-color: #ddd;
@@ -39,6 +40,7 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
     --board-bg: #1e3b32;
     --input-bg: #111;
     --body-bg: #121212;
+    --strong-color: #fff;
     --text-color: #e0e0e0;
     --text-muted: #aaa;
     --border-color: #333;
@@ -240,7 +242,7 @@ mark {
 .option:hover {
   background-color: #f0f0f0;
   border-color: var(--border-dark);
-  color: #000;
+  color: var(--strong-color);
 }
 
 /* ================================
