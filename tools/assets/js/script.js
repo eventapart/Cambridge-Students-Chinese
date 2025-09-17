@@ -46,7 +46,7 @@ function renderMessage(container, text, type = "muted") {
 }
 
 // =======================
-// 分页组件
+// 分页组件（支持左右键，仅在当前tab激活时生效）
 // =======================
 
 class Paginator {
@@ -56,6 +56,9 @@ class Paginator {
     this.onPageChange = onPageChange;
     this.maxButtons = maxButtons;
     this.currentPage = 1;
+
+    this.handleKey = this.handleKey.bind(this);
+    document.addEventListener('keydown', this.handleKey);
   }
 
   render(page = 1) {
@@ -90,7 +93,6 @@ class Paginator {
 
     this.container.innerHTML = html;
     this.bindEvents();
-
     this.onPageChange(page);
   }
 
@@ -102,6 +104,20 @@ class Paginator {
       const page = parseInt(a.dataset.page, 10);
       if (page && page !== this.currentPage) this.render(page);
     };
+  }
+
+  handleKey(e) {
+    // 只在当前tab可见且容器可见时响应
+    const activeTab = document.querySelector('#myTabs .nav-link.active')?.getAttribute('href');
+    if (!activeTab) return;
+    if (!this.container.closest(activeTab)) return; // 当前分页不在激活tab中
+    if (!this.container.offsetParent) return;
+
+    if (e.key === 'ArrowLeft' && this.currentPage > 1) {
+      this.render(this.currentPage - 1);
+    } else if (e.key === 'ArrowRight' && this.currentPage < this.totalPages) {
+      this.render(this.currentPage + 1);
+    }
   }
 }
 
@@ -129,7 +145,6 @@ async function loadAllIdioms() {
   try {
     const res = await fetch('./dictionaries/idioms.min.json');
     allIdioms = await res.json();
-    // 生成小写缓存字段和 Map，避免 undefined 报错
     allIdioms.forEach(i => {
       i.idiom = i.idiom || '';
       i.definition = i.definition || '';
@@ -267,9 +282,7 @@ function showIgcseIdioms(page = 1) {
 
   const perPage = 3;
   const totalPages = Math.ceil(items.length / perPage);
-  const renderPage = p => {
-    renderCards(c, items.slice((p - 1) * perPage, p * perPage));
-  };
+  const renderPage = p => renderCards(c, items.slice((p - 1) * perPage, p * perPage));
 
   new Paginator(paginationId, totalPages, renderPage).render(page);
 }
@@ -348,6 +361,10 @@ function setupTabListeners() {
     });
   });
 }
+
+// =======================
+// DOMContentLoaded 初始化
+// =======================
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
