@@ -108,17 +108,23 @@ class Paginator {
 
   handleKey(e) {
     // 只在当前tab可见且容器可见时响应
+    if (!this.container.offsetParent) return;
+    if (!this.container.querySelector("[data-page]")) return; // 没有分页按钮就不响应
+
     const activeTab = document.querySelector('#myTabs .nav-link.active')?.getAttribute('href');
     if (!activeTab) return;
-    if (!this.container.closest(activeTab)) return; // 当前分页不在激活tab中
-    if (!this.container.offsetParent) return;
-    if (!this.container.querySelector("[data-page]")) return; // ✅ 没有分页按钮就不响应
+    if (!this.container.closest(activeTab)) return;
 
     if (e.key === 'ArrowLeft' && this.currentPage > 1) {
       this.render(this.currentPage - 1);
     } else if (e.key === 'ArrowRight' && this.currentPage < this.totalPages) {
       this.render(this.currentPage + 1);
     }
+  }
+
+  destroy() {
+    document.removeEventListener('keydown', this.handleKey);
+    if (this.container) this.container.innerHTML = '';
   }
 }
 
@@ -218,6 +224,8 @@ function renderRandomIdiomStories() {
 // 搜索功能
 // =======================
 
+let searchPaginator = null;
+
 function handleIdiomSearch() {
   const input = $('search-input').value.trim().toLowerCase();
   const results = $('search-results');
@@ -226,6 +234,11 @@ function handleIdiomSearch() {
 
   results.innerHTML = '';
   if (pagination) pagination.innerHTML = '';
+
+  if (searchPaginator) {
+    searchPaginator.destroy();
+    searchPaginator = null;
+  }
 
   if (input.length < 2) {
     renderStatusMessage(results, "请输入至少2个字符");
@@ -254,7 +267,8 @@ function handleIdiomSearch() {
     renderIdiomCards(results, pageItems);
   };
 
-  new Paginator('pagination-controls-dict', totalPages, renderPage).render(1);
+  searchPaginator = new Paginator('pagination-controls-dict', totalPages, renderPage);
+  searchPaginator.render(1);
 }
 
 // =======================
@@ -356,7 +370,10 @@ function initTabListeners() {
   document.querySelector('#myTabs a[href="#game"]')?.addEventListener('shown.bs.tab', renderNextGameQuestion);
 
   document.querySelector('#myTabs a[href="#dictionary"]')?.addEventListener('shown.bs.tab', () => {
-    $('pagination-controls-dict').innerHTML = '';
+    if (searchPaginator) {
+      searchPaginator.destroy();
+      searchPaginator = null;
+    }
     $('search-input').value = '';
     renderRandomIdiomStories();
   });
