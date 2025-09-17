@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cambridge IGCSE<sup>&reg;</sup> 中文成语词典</title>
 
   <!-- Bootstrap 5 样式 -->
@@ -13,9 +13,10 @@
 
 <div id="app" class="container-lg py-4">
 
-  <h1 class="text-center my-5">
-    Cambridge IGCSE<sup>&reg;</sup><br>中文成语词典
-  </h1>
+  <!-- 页面标题 -->
+  <header class="text-center my-5">
+    <h1>Cambridge IGCSE<sup>&reg;</sup><br>中文成语词典</h1>
+  </header>
 
   <!-- 导航标签 -->
   <ul class="nav nav-tabs justify-content-center mb-4" id="myTabs" role="tablist">
@@ -33,52 +34,54 @@
     </li>
   </ul>
 
-  <div class="tab-content" style="min-height: 400px;">
+  <!-- Tab 内容 -->
+  <div class="tab-content min-vh-50">
 
     <!-- 首页 -->
     <div class="tab-pane fade show active" id="home" role="tabpanel">
-      <div class="card-chinese">
+      <section class="card card-chinese p-3 mb-4">
         <h4 class="text-center mb-2">今日成语</h4>
-        <p class="mb-0">
+        <p>
           中国的成语承载着深厚的文化底蕴，历经千百年沉淀，在跨文化交流中展现出强大的表达力和传意功能。在中文走向国际化的今天，成语是不可或缺的文化桥梁。作为一场国际化的中文考试，剑桥IGCSE<sup>&reg;</sup>中文第一语言（0509）的考试大纲要求我们掌握“恰当使用词汇”和“清晰有效传达信息”的能力，而成语正是实现这一目标的有力工具。让我们从今天开始，每天积累，让成语为我们的表达增光添彩！
         </p>
-      </div>
+      </section>
 
       <!-- 随机成语骨架屏 -->
-      <div id="random-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3">
+      <div id="random-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        <!-- 卡片骨架重复用循环渲染 -->
         <div class="col">
           <div class="card h-100">
             <div class="card-body card-chinese">
-              <div class="skeleton-title"></div>
-              <div class="skeleton-pinyin mt-2"></div>
-              <div class="skeleton-definition mt-3"></div>
-              <div class="skeleton-definition mt-1"></div>
-              <div class="skeleton-definition mt-1"></div>
-              <div class="skeleton-definition mt-1"></div>
+              <div class="skeleton-title mb-2"></div>
+              <div class="skeleton-pinyin mb-3"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="card h-100">
             <div class="card-body card-chinese">
-              <div class="skeleton-title"></div>
-              <div class="skeleton-pinyin mt-2"></div>
-              <div class="skeleton-definition mt-3"></div>
-              <div class="skeleton-definition mt-1"></div>
-              <div class="skeleton-definition mt-1"></div>
-              <div class="skeleton-definition mt-1"></div>
+              <div class="skeleton-title mb-2"></div>
+              <div class="skeleton-pinyin mb-3"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="card h-100">
             <div class="card-body card-chinese">
-              <div class="skeleton-title"></div>
-              <div class="skeleton-pinyin mt-2"></div>
-              <div class="skeleton-definition mt-3"></div>
-              <div class="skeleton-definition mt-1"></div>
-              <div class="skeleton-definition mt-1"></div>
-              <div class="skeleton-definition mt-1"></div>
+              <div class="skeleton-title mb-2"></div>
+              <div class="skeleton-pinyin mb-3"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
+              <div class="skeleton-definition mb-1"></div>
             </div>
           </div>
         </div>
@@ -87,30 +90,30 @@
 
     <!-- 成语词典 -->
     <div class="tab-pane fade" id="dictionary" role="tabpanel">
-      <div class="card-chinese">
+      <section class="card card-chinese p-3 mb-4">
         <h4 class="text-center mb-4">查成语</h4>
-        <div class="d-flex justify-content-center mb-3">
-          <form class="input-group input-group-lg" style="max-width:600px" role="search" onsubmit="return false;">
+        <form class="d-flex justify-content-center mb-3" style="max-width:600px;" role="search" onsubmit="return false;">
+          <div class="input-group input-group-lg w-100">
             <input id="search-input" type="text" class="form-control" placeholder="请输入成语搜索" aria-label="请输入成语搜索" minlength="2">
             <button class="btn btn-outline-primary" type="submit" id="button-addon2" onclick="searchIdiom()" disabled>搜索</button>
-          </form>
-        </div>
-      </div>
-      <div id="search-results" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3"></div>
+          </div>
+        </form>
+      </section>
+      <div id="search-results" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3"></div>
       <nav aria-label="成语词典分页" class="mt-5">
         <ul class="pagination pagination-custom justify-content-center" id="pagination-controls-dict"></ul>
       </nav>
     </div>
 
-    <!-- IGCSE真题 -->
+    <!-- IGCSE 真题 -->
     <div class="tab-pane fade" id="igcse" role="tabpanel">
-      <div class="card-chinese">
+      <section class="card card-chinese p-3 mb-4">
         <h4 class="text-center mb-2">教材和真题中的成语</h4>
-        <p class="mb-0">
+        <p>
           根据对剑桥IGCSE<sup>&reg;</sup>中文第一语言（0509）官方教材及历年真题（截至2025年）的统计，共出现482条成语，其中绝大多数成语仅出现一次。这说明课程鼓励我们广泛积累，不断拓展成语词汇量。因此，我们不仅要掌握成语的字面含义，更要理解其在现代语境中的实际用法——了解人们通常在什么场合、表达何种情感时使用它。只有这样，我们才能真正领悟成语背后的深层文化意涵和语用功能，继而在阅读中准确把握文意，在写作中自然、恰当地运用成语，做到得心应手，游刃有余。
         </p>
-      </div>
-      <div id="igcse-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3"></div>
+      </section>
+      <div id="igcse-idioms" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3"></div>
       <nav aria-label="真题成语分页" class="mt-5">
         <ul class="pagination pagination-custom justify-content-center" id="pagination-controls-igcse"></ul>
       </nav>
@@ -118,30 +121,35 @@
 
     <!-- 成语游戏 -->
     <div class="tab-pane fade" id="game" role="tabpanel">
-      <div class="card-chinese">
-        <h4 class="text-center mb-2">50000条成语随机挑战</h4>
+      <section class="card card-chinese p-3 mb-4">
+        <h4 class="text-center mb-3">50000条成语随机挑战</h4>
         <div class="text-center">
-          <span class="fs-5">当前得分：</span><strong id="current-score" class="text-primary fs-4">0</strong><span class="mx-3">|</span><span class="fs-5">最高分：</span><strong id="best-score" class="text-danger fs-4">0</strong>
+          <span>当前得分 </span>
+          <span id="current-score" class="badge bg-primary">0</span>
+          <span class="ms-3">最高分 </span>
+          <span id="best-score" class="badge bg-danger">0</span>
         </div>
-      </div>
+      </section>
 
       <!-- 游戏主体 -->
       <div id="game-container" class="text-center">
         <p id="question" class="lead mt-5"></p>
         <div id="options" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3"></div>
-        <p class="mt-5">
-          <button class="btn btn-outline-primary" onclick="nextQuestion()">下一题</button>
+        <div class="mt-5">
+          <button class="btn btn-outline-primary me-2" onclick="nextQuestion()">下一题</button>
           <button class="btn btn-outline-secondary" onclick="restartGame()">重新开始</button>
-        </p>
+        </div>
       </div>
     </div>
+
   </div>
 
   <!-- 页脚 -->
   <footer class="text-center mt-5 small text-muted">
-    Copyright &copy;2025 Benjamin Z.
-    <br>Cambridge IGCSE<sup>&reg;</sup> 0509 Coursebook and Past Papers
+    &copy;2025 Benjamin Z.<br>
+    Cambridge IGCSE<sup>&reg;</sup> 0509 Coursebook and Past Papers
   </footer>
+
 </div>
 
 <!-- Toast 提示 -->
