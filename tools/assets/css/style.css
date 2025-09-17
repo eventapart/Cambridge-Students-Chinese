@@ -4,8 +4,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body { 
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, 
-               "Noto Serif SC", "Source Han Serif SC", "PingFang SC", "Songti SC", "SimSun", "STSong", serif;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "PingFang SC", "Songti SC", "SimSun", "STSong", 
+               "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   background-color: var(--body-bg); 
   color: var(--text-color); 
