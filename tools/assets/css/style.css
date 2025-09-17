@@ -2,9 +2,11 @@
    基础重置
 ================================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body { 
-  font-family: var(--ui-font); 
-  font-weight: var(--ui-font-weight-regular);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, 
+               "Noto Serif SC", "Source Han Serif SC", "PingFang SC", "Songti SC", "SimSun", "STSong", serif;
+  font-weight: 400;
   background-color: var(--body-bg); 
   color: var(--text-color); 
   line-height: 1.6;
@@ -39,21 +41,6 @@ body {
   --shadow-strong: rgba(0, 0, 0, 0.18);
   --skeleton-base: #e5e5e5;
   --skeleton-highlight: #e0e0e0;
-
-  /* 字体设置（中英文兼顾，偏瘦） */
-  --ui-font: "Helvetica Neue", 
-             -apple-system, 
-             "Segoe UI", 
-             "Roboto", 
-             "Noto Sans", 
-             "PingFang SC", 
-             "Hiragino Sans GB", 
-             "Noto Sans SC", 
-             "Microsoft YaHei", 
-             "Arial", 
-             "Helvetica", 
-             sans-serif;
-  --ui-font-weight-regular: 300;
 }
 
 /* ================================
@@ -90,13 +77,12 @@ body {
 h1,h2,h3,h4,h5,h6 { 
   color: var(--primary-color); 
   margin-bottom: 1rem; 
-  font-weight: 400; /* 稍微比正文重 */
+  font-weight: 400; 
 }
 
 /* ================================
    按钮
 ================================ */
-/* btn-outline-primary */
 .btn-outline-primary {
   color: var(--primary-color);
   border-color: var(--primary-color);
@@ -113,7 +99,6 @@ h1,h2,h3,h4,h5,h6 {
   border-color: var(--primary-color);
 }
 
-/* btn-outline-secondary */
 .btn-outline-secondary {
   color: var(--secondary-color);
   border-color: var(--secondary-color);
@@ -130,7 +115,6 @@ h1,h2,h3,h4,h5,h6 {
   border-color: var(--secondary-color);
 }
 
-/* btn-primary */
 .btn-primary {
   background-color: var(--primary-color);
   border: 1px solid var(--primary-color);
@@ -143,7 +127,7 @@ h1,h2,h3,h4,h5,h6 {
 .btn-primary:hover { background-color: #3a75c0; border-color: #3a75c0; }
 
 .btn-outline-primary.disabled,
-.btn-outline-primary:disabled{ color:var(--text-color)}
+.btn-outline-primary:disabled { color: var(--text-color); }
 
 /* ================================
    表单
@@ -225,7 +209,6 @@ h1,h2,h3,h4,h5,h6 {
 .pagination-custom .page-link:hover { opacity: 0.9; border-color: var(--text-muted); }
 .pagination-custom .active .page-link { background-color: var(--primary-color); color: var(--reverse-color); border-color: var(--text-color); }
 
-/* 简单分页按钮 */
 #pagination button {
   margin: 5px;
   padding: 10px;
