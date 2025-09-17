@@ -65,7 +65,9 @@ class Paginator {
     const { totalPages, maxButtons, currentPage } = this;
     let html = '';
 
-    if (currentPage > 1) html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="#">上一页</a></li>`;
+    if (currentPage > 1) {
+      html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="#">上一页</a></li>`;
+    }
 
     let startPage, endPage;
     if (totalPages <= maxButtons) {
@@ -82,7 +84,9 @@ class Paginator {
       html += `<li class="page-item ${active}"><a class="page-link" data-page="${i}" href="#">${i}</a></li>`;
     }
 
-    if (currentPage < totalPages) html += `<li class="page-item"><a class="page-link" data-page="${currentPage + 1}" href="#">下一页</a></li>`;
+    if (currentPage < totalPages) {
+      html += `<li class="page-item"><a class="page-link" data-page="${currentPage + 1}" href="#">下一页</a></li>`;
+    }
 
     this.container.innerHTML = html;
     this.bindEvents();
@@ -154,8 +158,8 @@ function buildCardContent(item) {
   return [
     add("释义", item.definition),
     add("用法", item.usage),
-    add("出处", item.source?.text || '' + (item.source?.book ? `（${item.source.book}）` : '')),
-    add("例句", item.example?.text || '' + (item.example?.book ? `（${item.example.book}）` : '')),
+    add("出处", (item.source?.text || '') + (item.source?.book ? `（${item.source.book}）` : '')),
+    add("例句", (item.example?.text || '') + (item.example?.book ? `（${item.example.book}）` : '')),
     add("官方", item.exampleSentence),
     item.similar?.length ? add("近义", item.similar.join('、')) : '',
     item.opposite?.length ? add("反义", item.opposite.join('、')) : ''
