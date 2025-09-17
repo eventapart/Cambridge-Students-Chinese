@@ -112,6 +112,7 @@ class Paginator {
     if (!activeTab) return;
     if (!this.container.closest(activeTab)) return; // 当前分页不在激活tab中
     if (!this.container.offsetParent) return;
+    if (!this.container.querySelector("[data-page]")) return; // ✅ 没有分页按钮就不响应
 
     if (e.key === 'ArrowLeft' && this.currentPage > 1) {
       this.render(this.currentPage - 1);
