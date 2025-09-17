@@ -280,11 +280,11 @@ mark {
 .option {
   width: 100%;
   min-height: 3.5rem;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
   border-radius: 6px;
-  border: 1px solid var(--border-light);
   background-color: var(--card-bg);
   color: var(--text-color);
   white-space: normal;
@@ -294,7 +294,6 @@ mark {
 }
 .option:hover {
   background-color: #f0f0f0;
-  border-color: var(--border-dark);
   color: var(--strong-color);
 }
 
