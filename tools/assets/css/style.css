@@ -1,14 +1,19 @@
 /* ================================
    基础重置
 ================================ */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-body { 
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, 
-               "Noto Serif SC", "Source Han Serif SC", "PingFang SC", "Songti SC", "SimSun", "STSong", serif;
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif,
+               "Noto Serif SC", "Source Han Serif SC", "PingFang SC",
+               "Songti SC", "SimSun", "STSong", serif;
   font-weight: 400;
-  background-color: var(--body-bg); 
-  color: var(--text-color); 
+  background-color: var(--body-bg);
+  color: var(--text-color);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -44,7 +49,7 @@ body {
 }
 
 /* ================================
-   深色模式变量
+   深色模式
 ================================ */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -74,20 +79,47 @@ body {
 /* ================================
    标题
 ================================ */
-h1,h2,h3,h4,h5,h6 { 
-  color: var(--primary-color); 
-  margin-bottom: 1rem; 
-  font-weight: 400; 
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.h1, h1 {
+  font-family: "SimSun", "Songti SC", serif;
+  line-height: clamp(1.2rem, 0.9rem + 0.3vw, 1.6rem);
+}
+
+h1 .logo {
+  fill: var(--primary-color);
+  width: clamp(100px, 6vw + 100px, 200px);
+}
+
+h1 .main-title {
+  /* 字号最小 1rem，最大 1.5rem */
+  font-size: clamp(1rem, 0.9rem + 0.8vw, 1.5rem);
+  letter-spacing: clamp(0.15rem, 0.2rem + 0.3vw, 0.6rem);
+  line-height: 1.4em;
+}
+
+h1 small {
+  /* 字号最小 0.75rem，最大 1.1rem */
+  font-size: clamp(0.75rem, 0.7rem + 0.6vw, 1.1rem);
+  line-height: 1.35em;
 }
 
 /* ================================
    按钮
 ================================ */
+.btn-outline-primary,
+.btn-outline-secondary {
+  background-color: transparent;
+  transition: all 0.2s;
+}
+
 .btn-outline-primary {
   color: var(--primary-color);
   border-color: var(--primary-color);
-  background-color: transparent;
-  transition: all 0.2s;
 }
 .btn-outline-primary:hover,
 .btn-outline-primary:focus,
@@ -102,8 +134,6 @@ h1,h2,h3,h4,h5,h6 {
 .btn-outline-secondary {
   color: var(--secondary-color);
   border-color: var(--secondary-color);
-  background-color: transparent;
-  transition: all 0.2s;
 }
 .btn-outline-secondary:hover,
 .btn-outline-secondary:focus,
@@ -124,10 +154,15 @@ h1,h2,h3,h4,h5,h6 {
   padding: 0.4rem 1rem;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-.btn-primary:hover { background-color: #3a75c0; border-color: #3a75c0; }
+.btn-primary:hover {
+  background-color: #3a75c0;
+  border-color: #3a75c0;
+}
 
-.btn-outline-primary.disabled,
-.btn-outline-primary:disabled { color: var(--text-color); }
+.btn-outline-primary:disabled,
+.btn-outline-primary.disabled {
+  color: var(--text-color);
+}
 
 /* ================================
    表单
@@ -142,14 +177,15 @@ h1,h2,h3,h4,h5,h6 {
 .form-control:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-  background-color: var(--input-bg); 
-  color: var(--text-color); 
+  background-color: var(--input-bg);
+  color: var(--text-color);
 }
 
 /* ================================
    导航标签页
 ================================ */
 .nav-tabs { border-bottom-color: var(--primary-color); }
+
 .nav-tabs .nav-link {
   color: var(--primary-color);
   font-weight: 500;
@@ -157,13 +193,13 @@ h1,h2,h3,h4,h5,h6 {
   border-bottom-color: var(--primary-color);
   transition: all 0.2s ease;
 }
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus { border-bottom-color: var(--primary-color); }
 .nav-tabs .nav-link.active {
   background-color: var(--secondary-color);
   color: var(--primary-color);
   border-color: var(--primary-color) var(--primary-color) var(--secondary-color);
 }
-.nav-tabs .nav-link:hover,
-.nav-tabs .nav-link:focus { border-bottom-color: var(--primary-color); }
 .nav-tabs .nav-link.active:hover,
 .nav-tabs .nav-link.active:focus { border-bottom-color: var(--secondary-color); }
 
@@ -207,7 +243,11 @@ h1,h2,h3,h4,h5,h6 {
   transition: background-color 0.2s, color 0.2s;
 }
 .pagination-custom .page-link:hover { opacity: 0.9; border-color: var(--text-muted); }
-.pagination-custom .active .page-link { background-color: var(--primary-color); color: var(--reverse-color); border-color: var(--text-color); }
+.pagination-custom .active .page-link {
+  background-color: var(--primary-color);
+  color: var(--reverse-color);
+  border-color: var(--text-color);
+}
 
 #pagination button {
   margin: 5px;
@@ -243,8 +283,6 @@ mark {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0;
-  margin: 0;
   border-radius: 6px;
   border: 1px solid var(--border-light);
   background-color: var(--card-bg);
@@ -279,7 +317,11 @@ mark {
   line-height: 1.5;
   font-weight: 500;
 }
-#current-score, #best-score { font-size: 1.2rem; font-weight: bold; }
+#current-score,
+#best-score {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
 
 /* ================================
    骨架屏
@@ -295,6 +337,7 @@ mark {
 .skeleton-title { width: 80px; height: 32px; }
 .skeleton-pinyin { width: 120px; height: 16px; }
 .skeleton-definition { width: 100%; max-width: 300px; height: 16px; }
+
 @keyframes skeleton-loading {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -316,4 +359,6 @@ mark {
 @media (max-width: 768px) {
   .card-title { font-size: 1rem; }
   .card-text { font-size: 0.9rem; }
+  h1 .main-title { font-size: clamp(1rem, 0.85rem + 0.7vw, 1.4rem); letter-spacing: clamp(0.15rem, 0.18rem + 0.25vw, 0.55rem); }
+  h1 small { font-size: clamp(0.75rem, 0.65rem + 0.5vw, 1rem); }
 }
