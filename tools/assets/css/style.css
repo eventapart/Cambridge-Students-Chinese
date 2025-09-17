@@ -2,7 +2,18 @@
    基础重置
 ================================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color: var(--body-bg); color: var(--text-color); line-height: 1.6; }
+body { 
+  font-family: var(--ui-font); 
+  font-weight: var(--ui-font-weight-regular);
+  background-color: var(--body-bg); 
+  color: var(--text-color); 
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
 
 /* ================================
    主题变量
@@ -28,6 +39,21 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
   --shadow-strong: rgba(0, 0, 0, 0.18);
   --skeleton-base: #e5e5e5;
   --skeleton-highlight: #e0e0e0;
+
+  /* 字体设置（中英文兼顾，偏瘦） */
+  --ui-font: "Helvetica Neue", 
+             -apple-system, 
+             "Segoe UI", 
+             "Roboto", 
+             "Noto Sans", 
+             "PingFang SC", 
+             "Hiragino Sans GB", 
+             "Noto Sans SC", 
+             "Microsoft YaHei", 
+             "Arial", 
+             "Helvetica", 
+             sans-serif;
+  --ui-font-weight-regular: 300;
 }
 
 /* ================================
@@ -61,7 +87,11 @@ body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; background-color:
 /* ================================
    标题
 ================================ */
-h1,h2,h3,h4,h5,h6 { color: var(--primary-color); margin-bottom: 1rem; }
+h1,h2,h3,h4,h5,h6 { 
+  color: var(--primary-color); 
+  margin-bottom: 1rem; 
+  font-weight: 400; /* 稍微比正文重 */
+}
 
 /* ================================
    按钮
