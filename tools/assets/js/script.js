@@ -353,13 +353,18 @@ function restartGame() {
 
 function setupTabListeners() {
   document.querySelector('#myTabs a[href="#game"]')?.addEventListener('shown.bs.tab', nextQuestion);
-  ['#home', '#dictionary'].forEach(sel => {
-    document.querySelector(`#myTabs a[href="${sel}"]`)?.addEventListener('shown.bs.tab', () => {
-      if (document.querySelector('#myTabs .nav-link.active')?.getAttribute('href') !== '#game') {
-        showRandomStory();
-      }
-    });
+
+  document.querySelector('#myTabs a[href="#dictionary"]')?.addEventListener('shown.bs.tab', () => {
+    $('pagination-controls-dict').innerHTML = '';
+    $('search-input').value = '';
+    showRandomStory();
   });
+
+  document.querySelector('#myTabs a[href="#igcse"]')?.addEventListener('shown.bs.tab', () => {
+    showIgcseIdioms(1); // 切换到 IGCSE 页时展示第一页
+  });
+
+  document.querySelector('#myTabs a[href="#home"]')?.addEventListener('shown.bs.tab', showRandomStory);
 }
 
 // =======================
