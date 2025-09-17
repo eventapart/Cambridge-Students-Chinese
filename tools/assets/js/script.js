@@ -121,7 +121,7 @@ async function loadIgcseData() {
     console.log("IGCSE 数据加载成功");
   } catch (err) {
     console.error("加载 IGCSE 数据失败:", err);
-    alert("无法加载数据，请稍后重试。");
+    alert("无法加载数据，请稍后重试");
   }
 }
 
@@ -263,7 +263,7 @@ function showIgcseIdioms(page = 1) {
     }
   }
 
-  if (!items.length) return c.innerHTML = '<p>暂无真题成语数据。</p>';
+  if (!items.length) return c.innerHTML = '<p>暂无真题成语数据</p>';
 
   const perPage = 3;
   const totalPages = Math.ceil(items.length / perPage);
@@ -323,7 +323,7 @@ function checkAnswer(index) {
     setTimeout(nextQuestion, 300);
   } else {
     toastEl.classList.replace('bg-success', 'bg-danger');
-    toastBody.innerHTML = '错误。';
+    toastBody.innerHTML = '错误';
   }
   toast.show();
 }
