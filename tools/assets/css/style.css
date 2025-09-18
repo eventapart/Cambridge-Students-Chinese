@@ -180,6 +180,7 @@ h1 small {
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
   background-color: var(--input-bg);
   color: var(--text-color);
+  border-color: var(--primary-color);
   opacity:1;
 }
 
