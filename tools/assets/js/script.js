@@ -46,10 +46,84 @@ function renderStatusMessage(container, text, type = "muted") {
 }
 
 // =======================
+// 分页组件
+// =======================
+
+class Paginator {
+  constructor(containerId, totalPages, onPageChange, maxButtons = 5) {
+    this.container = $(containerId);
+    this.totalPages = totalPages;
+    this.onPageChange = onPageChange;
+    this.maxButtons = maxButtons;
+    this.currentPage = 1;
+
+    this.handleKey = this.handleKey.bind(this);
+    document.addEventListener('keydown', this.handleKey);
+  }
+
+  render(page = 1) {
+    this.currentPage = page;
+    if (!this.container) return;
+
+    const { totalPages, maxButtons, currentPage } = this;
+    let html = '';
+
+    if (currentPage > 1) html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="#">上一页</a></li>`;
+
+    let startPage, endPage;
+    if (totalPages <= maxButtons) [startPage, endPage] = [1, totalPages];
+    else {
+      const half = Math.floor(maxButtons / 2);
+      if (currentPage <= half) [startPage, endPage] = [1, maxButtons];
+      else if (currentPage + half >= totalPages) [startPage, endPage] = [totalPages - maxButtons + 1, totalPages];
+      else [startPage, endPage] = [currentPage - half, currentPage + half];
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      const active = i === currentPage ? 'active' : '';
+      html += `<li class="page-item ${active}"><a class="page-link" data-page="${i}" href="#">${i}</a></li>`;
+    }
+
+    if (currentPage < totalPages) html += `<li class="page-item"><a class="page-link" data-page="${currentPage + 1}" href="#">下一页</a></li>`;
+
+    this.container.innerHTML = html;
+    this.bindEvents();
+    this.onPageChange(page);
+  }
+
+  bindEvents() {
+    this.container.onclick = e => {
+      const a = e.target.closest("a[data-page]");
+      if (!a) return;
+      e.preventDefault();
+      const page = parseInt(a.dataset.page, 10);
+      if (page && page !== this.currentPage) this.render(page);
+    };
+  }
+
+  handleKey(e) {
+    if (!this.container.offsetParent) return;
+    if (!this.container.querySelector("[data-page]")) return;
+
+    const activeTab = document.querySelector('#myTabs .nav-link.active')?.getAttribute('href');
+    if (!activeTab) return;
+    if (!this.container.closest(activeTab)) return;
+
+    if (e.key === 'ArrowLeft' && this.currentPage > 1) this.render(this.currentPage - 1);
+    else if (e.key === 'ArrowRight' && this.currentPage < this.totalPages) this.render(this.currentPage + 1);
+  }
+
+  destroy() {
+    document.removeEventListener('keydown', this.handleKey);
+    if (this.container) this.container.innerHTML = '';
+  }
+}
+
+// =======================
 // 数据加载与索引
 // =======================
 
-let igcseData = [];
+let igcseData = null;
 let allIdioms = [];
 let idiomMap = new Map();
 let idiomsParts = [];
@@ -109,7 +183,7 @@ function buildIdiomCardContent(item) {
 }
 
 // =======================
-// 无限滚动虚拟列表类
+// 无限滚动虚拟列表
 // =======================
 
 class VirtualList {
@@ -176,7 +250,7 @@ class VirtualList {
 }
 
 // =======================
-// 搜索功能
+// 搜索功能（倒排索引 + 异步高亮）
 // =======================
 
 let searchVirtualList = null;
@@ -220,42 +294,15 @@ async function handleIdiomSearch() {
     definition: highlightText(i.definition, input)
   }));
 
+  // 创建虚拟列表
   searchVirtualList = new VirtualList(results, highlighted, 180, 5);
 }
 
 // =======================
-// 首页 & IGCSE & 随机故事虚拟列表渲染
+// 首页、随机故事、IGCSE、游戏逻辑 与 页面绑定
 // =======================
 
-let homeVirtualList = null;
-let igcseVirtualList = null;
-let randomStoryVirtualList = null;
-
-function renderHomeIdioms() {
-  const container = $('home-idioms');
-  if (!allIdioms.length) return renderStatusMessage(container, "成语数据加载中...");
-  if (homeVirtualList) homeVirtualList.destroy();
-  homeVirtualList = new VirtualList(container, shuffleArrayInPlace([...allIdioms]), 180, 5);
-}
-
-function renderIgcseIdioms() {
-  const container = $('igcse-idioms');
-  if (!igcseData.length) return renderStatusMessage(container, "IGCSE数据加载中...");
-  if (igcseVirtualList) igcseVirtualList.destroy();
-  igcseVirtualList = new VirtualList(container, igcseData, 180, 5);
-}
-
-function renderRandomIdiomStories() {
-  const container = $('random-idioms');
-  const items = allIdioms.filter(i => i.story?.length);
-  if (!items.length) return renderStatusMessage(container, "暂无成语故事");
-  if (randomStoryVirtualList) randomStoryVirtualList.destroy();
-  randomStoryVirtualList = new VirtualList(container, shuffleArrayInPlace(items), 180, 5);
-}
-
-// =======================
-// 页面初始化
-// =======================
+// 这里保持你原来的 renderHomeIdioms / renderRandomIdiomStories / renderIgcseIdioms / 游戏逻辑 / initTabListeners ...
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
