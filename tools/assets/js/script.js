@@ -46,7 +46,7 @@ function renderStatusMessage(container, text, type = "muted") {
 }
 
 // =======================
-// 分页组件（支持左右键，仅在当前tab激活时生效）
+// 分页组件
 // =======================
 
 class Paginator {
@@ -120,12 +120,13 @@ class Paginator {
 }
 
 // =======================
-// 数据加载（按 part 加载）
+// 数据加载（并行加载 part）
 // =======================
 
 let igcseData = null;
 let allIdioms = [];
 let idiomMap = new Map();
+let idiomsParts = []; // 保存每个 part 的数据，便于并行搜索
 
 async function loadIgcseData() {
   try {
@@ -139,28 +140,34 @@ async function loadIgcseData() {
   }
 }
 
-// 修改 loadAllIdioms 支持分 part 异步加载
 async function loadAllIdioms(parts = 10) {
   appContainer.classList.add('loading-state');
 
+  const fetchPromises = [];
   for (let i = 1; i <= parts; i++) {
-    try {
-      const res = await fetch(`./dictionaries/idioms_part${i}.min.json`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const partData = await res.json();
-      partData.forEach(i => {
-        i.idiom = i.idiom || '';
-        i.definition = i.definition || '';
-        i.idiomLower = i.idiom.toLowerCase();
-        i.definitionLower = i.definition.toLowerCase();
-      });
-      allIdioms.push(...partData);
-      partData.forEach(i => idiomMap.set(i.idiom, i));
-      console.log(`Part ${i} 加载完成`);
-    } catch (err) {
-      console.error(`加载 idioms_part${i}.json 失败:`, err);
-    }
+    fetchPromises.push(
+      fetch(`./dictionaries/idioms_part${i}.min.json`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(partData => {
+          partData.forEach(i => {
+            i.idiom = i.idiom || '';
+            i.definition = i.definition || '';
+            i.idiomLower = i.idiom.toLowerCase();
+            i.definitionLower = i.definition.toLowerCase();
+          });
+          allIdioms.push(...partData);
+          idiomsParts[i - 1] = partData; // 保存每个 part
+          partData.forEach(i => idiomMap.set(i.idiom, i));
+          console.log(`Part ${i} 加载完成`);
+        })
+        .catch(err => console.error(`加载 idioms_part${i}.json 失败:`, err))
+    );
   }
+
+  await Promise.all(fetchPromises);
 
   appContainer.classList.remove('loading-state');
   renderHomeIdioms();
@@ -219,12 +226,25 @@ function renderRandomIdiomStories() {
 }
 
 // =======================
-// 搜索功能
+// 搜索功能（异步并行搜索每个 part）
 // =======================
 
 let searchPaginator = null;
 
-function handleIdiomSearch() {
+async function searchIdioms(input) {
+  if (!input) return [];
+
+  // 并行异步搜索每个 part
+  const matchedParts = await Promise.all(idiomsParts.map(async part => 
+    part.filter(i =>
+      i.idiomLower.includes(input) || i.definitionLower.includes(input)
+    )
+  ));
+
+  return matchedParts.flat();
+}
+
+async function handleIdiomSearch() {
   const input = $('search-input').value.trim().toLowerCase();
   const results = $('search-results');
   const pagination = $('pagination-controls-dict');
@@ -246,9 +266,7 @@ function handleIdiomSearch() {
   }
   button.disabled = false;
 
-  const matched = allIdioms.filter(i =>
-    i.idiomLower.includes(input) || i.definitionLower.includes(input)
-  );
+  const matched = await searchIdioms(input);
 
   if (!matched.length) return renderStatusMessage(results, "未找到相关成语");
 
@@ -389,7 +407,7 @@ function initTabListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
-  loadAllIdioms(10); // 默认拆分 10 个 part
+  loadAllIdioms(10); // 并行加载 10 个 part
   $('search-input').addEventListener('input', debounce(handleIdiomSearch, 200));
   $('button-addon2').disabled = true;
   $('best-score').textContent = bestScore;
