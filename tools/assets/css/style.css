@@ -12,7 +12,8 @@ body {
                "Noto Serif SC", "Source Han Serif SC", "PingFang SC",
                "Songti SC", "SimSun", "STSong", serif;
   font-weight: 400;
-  background-color: var(--body-bg);
+  background: var(--body-bg) url(../images/bg.svg);
+  background-size:100px 50px;
   color: var(--text-color);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
