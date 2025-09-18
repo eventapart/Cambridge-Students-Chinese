@@ -109,28 +109,18 @@ function buildIdiomCardContent(item) {
 }
 
 // =======================
-// 统一虚拟列表类
+// 无限滚动虚拟列表类
 // =======================
 
 class VirtualList {
-  /**
-   * @param {HTMLElement} container - 容器元素
-   * @param {Array} items - 数据列表
-   * @param {Object} options - 配置项
-   *   options.rowHeight: 单行高度
-   *   options.buffer: 缓存行数
-   *   options.highlight: 关键词高亮
-   */
-  constructor(container, items, options = {}) {
+  constructor(container, items, rowHeight = 150, buffer = 3) {
     this.container = container;
     this.items = items;
-    this.rowHeight = options.rowHeight || 150;
-    this.buffer = options.buffer || 3;
-    this.keyword = options.highlight || '';
-
+    this.rowHeight = rowHeight;
+    this.buffer = buffer;
     this.scrollContainer = document.createElement('div');
     this.scrollContainer.style.position = 'relative';
-    this.scrollContainer.style.height = `${items.length * this.rowHeight}px`;
+    this.scrollContainer.style.height = `${items.length * rowHeight}px`;
     this.container.innerHTML = '';
     this.container.appendChild(this.scrollContainer);
 
@@ -158,9 +148,6 @@ class VirtualList {
 
     for (let i = startIndex; i < endIndex; i++) {
       const item = this.items[i];
-      const idiomText = this.keyword ? highlightText(item.idiom, this.keyword) : item.idiom;
-      const definitionText = this.keyword ? highlightText(item.definition, this.keyword) : item.definition;
-
       const div = document.createElement('div');
       div.style.position = 'absolute';
       div.style.top = `${i * this.rowHeight}px`;
@@ -170,8 +157,8 @@ class VirtualList {
       div.innerHTML = `
         <div class="card shadow-sm h-100">
           <div class="card-body d-flex flex-column card-chinese">
-            <h5 class="card-title mb-4">${idiomText}<br><small class="text-muted">${item.pinyin || ''}</small></h5>
-            <p class="card-text mt-auto" style="padding-left:2.75rem">${buildIdiomCardContent({...item, idiom: idiomText, definition: definitionText})}</p>
+            <h5 class="card-title mb-4">${item.idiom}<br><small class="text-muted">${item.pinyin || ''}</small></h5>
+            <p class="card-text mt-auto" style="padding-left:2.75rem">${buildIdiomCardContent(item)}</p>
           </div>
         </div>`;
       this.scrollContainer.appendChild(div);
@@ -179,19 +166,6 @@ class VirtualList {
   }
 
   handleScroll() {
-    this.render();
-  }
-
-  /**
-   * 更新数据并重新渲染
-   * @param {Array} newItems
-   * @param {string} highlightKeyword
-   */
-  update(newItems, highlightKeyword = '') {
-    this.items = newItems;
-    this.keyword = highlightKeyword;
-    this.scrollContainer.style.height = `${newItems.length * this.rowHeight}px`;
-    this.container.scrollTop = 0;
     this.render();
   }
 
@@ -223,7 +197,10 @@ async function handleIdiomSearch() {
   const results = $('search-results');
   const button = $('button-addon2');
 
-  if (searchVirtualList) searchVirtualList.destroy();
+  if (searchVirtualList) {
+    searchVirtualList.destroy();
+    searchVirtualList = null;
+  }
 
   if (input.length < 2) {
     renderStatusMessage(results, "请输入至少2个字符");
@@ -234,13 +211,20 @@ async function handleIdiomSearch() {
   button.disabled = false;
 
   const matched = await searchIdioms(input);
+
   if (!matched.length) return renderStatusMessage(results, "未找到相关成语");
 
-  searchVirtualList = new VirtualList(results, matched, { rowHeight: 180, buffer: 5, highlight: input });
+  const highlighted = matched.map(i => ({
+    ...i,
+    idiom: highlightText(i.idiom, input),
+    definition: highlightText(i.definition, input)
+  }));
+
+  searchVirtualList = new VirtualList(results, highlighted, 180, 5);
 }
 
 // =======================
-// 首页 & IGCSE & 随机故事渲染
+// 首页 & IGCSE & 随机故事虚拟列表渲染
 // =======================
 
 let homeVirtualList = null;
@@ -251,14 +235,14 @@ function renderHomeIdioms() {
   const container = $('home-idioms');
   if (!allIdioms.length) return renderStatusMessage(container, "成语数据加载中...");
   if (homeVirtualList) homeVirtualList.destroy();
-  homeVirtualList = new VirtualList(container, shuffleArrayInPlace([...allIdioms]), { rowHeight: 180, buffer: 5 });
+  homeVirtualList = new VirtualList(container, shuffleArrayInPlace([...allIdioms]), 180, 5);
 }
 
 function renderIgcseIdioms() {
   const container = $('igcse-idioms');
   if (!igcseData.length) return renderStatusMessage(container, "IGCSE数据加载中...");
   if (igcseVirtualList) igcseVirtualList.destroy();
-  igcseVirtualList = new VirtualList(container, igcseData, { rowHeight: 180, buffer: 5 });
+  igcseVirtualList = new VirtualList(container, igcseData, 180, 5);
 }
 
 function renderRandomIdiomStories() {
@@ -266,7 +250,7 @@ function renderRandomIdiomStories() {
   const items = allIdioms.filter(i => i.story?.length);
   if (!items.length) return renderStatusMessage(container, "暂无成语故事");
   if (randomStoryVirtualList) randomStoryVirtualList.destroy();
-  randomStoryVirtualList = new VirtualList(container, shuffleArrayInPlace(items), { rowHeight: 180, buffer: 5 });
+  randomStoryVirtualList = new VirtualList(container, shuffleArrayInPlace(items), 180, 5);
 }
 
 // =======================
@@ -275,7 +259,7 @@ function renderRandomIdiomStories() {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
-  loadAllIdioms(10);
+  loadAllIdioms(10); // 并行加载 10 个 part
   $('search-input').addEventListener('input', debounce(handleIdiomSearch, 150));
   $('button-addon2').disabled = true;
   $('best-score').textContent = bestScore;
