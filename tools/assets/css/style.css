@@ -295,6 +295,7 @@ mark {
 .option:hover {
   background-color: #f0f0f0;
   color: var(--strong-color);
+  border:none;
 }
 
 /* ================================
