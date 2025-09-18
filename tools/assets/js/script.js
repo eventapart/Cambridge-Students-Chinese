@@ -143,6 +143,7 @@ async function loadAllIdioms(parts = 10) {
             i.definition = i.definition || '';
             i.idiomLower = i.idiom.toLowerCase();
             i.definitionLower = i.definition.toLowerCase();
+            // 构建倒排索引
             const text = i.idiomLower + ' ' + i.definitionLower;
             text.split(/\s+/).forEach(word => {
               if (!invertedIndex.has(word)) invertedIndex.set(word, new Set());
@@ -182,98 +183,58 @@ function buildIdiomCardContent(item) {
   ].filter(Boolean).join('<br />');
 }
 
-// =======================
-// 无限滚动虚拟列表
-// =======================
-
-class VirtualList {
-  constructor(container, items, rowHeight = 150, buffer = 3) {
-    this.container = container;
-    this.items = items;
-    this.rowHeight = rowHeight;
-    this.buffer = buffer;
-    this.scrollContainer = document.createElement('div');
-    this.scrollContainer.style.position = 'relative';
-    this.scrollContainer.style.height = `${items.length * rowHeight}px`;
-    this.container.innerHTML = '';
-    this.container.appendChild(this.scrollContainer);
-
-    this.visibleStart = 0;
-    this.visibleEnd = 0;
-
-    this.handleScroll = this.handleScroll.bind(this);
-    this.container.addEventListener('scroll', this.handleScroll);
-    this.render();
-  }
-
-  render() {
-    const scrollTop = this.container.scrollTop;
-    const containerHeight = this.container.clientHeight;
-
-    const startIndex = Math.max(Math.floor(scrollTop / this.rowHeight) - this.buffer, 0);
-    const endIndex = Math.min(Math.ceil((scrollTop + containerHeight) / this.rowHeight) + this.buffer, this.items.length);
-
-    if (startIndex === this.visibleStart && endIndex === this.visibleEnd) return;
-
-    this.visibleStart = startIndex;
-    this.visibleEnd = endIndex;
-
-    this.scrollContainer.innerHTML = '';
-
-    for (let i = startIndex; i < endIndex; i++) {
-      const item = this.items[i];
-      const div = document.createElement('div');
-      div.style.position = 'absolute';
-      div.style.top = `${i * this.rowHeight}px`;
-      div.style.width = '100%';
-      div.style.height = `${this.rowHeight}px`;
-      div.className = 'col';
-      div.innerHTML = `
-        <div class="card shadow-sm h-100">
-          <div class="card-body d-flex flex-column card-chinese">
-            <h5 class="card-title mb-4">${item.idiom}<br><small class="text-muted">${item.pinyin || ''}</small></h5>
-            <p class="card-text mt-auto" style="padding-left:2.75rem">${buildIdiomCardContent(item)}</p>
-          </div>
-        </div>`;
-      this.scrollContainer.appendChild(div);
-    }
-  }
-
-  handleScroll() {
-    this.render();
-  }
-
-  destroy() {
-    this.container.removeEventListener('scroll', this.handleScroll);
-    this.container.innerHTML = '';
-  }
+function renderIdiomCards(container, items) {
+  // 虚拟列表实现
+  const fragment = document.createDocumentFragment();
+  const perPage = 50; // 虚拟渲染每次最多50条
+  items.forEach((i, idx) => {
+    const div = document.createElement('div');
+    div.className = 'col';
+    div.innerHTML = `
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column card-chinese">
+          <h5 class="card-title mb-4">${i.idiom}<br><small class="text-muted">${i.pinyin || ''}</small></h5>
+          <p class="card-text mt-auto" style="padding-left:2.75rem">${buildIdiomCardContent(i)}</p>
+        </div>
+      </div>`;
+    fragment.appendChild(div);
+  });
+  container.innerHTML = '';
+  container.appendChild(fragment);
 }
 
 // =======================
 // 搜索功能（倒排索引 + 异步高亮）
 // =======================
 
-let searchVirtualList = null;
+let searchPaginator = null;
 
 async function searchIdioms(input) {
   if (!input) return [];
+
   const words = input.toLowerCase().split(/\s+/);
   let resultSets = [];
   words.forEach(word => {
     if (invertedIndex.has(word)) resultSets.push(Array.from(invertedIndex.get(word)));
   });
   if (!resultSets.length) return [];
+
+  // 取交集
   return resultSets.reduce((a, b) => a.filter(i => b.includes(i)));
 }
 
 async function handleIdiomSearch() {
   const input = $('search-input').value.trim().toLowerCase();
   const results = $('search-results');
+  const pagination = $('pagination-controls-dict');
   const button = $('button-addon2');
 
-  if (searchVirtualList) {
-    searchVirtualList.destroy();
-    searchVirtualList = null;
+  results.innerHTML = '';
+  if (pagination) pagination.innerHTML = '';
+
+  if (searchPaginator) {
+    searchPaginator.destroy();
+    searchPaginator = null;
   }
 
   if (input.length < 2) {
@@ -288,21 +249,28 @@ async function handleIdiomSearch() {
 
   if (!matched.length) return renderStatusMessage(results, "未找到相关成语");
 
-  const highlighted = matched.map(i => ({
-    ...i,
-    idiom: highlightText(i.idiom, input),
-    definition: highlightText(i.definition, input)
-  }));
+  const perPage = 3;
+  const totalPages = Math.ceil(matched.length / perPage);
 
-  // 创建虚拟列表
-  searchVirtualList = new VirtualList(results, highlighted, 180, 5);
+  const renderPage = page => {
+    const pageItems = matched.slice((page - 1) * perPage, page * perPage)
+      .map(i => ({
+        ...i,
+        idiom: highlightText(i.idiom, input),
+        definition: highlightText(i.definition, input)
+      }));
+    renderIdiomCards(results, pageItems);
+  };
+
+  searchPaginator = new Paginator('pagination-controls-dict', totalPages, renderPage);
+  searchPaginator.render(1);
 }
 
 // =======================
 // 首页、随机故事、IGCSE、游戏逻辑 与 页面绑定
 // =======================
 
-// 这里保持你原来的 renderHomeIdioms / renderRandomIdiomStories / renderIgcseIdioms / 游戏逻辑 / initTabListeners ...
+// ...这里保持你原来的 renderHomeIdioms / renderRandomIdiomStories / renderIgcseIdioms / 游戏逻辑 / initTabListeners ...
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
