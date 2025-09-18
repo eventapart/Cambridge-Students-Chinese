@@ -145,7 +145,7 @@ async function loadAllIdioms(parts = 10) {
 
   for (let i = 1; i <= parts; i++) {
     try {
-      const res = await fetch(`./dictionaries/idioms_part${i}.json`);
+      const res = await fetch(`./dictionaries/idioms_part${i}.min.json`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const partData = await res.json();
       partData.forEach(i => {
