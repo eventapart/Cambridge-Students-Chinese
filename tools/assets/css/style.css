@@ -285,17 +285,16 @@ mark {
   align-items: center;
   justify-content: flex-start;
   border-radius: 6px;
-  background-color: var(--card-bg);
+  background:none
   color: var(--text-color);
   white-space: normal;
   word-wrap: break-word;
   text-align: left;
   transition: background-color 0.2s ease, border-color 0.2s ease;
+  border:none;
 }
 .option:hover {
-  background-color: #f0f0f0;
   color: var(--strong-color);
-  border:none;
 }
 
 /* ================================
