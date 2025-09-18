@@ -20,7 +20,7 @@
 ## 在线预览
 
 你可以通过以下链接直接使用成语词典工具：  
-[IGCSE Lookup 工具](https://aneventapart.cn/tools/csc-idioms.html)
+[剑桥学生中文成语词典](https://aneventapart.cn/tools/csc-idioms.html)
 
 ---
 
