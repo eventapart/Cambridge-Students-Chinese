@@ -191,9 +191,11 @@ h1 small {
 .nav-tabs { border-bottom-color: var(--primary-color); }
 
 .nav-tabs .nav-link {
+  background-color: var(--reverse-color);
   color: var(--primary-color);
   font-weight: 500;
   border: 1px solid var(--border-color);
+  border-color: var(--secondary-color);
   border-bottom-color: var(--primary-color);
   transition: all 0.2s ease;
 }
