@@ -172,13 +172,15 @@ h1 small {
   border: 1px solid var(--border-light);
   background-color: var(--card-bg);
   color: var(--text-color);
+  border-color: var(--primary-color);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  opacity:.65;
 }
 .form-control:focus {
-  border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
   background-color: var(--input-bg);
   color: var(--text-color);
+  opacity:1;
 }
 
 /* ================================
