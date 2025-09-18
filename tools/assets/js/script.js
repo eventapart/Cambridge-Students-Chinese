@@ -68,14 +68,11 @@ class Paginator {
     const { totalPages, maxButtons, currentPage } = this;
     let html = '';
 
-    if (currentPage > 1) {
-      html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="#">上一页</a></li>`;
-    }
+    if (currentPage > 1) html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="#">上一页</a></li>`;
 
     let startPage, endPage;
-    if (totalPages <= maxButtons) {
-      [startPage, endPage] = [1, totalPages];
-    } else {
+    if (totalPages <= maxButtons) [startPage, endPage] = [1, totalPages];
+    else {
       const half = Math.floor(maxButtons / 2);
       if (currentPage <= half) [startPage, endPage] = [1, maxButtons];
       else if (currentPage + half >= totalPages) [startPage, endPage] = [totalPages - maxButtons + 1, totalPages];
@@ -87,9 +84,7 @@ class Paginator {
       html += `<li class="page-item ${active}"><a class="page-link" data-page="${i}" href="#">${i}</a></li>`;
     }
 
-    if (currentPage < totalPages) {
-      html += `<li class="page-item"><a class="page-link" data-page="${currentPage + 1}" href="#">下一页</a></li>`;
-    }
+    if (currentPage < totalPages) html += `<li class="page-item"><a class="page-link" data-page="${currentPage + 1}" href="#">下一页</a></li>`;
 
     this.container.innerHTML = html;
     this.bindEvents();
@@ -107,19 +102,15 @@ class Paginator {
   }
 
   handleKey(e) {
-    // 只在当前tab可见且容器可见时响应
     if (!this.container.offsetParent) return;
-    if (!this.container.querySelector("[data-page]")) return; // 没有分页按钮就不响应
+    if (!this.container.querySelector("[data-page]")) return;
 
     const activeTab = document.querySelector('#myTabs .nav-link.active')?.getAttribute('href');
     if (!activeTab) return;
     if (!this.container.closest(activeTab)) return;
 
-    if (e.key === 'ArrowLeft' && this.currentPage > 1) {
-      this.render(this.currentPage - 1);
-    } else if (e.key === 'ArrowRight' && this.currentPage < this.totalPages) {
-      this.render(this.currentPage + 1);
-    }
+    if (e.key === 'ArrowLeft' && this.currentPage > 1) this.render(this.currentPage - 1);
+    else if (e.key === 'ArrowRight' && this.currentPage < this.totalPages) this.render(this.currentPage + 1);
   }
 
   destroy() {
@@ -129,7 +120,7 @@ class Paginator {
 }
 
 // =======================
-// 数据加载
+// 数据加载（按 part 加载）
 // =======================
 
 let igcseData = null;
@@ -148,27 +139,34 @@ async function loadIgcseData() {
   }
 }
 
-async function loadAllIdioms() {
-  try {
-    const res = await fetch('./dictionaries/idioms.min.json');
-    allIdioms = await res.json();
-    allIdioms.forEach(i => {
-      i.idiom = i.idiom || '';
-      i.definition = i.definition || '';
-      i.idiomLower = i.idiom.toLowerCase();
-      i.definitionLower = i.definition.toLowerCase();
-    });
-    idiomMap = new Map(allIdioms.map(i => [i.idiom, i]));
-    appContainer.classList.remove('loading-state');
-    renderHomeIdioms();
-    renderIgcseIdioms();
-    renderRandomIdiomStories();
-    initTabListeners();
-  } catch (err) {
-    console.error('数据加载失败:', err);
-    appContainer.classList.remove('loading-state');
-    renderStatusMessage($('random-idioms'), "加载失败", "danger");
+// 修改 loadAllIdioms 支持分 part 异步加载
+async function loadAllIdioms(parts = 10) {
+  appContainer.classList.add('loading-state');
+
+  for (let i = 1; i <= parts; i++) {
+    try {
+      const res = await fetch(`./dictionaries/idioms_part${i}.json`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const partData = await res.json();
+      partData.forEach(i => {
+        i.idiom = i.idiom || '';
+        i.definition = i.definition || '';
+        i.idiomLower = i.idiom.toLowerCase();
+        i.definitionLower = i.definition.toLowerCase();
+      });
+      allIdioms.push(...partData);
+      partData.forEach(i => idiomMap.set(i.idiom, i));
+      console.log(`Part ${i} 加载完成`);
+    } catch (err) {
+      console.error(`加载 idioms_part${i}.json 失败:`, err);
+    }
   }
+
+  appContainer.classList.remove('loading-state');
+  renderHomeIdioms();
+  renderIgcseIdioms();
+  renderRandomIdiomStories();
+  initTabListeners();
 }
 
 // =======================
@@ -379,7 +377,7 @@ function initTabListeners() {
   });
 
   document.querySelector('#myTabs a[href="#igcse"]')?.addEventListener('shown.bs.tab', () => {
-    renderIgcseIdioms(1); // 切换到 IGCSE 页时展示第一页
+    renderIgcseIdioms(1);
   });
 
   document.querySelector('#myTabs a[href="#home"]')?.addEventListener('shown.bs.tab', renderRandomIdiomStories);
@@ -391,7 +389,7 @@ function initTabListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
-  loadAllIdioms();
+  loadAllIdioms(10); // 默认拆分 10 个 part
   $('search-input').addEventListener('input', debounce(handleIdiomSearch, 200));
   $('button-addon2').disabled = true;
   $('best-score').textContent = bestScore;
