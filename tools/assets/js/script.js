@@ -120,14 +120,25 @@ class Paginator {
 }
 
 // =======================
-// 数据加载与索引
+// 数据加载（并行加载 part）
 // =======================
 
 let igcseData = null;
 let allIdioms = [];
 let idiomMap = new Map();
-let idiomsParts = [];
-let invertedIndex = new Map(); // 倒排索引
+let idiomsParts = []; // 保存每个 part 的数据，便于并行搜索
+
+async function loadIgcseData() {
+  try {
+    const res = await fetch('./dictionaries/idioms_cam_masked.min.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    igcseData = await res.json();
+    console.log("IGCSE 数据加载成功");
+  } catch (err) {
+    console.error("加载 IGCSE 数据失败:", err);
+    alert("无法加载数据，请稍后重试");
+  }
+}
 
 async function loadAllIdioms(parts = 10) {
   appContainer.classList.add('loading-state');
@@ -136,24 +147,23 @@ async function loadAllIdioms(parts = 10) {
   for (let i = 1; i <= parts; i++) {
     fetchPromises.push(
       fetch(`./dictionaries/idioms_part${i}.min.json`)
-        .then(res => res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`))
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
         .then(partData => {
           partData.forEach(i => {
             i.idiom = i.idiom || '';
             i.definition = i.definition || '';
             i.idiomLower = i.idiom.toLowerCase();
             i.definitionLower = i.definition.toLowerCase();
-            // 构建倒排索引
-            const text = i.idiomLower + ' ' + i.definitionLower;
-            text.split(/\s+/).forEach(word => {
-              if (!invertedIndex.has(word)) invertedIndex.set(word, new Set());
-              invertedIndex.get(word).add(i);
-            });
           });
           allIdioms.push(...partData);
-          idiomsParts[i - 1] = partData;
+          idiomsParts[i - 1] = partData; // 保存每个 part
           partData.forEach(i => idiomMap.set(i.idiom, i));
+          console.log(`Part ${i} 加载完成`);
         })
+        .catch(err => console.error(`加载 idioms_part${i}.json 失败:`, err))
     );
   }
 
@@ -184,27 +194,39 @@ function buildIdiomCardContent(item) {
 }
 
 function renderIdiomCards(container, items) {
-  // 虚拟列表实现
-  const fragment = document.createDocumentFragment();
-  const perPage = 50; // 虚拟渲染每次最多50条
-  items.forEach((i, idx) => {
-    const div = document.createElement('div');
-    div.className = 'col';
-    div.innerHTML = `
+  container.innerHTML = items.map(i => `
+    <div class="col">
       <div class="card shadow-sm h-100">
         <div class="card-body d-flex flex-column card-chinese">
           <h5 class="card-title mb-4">${i.idiom}<br><small class="text-muted">${i.pinyin || ''}</small></h5>
           <p class="card-text mt-auto" style="padding-left:2.75rem">${buildIdiomCardContent(i)}</p>
         </div>
-      </div>`;
-    fragment.appendChild(div);
-  });
-  container.innerHTML = '';
-  container.appendChild(fragment);
+      </div>
+    </div>`).join('');
 }
 
 // =======================
-// 搜索功能（倒排索引 + 异步高亮）
+// 首页和随机故事
+// =======================
+
+function renderHomeIdioms() {
+  const c = $('random-idioms');
+  if (!allIdioms.length) return;
+  renderIdiomCards(c, shuffleArrayInPlace([...allIdioms]).slice(0, 3));
+}
+
+function renderRandomIdiomStories() {
+  const c = $('search-results');
+  const items = allIdioms.filter(i => i.story?.length);
+  if (!items.length) return renderStatusMessage(c, "暂无成语故事");
+  renderIdiomCards(c, shuffleArrayInPlace(items).slice(0, 3).map(i => ({
+    ...i,
+    definition: `<strong style="margin-left:-2.75rem">故事</strong> ${i.story.join('<br /><br />')}`
+  })));
+}
+
+// =======================
+// 搜索功能（异步并行搜索每个 part）
 // =======================
 
 let searchPaginator = null;
@@ -212,15 +234,14 @@ let searchPaginator = null;
 async function searchIdioms(input) {
   if (!input) return [];
 
-  const words = input.toLowerCase().split(/\s+/);
-  let resultSets = [];
-  words.forEach(word => {
-    if (invertedIndex.has(word)) resultSets.push(Array.from(invertedIndex.get(word)));
-  });
-  if (!resultSets.length) return [];
+  // 并行异步搜索每个 part
+  const matchedParts = await Promise.all(idiomsParts.map(async part => 
+    part.filter(i =>
+      i.idiomLower.includes(input) || i.definitionLower.includes(input)
+    )
+  ));
 
-  // 取交集
-  return resultSets.reduce((a, b) => a.filter(i => b.includes(i)));
+  return matchedParts.flat();
 }
 
 async function handleIdiomSearch() {
@@ -267,15 +288,127 @@ async function handleIdiomSearch() {
 }
 
 // =======================
-// 首页、随机故事、IGCSE、游戏逻辑 与 页面绑定
+// IGCSE 成语展示
 // =======================
 
-// ...这里保持你原来的 renderHomeIdioms / renderRandomIdiomStories / renderIgcseIdioms / 游戏逻辑 / initTabListeners ...
+function renderIgcseIdioms(page = 1) {
+  const c = $('igcse-idioms');
+  const paginationId = 'pagination-controls-igcse';
+  c.innerHTML = '';
+  $(paginationId).innerHTML = '';
+
+  const entries = Object.entries(igcseData || {}).sort((a, b) =>
+    b[0].localeCompare(a[0], 'en', { numeric: true })
+  );
+
+  const items = [];
+  for (const [exam, idioms] of entries) {
+    for (const [name, sentence] of Object.entries(idioms)) {
+      const item = idiomMap.get(name);
+      if (item) items.push({ ...item, exampleSentence: `${sentence} (${exam})` });
+    }
+  }
+
+  if (!items.length) return c.innerHTML = '<p>暂无真题成语数据</p>';
+
+  const perPage = 3;
+  const totalPages = Math.ceil(items.length / perPage);
+  const renderPage = p => renderIdiomCards(c, items.slice((p - 1) * perPage, p * perPage));
+
+  new Paginator(paginationId, totalPages, renderPage).render(page);
+}
+
+// =======================
+// 游戏逻辑
+// =======================
+
+let currentQuestion = null, currentScore = 0;
+let bestScore = parseInt(localStorage.getItem('idiomGameBestScore')) || 0;
+
+function renderNextGameQuestion() {
+  const idiom = allIdioms[Math.floor(Math.random() * allIdioms.length)];
+  const shuffled = shuffleArrayInPlace([...allIdioms]);
+  let options = shuffled.slice(0, 3).map(i => i.idiom);
+  if (!options.includes(idiom.idiom)) options[Math.floor(Math.random() * 3)] = idiom.idiom;
+  const correctIndex = options.indexOf(idiom.idiom);
+
+  currentQuestion = { definition: idiom.definition, correctIndex };
+  $('question').innerHTML = `<strong style="border-bottom:var(--text-color) 1px dashed">“${idiom.definition}” 对应的成语是？</strong>`;
+  $('options').innerHTML = options.map((word, i) => {
+    const item = idiomMap.get(word);
+    return `
+      <div class="col">
+        <button class="btn btn-outline-dark option card h-100" onclick="handleGameAnswer(${i})">
+          <span class="card-body d-flex flex-column text-center card-chinese" style="justify-content:center; line-height:1.2">
+            <span class="card-title mb-0">${word}<br /><small class="text-muted">${item?.pinyin || ''}</small></span>
+          </span>
+        </button>
+      </div>`;
+  }).join('');
+}
+
+function handleGameAnswer(index) {
+  if (!currentQuestion) return;
+  const toastEl = $('check-toast');
+  const toastBody = $('toast-body');
+  const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+  const correct = index === currentQuestion.correctIndex;
+
+  if (correct) {
+    currentScore += 10;
+    $('current-score').textContent = currentScore;
+    if (currentScore > bestScore) {
+      bestScore = currentScore;
+      $('best-score').textContent = bestScore;
+      localStorage.setItem('idiomGameBestScore', bestScore);
+    }
+    toastEl.classList.replace('bg-danger', 'bg-success');
+    toastBody.innerHTML = '正确！+10 分';
+    setTimeout(renderNextGameQuestion, 300);
+  } else {
+    toastEl.classList.replace('bg-success', 'bg-danger');
+    toastBody.innerHTML = '错误';
+  }
+  toast.show();
+}
+
+function restartGame() {
+  currentScore = 0;
+  $('current-score').textContent = currentScore;
+  renderNextGameQuestion();
+}
+
+// =======================
+// 页面事件绑定
+// =======================
+
+function initTabListeners() {
+  document.querySelector('#myTabs a[href="#game"]')?.addEventListener('shown.bs.tab', renderNextGameQuestion);
+
+  document.querySelector('#myTabs a[href="#dictionary"]')?.addEventListener('shown.bs.tab', () => {
+    if (searchPaginator) {
+      searchPaginator.destroy();
+      searchPaginator = null;
+    }
+    $('search-input').value = '';
+    renderRandomIdiomStories();
+  });
+
+  document.querySelector('#myTabs a[href="#igcse"]')?.addEventListener('shown.bs.tab', () => {
+    renderIgcseIdioms(1);
+  });
+
+  document.querySelector('#myTabs a[href="#home"]')?.addEventListener('shown.bs.tab', renderRandomIdiomStories);
+}
+
+// =======================
+// DOMContentLoaded 初始化
+// =======================
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
   loadAllIdioms(10); // 并行加载 10 个 part
-  $('search-input').addEventListener('input', debounce(handleIdiomSearch, 150));
+  $('search-input').addEventListener('input', debounce(handleIdiomSearch, 200));
   $('button-addon2').disabled = true;
   $('best-score').textContent = bestScore;
 });
