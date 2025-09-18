@@ -197,6 +197,7 @@ h1 small {
   border: 1px solid var(--border-color);
   border-color: var(--secondary-color);
   border-bottom-color: var(--primary-color);
+  border-radius: .4rem .4rem 0 0;
   transition: all 0.2s ease;
 }
 .nav-tabs .nav-link:hover,
