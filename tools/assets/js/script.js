@@ -275,7 +275,6 @@ function renderRandomIdiomStories() {
 
   const pageItems = shuffleArrayInPlace(items).slice(0, 3).map(i => ({
     ...i,
-    // 保留释义并追加故事
     definition: (i.definition || '') + '<br /><strong>故事</strong> ' + i.story.join('<br /><br />')
   }));
 
@@ -283,19 +282,23 @@ function renderRandomIdiomStories() {
 }
 
 // =======================
-// 模糊搜索
+// 模糊搜索（多关键词）
 // =======================
 
 let searchPaginator = null;
 
 async function searchIdioms(input) {
   if (!input) return [];
+  const keywords = input.toLowerCase().split(/\s+/).filter(Boolean);
+
   const matchedParts = await Promise.all(idiomsParts.map(part =>
     part.filter(i =>
-      i.idiomLower.includes(input) ||
-      i.definitionLower.includes(input) ||
-      i.litLower?.includes(input) ||
-      i.figLower?.includes(input)
+      keywords.every(kw =>
+        i.idiomLower.includes(kw) ||
+        i.definitionLower.includes(kw) ||
+        i.litLower.includes(kw) ||
+        i.figLower.includes(kw)
+      )
     )
   ));
   return matchedParts.flat();
@@ -327,13 +330,16 @@ async function handleIdiomSearch() {
   const totalPages = Math.ceil(matched.length / perPage);
   const renderPage = page => {
     const pageItems = matched.slice((page - 1) * perPage, page * perPage)
-      .map(i => ({
-        ...i,
-        idiom: highlightText(i.idiom, inputRaw),
-        definition: highlightText(i.definition || '', inputRaw) + (i.story?.length ? '<br /><strong>故事</strong> ' + i.story.join('<br /><br />') : ''),
-        lit: highlightText(i.lit || '', inputRaw),
-        fig: highlightText(i.fig || '', inputRaw)
-      }));
+      .map(i => {
+        let highlighted = { idiom: i.idiom, definition: i.definition, lit: i.lit, fig: i.fig };
+        inputRaw.split(/\s+/).filter(Boolean).forEach(kw => {
+          highlighted.idiom = highlightText(highlighted.idiom, kw);
+          highlighted.definition = highlightText(highlighted.definition || '', kw) + (i.story?.length ? '<br /><strong>故事</strong> ' + i.story.join('<br /><br />') : '');
+          highlighted.lit = highlightText(highlighted.lit || '', kw);
+          highlighted.fig = highlightText(highlighted.fig || '', kw);
+        });
+        return { ...i, ...highlighted };
+      });
     renderIdiomCards(results, pageItems);
   };
 
