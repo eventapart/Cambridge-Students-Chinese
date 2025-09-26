@@ -221,7 +221,7 @@ async function loadAllIdioms(parts = 10) {
 // =======================
 
 function buildIdiomCardContent(item) {
-  const add = (label, text) => text ? `<strong style="margin-left:-3.75rem">${label}</strong> ${text}` : '';
+  const add = (label, text) => text ? `<strong style="margin-left:-4rem">${label}</strong>${text}` : '';
   const base = [
     add("释义", item.definition),
     add("用法", item.usage),
@@ -247,7 +247,7 @@ function renderIdiomCards(container, items) {
       <div class="card shadow-sm h-100">
         <div class="card-body d-flex flex-column card-chinese">
           <h5 class="card-title mb-4">${i.idiom}<br><small class="text-muted">${i.pinyin || ''}</small></h5>
-          <p class="card-text mt-auto" style="padding-left:3.75rem">${buildIdiomCardContent(i)}</p>
+          <p class="card-text mt-auto" style="padding-left:4rem">${buildIdiomCardContent(i)}</p>
         </div>
       </div>
     </div>`).join('');
