@@ -221,7 +221,7 @@ async function loadAllIdioms(parts = 10) {
 // =======================
 
 function buildIdiomCardContent(item) {
-  const add = (label, text) => text ? `<strong style="margin-left:-4rem">${label}</strong>${text}` : '';
+  const add = (label, text) => text ? `<strong>${label}</strong>${text}` : '';
   const base = [
     add("释义", item.definition),
     add("用法", item.usage),
