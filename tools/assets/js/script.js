@@ -225,7 +225,7 @@ async function loadAllIdioms(parts = 10) {
 // 渲染函数
 // =======================
 
-function buildIdiomCardContent(item) {
+function buildIdiomCardContent(item, includeStory = true) {
   const add = (label, text) => text ? `<strong>${label}</strong>${text}` : '';
   const base = [
     add("释义", item.definition),
@@ -241,18 +241,19 @@ function buildIdiomCardContent(item) {
   if (item.lit) extra.push(add("LIT", item.lit));
   if (item.fig) extra.push(add("FIG", item.fig));
   if (item.petci) extra.push(add("PETCI", item.petci));
+  if (includeStory && item.story?.length) extra.push(add("故事", item.story.join('<br /><br />')));
 
   let merged = base.length && base[0].includes("释义") ? [base[0], ...extra, ...base.slice(1)] : [...extra, ...base];
   return merged.filter(Boolean).join('<br />');
 }
 
-function renderIdiomCards(container, items) {
+function renderIdiomCards(container, items, includeStory = true) {
   container.innerHTML = items.map(i => `
     <div class="col">
       <div class="card shadow-sm h-100">
         <div class="card-body d-flex flex-column card-chinese">
           <h5 class="card-title mb-4">${i.idiom}<br><small class="text-muted">${i.pinyin || ''}</small></h5>
-          <p class="card-text mt-auto" style="padding-left:4rem">${buildIdiomCardContent(i)}</p>
+          <p class="card-text mt-auto" style="padding-left:4rem">${buildIdiomCardContent(i, includeStory)}</p>
         </div>
       </div>
     </div>`).join('');
@@ -265,7 +266,7 @@ function renderIdiomCards(container, items) {
 function renderHomeIdioms() {
   const c = $('random-idioms');
   if (!allIdioms.length) return;
-  renderIdiomCards(c, shuffleArrayInPlace([...allIdioms]).slice(0, 3));
+  renderIdiomCards(c, shuffleArrayInPlace([...allIdioms]).slice(0, 3), false);
 }
 
 function renderRandomIdiomStories() {
@@ -273,12 +274,8 @@ function renderRandomIdiomStories() {
   const items = allIdioms.filter(i => i.story?.length);
   if (!items.length) return renderStatusMessage(c, "暂无成语故事");
 
-  const pageItems = shuffleArrayInPlace(items).slice(0, 3).map(i => ({
-    ...i,
-    definition: (i.definition || '') + '<br /><strong>故事</strong> ' + i.story.join('<br /><br />')
-  }));
-
-  renderIdiomCards(c, pageItems);
+  const pageItems = shuffleArrayInPlace(items).slice(0, 3);
+  renderIdiomCards(c, pageItems, true);
 }
 
 // =======================
@@ -334,13 +331,13 @@ async function handleIdiomSearch() {
         let highlighted = { idiom: i.idiom, definition: i.definition, lit: i.lit, fig: i.fig };
         inputRaw.split(/\s+/).filter(Boolean).forEach(kw => {
           highlighted.idiom = highlightText(highlighted.idiom, kw);
-          highlighted.definition = highlightText(highlighted.definition || '', kw) + (i.story?.length ? '<br /><strong>故事</strong> ' + i.story.join('<br /><br />') : '');
+          highlighted.definition = highlightText(highlighted.definition || '', kw);
           highlighted.lit = highlightText(highlighted.lit || '', kw);
           highlighted.fig = highlightText(highlighted.fig || '', kw);
         });
         return { ...i, ...highlighted };
       });
-    renderIdiomCards(results, pageItems);
+    renderIdiomCards(results, pageItems, true);
   };
 
   searchPaginator = new Paginator('pagination-controls-dict', totalPages, renderPage);
@@ -373,7 +370,7 @@ function renderIgcseIdioms(page = 1) {
 
   const perPage = 3;
   const totalPages = Math.ceil(items.length / perPage);
-  const renderPage = p => renderIdiomCards(c, items.slice((p - 1) * perPage, p * perPage));
+  const renderPage = p => renderIdiomCards(c, items.slice((p - 1) * perPage, p * perPage), false);
   new Paginator(paginationId, totalPages, renderPage).render(page);
 }
 
