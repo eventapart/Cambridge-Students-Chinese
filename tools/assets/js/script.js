@@ -142,7 +142,7 @@ async function loadIgcseData() {
 }
 
 async function loadIdiomsEnMap() {
-  const parts = 3; // 分成 3 个文件
+  const parts = 3;
   const fetchPromises = [];
   for (let i = 1; i <= parts; i++) {
     fetchPromises.push(
@@ -200,7 +200,6 @@ async function loadAllIdioms(parts = 10) {
 
   await Promise.all(fetchPromises);
 
-  // 合并英文释义
   idiomsEnMap.forEach((entry, idiomKey) => {
     const target = idiomMap.get(idiomKey);
     if (target) {
@@ -273,10 +272,14 @@ function renderRandomIdiomStories() {
   const c = $('search-results');
   const items = allIdioms.filter(i => i.story?.length);
   if (!items.length) return renderStatusMessage(c, "暂无成语故事");
-  renderIdiomCards(c, shuffleArrayInPlace(items).slice(0, 3).map(i => ({
+
+  const pageItems = shuffleArrayInPlace(items).slice(0, 3).map(i => ({
     ...i,
-    definition: `<strong style="margin-left:-3.75rem">故事</strong> ${i.story.join('<br /><br />')}`
-  })));
+    // 保留释义并追加故事
+    definition: (i.definition || '') + '<br /><strong style="margin-left:-3.75rem">故事</strong> ' + i.story.join('<br /><br />')
+  }));
+
+  renderIdiomCards(c, pageItems);
 }
 
 // =======================
@@ -327,7 +330,7 @@ async function handleIdiomSearch() {
       .map(i => ({
         ...i,
         idiom: highlightText(i.idiom, inputRaw),
-        definition: highlightText(i.definition || '', inputRaw),
+        definition: highlightText(i.definition || '', inputRaw) + (i.story?.length ? '<br /><strong style="margin-left:-3.75rem">故事</strong> ' + i.story.join('<br /><br />') : ''),
         lit: highlightText(i.lit || '', inputRaw),
         fig: highlightText(i.fig || '', inputRaw)
       }));
@@ -389,7 +392,7 @@ function renderNextGameQuestion() {
     return `
       <div class="col">
         <button class="btn btn-outline-dark option card h-100" onclick="handleGameAnswer(${i})">
-          <span class="card-body d-flex flex-column text-center card-chinese" style="justify-content:center; line-height:1.2">
+            <span class="card-body d-flex flex-column text-center card-chinese" style="justify-content:center; line-height:1.2">
             <span class="card-title mb-0">${word}<br /><small class="text-muted">${item?.pinyin || ''}</small></span>
           </span>
         </button>
