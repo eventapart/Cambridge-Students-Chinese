@@ -233,9 +233,9 @@ function buildIdiomCardContent(item) {
   ].filter(Boolean);
 
   const extra = [];
-  if (item.lit) extra.push(add("Tongyi Lit.", item.lit));
-  if (item.fig) extra.push(add("TONGYI Fig.", item.fig));
-  if (item.petci) extra.push(add("Cornell PETCI", item.petci));
+  if (item.lit) extra.push(add("LIT.", item.lit));
+  if (item.fig) extra.push(add("FIG.", item.fig));
+  if (item.petci) extra.push(add("PETCI.", item.petci));
 
   let merged = base.length && base[0].includes("释义") ? [base[0], ...extra, ...base.slice(1)] : [...extra, ...base];
   return merged.filter(Boolean).join('<br />');
