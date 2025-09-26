@@ -227,27 +227,25 @@ async function loadAllIdioms(parts = 10) {
 // =======================
 
 function buildIdiomCardContent(item) {
-  const add = (label, text) => `<strong>${label}</strong>${text || '——'}`;
+  const add = (label, text) => text ? `<strong>${label}</strong>${text}` : '';
   const base = [
     add("释义", item.definition),
     add("用法", item.usage),
     add("出处", (item.source?.text || '') + (item.source?.book ? `（${item.source.book}）` : '')),
     add("例句", (item.example?.text || '') + (item.example?.book ? `（${item.example.book}）` : '')),
     add("官方", item.exampleSentence),
-    item.similar?.length ? add("近义", item.similar.join('、')) : add("近义", ''),
-    item.opposite?.length ? add("反义", item.opposite.join('、')) : add("反义", '')
-  ];
+    item.similar?.length ? add("近义", item.similar.join('、')) : '',
+    item.opposite?.length ? add("反义", item.opposite.join('、')) : ''
+  ].filter(Boolean);
 
   const extra = [];
   if (item.lit) extra.push(add("LIT", item.lit));
   if (item.fig) extra.push(add("FIG", item.fig));
   if (item.petci) extra.push(add("PETCI", item.petci));
 
-  // 保证“释义”在第一位
-  let merged = [base[0], ...extra, ...base.slice(1)];
-  return merged.join('<br />');
+  let merged = base.length && base[0].includes("释义") ? [base[0], ...extra, ...base.slice(1)] : [...extra, ...base];
+  return merged.filter(Boolean).join('<br />');
 }
-
 
 function renderIdiomCards(container, items) {
   container.innerHTML = items.map(i => `
