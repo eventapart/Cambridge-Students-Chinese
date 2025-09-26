@@ -34,7 +34,7 @@ function highlightText(text, keyword) {
 /** 防抖 */
 function debounce(fn, delay) {
   let timer;
-  return (...args) => {
+  return function (...args) {
     clearTimeout(timer);
     timer = setTimeout(() => fn.apply(this, args), delay);
   };
@@ -71,8 +71,9 @@ class Paginator {
     if (currentPage > 1) html += `<li class="page-item"><a class="page-link" data-page="${currentPage - 1}" href="#">上一页</a></li>`;
 
     let startPage, endPage;
-    if (totalPages <= maxButtons) [startPage, endPage] = [1, totalPages];
-    else {
+    if (totalPages <= maxButtons) {
+      [startPage, endPage] = [1, totalPages];
+    } else {
       const half = Math.floor(maxButtons / 2);
       if (currentPage <= half) [startPage, endPage] = [1, maxButtons];
       else if (currentPage + half >= totalPages) [startPage, endPage] = [totalPages - maxButtons + 1, totalPages];
@@ -106,8 +107,7 @@ class Paginator {
     if (!this.container.querySelector("[data-page]")) return;
 
     const activeTab = document.querySelector('#myTabs .nav-link.active')?.getAttribute('href');
-    if (!activeTab) return;
-    if (!this.container.closest(activeTab)) return;
+    if (!activeTab || !this.container.closest(activeTab)) return;
 
     if (e.key === 'ArrowLeft' && this.currentPage > 1) this.render(this.currentPage - 1);
     else if (e.key === 'ArrowRight' && this.currentPage < this.totalPages) this.render(this.currentPage + 1);
@@ -126,8 +126,8 @@ class Paginator {
 let igcseData = null;
 let allIdioms = [];
 let idiomMap = new Map();
-let idiomsParts = []; // 保存每个 part 的数据
-let idiomsEnMap = new Map(); // 英文释义
+let idiomsParts = [];
+let idiomsEnMap = new Map();
 
 async function loadIgcseData() {
   try {
@@ -194,22 +194,20 @@ async function loadAllIdioms(parts = 10) {
 
   await Promise.all(fetchPromises);
 
-  // 合并英文释义到 idiom 对象
-  if (idiomsEnMap.size > 0) {
-    idiomsEnMap.forEach((entry, idiomKey) => {
-      const target = idiomMap.get(idiomKey);
-      if (target) {
-        if (entry.tongyi) {
-          target.lit = entry.tongyi.lit || target.lit;
-          target.fig = entry.tongyi.fig || target.fig;
-        }
-        if (entry.petci) target.petci = entry.petci;
-        target._enmap = entry;
-        target.litLower = (target.lit || '').toLowerCase();
-        target.figLower = (target.fig || '').toLowerCase();
+  // 合并英文释义
+  idiomsEnMap.forEach((entry, idiomKey) => {
+    const target = idiomMap.get(idiomKey);
+    if (target) {
+      if (entry.tongyi) {
+        target.lit = entry.tongyi.lit || target.lit;
+        target.fig = entry.tongyi.fig || target.fig;
       }
-    });
-  }
+      if (entry.petci) target.petci = entry.petci;
+      target._enmap = entry;
+      target.litLower = (target.lit || '').toLowerCase();
+      target.figLower = (target.fig || '').toLowerCase();
+    }
+  });
 
   appContainer.classList.remove('loading-state');
   renderHomeIdioms();
@@ -239,12 +237,7 @@ function buildIdiomCardContent(item) {
   if (item.fig) extra.push(add("TONGYI Fig.", item.fig));
   if (item.petci) extra.push(add("Cornell PETCI", item.petci));
 
-  let merged;
-  if (base.length && base[0].includes("释义")) {
-    merged = [base[0], ...extra, ...base.slice(1)];
-  } else {
-    merged = [...extra, ...base];
-  }
+  let merged = base.length && base[0].includes("释义") ? [base[0], ...extra, ...base.slice(1)] : [...extra, ...base];
   return merged.filter(Boolean).join('<br />');
 }
 
@@ -288,7 +281,6 @@ let searchPaginator = null;
 
 async function searchIdioms(input) {
   if (!input) return [];
-
   const matchedParts = await Promise.all(idiomsParts.map(part =>
     part.filter(i =>
       i.idiomLower.includes(input) ||
@@ -297,7 +289,6 @@ async function searchIdioms(input) {
       i.figLower?.includes(input)
     )
   ));
-
   return matchedParts.flat();
 }
 
@@ -310,11 +301,7 @@ async function handleIdiomSearch() {
 
   results.innerHTML = '';
   if (pagination) pagination.innerHTML = '';
-
-  if (searchPaginator) {
-    searchPaginator.destroy();
-    searchPaginator = null;
-  }
+  if (searchPaginator) { searchPaginator.destroy(); searchPaginator = null; }
 
   if (input.length < 2) {
     renderStatusMessage(results, "请输入至少2个字符");
@@ -322,15 +309,13 @@ async function handleIdiomSearch() {
     button.disabled = true;
     return;
   }
+
   button.disabled = false;
-
   const matched = await searchIdioms(input);
-
   if (!matched.length) return renderStatusMessage(results, "未找到相关成语");
 
   const perPage = 3;
   const totalPages = Math.ceil(matched.length / perPage);
-
   const renderPage = page => {
     const pageItems = matched.slice((page - 1) * perPage, page * perPage)
       .map(i => ({
@@ -374,7 +359,6 @@ function renderIgcseIdioms(page = 1) {
   const perPage = 3;
   const totalPages = Math.ceil(items.length / perPage);
   const renderPage = p => renderIdiomCards(c, items.slice((p - 1) * perPage, p * perPage));
-
   new Paginator(paginationId, totalPages, renderPage).render(page);
 }
 
@@ -444,20 +428,12 @@ function restartGame() {
 
 function initTabListeners() {
   document.querySelector('#myTabs a[href="#game"]')?.addEventListener('shown.bs.tab', renderNextGameQuestion);
-
   document.querySelector('#myTabs a[href="#dictionary"]')?.addEventListener('shown.bs.tab', () => {
-    if (searchPaginator) {
-      searchPaginator.destroy();
-      searchPaginator = null;
-    }
+    if (searchPaginator) { searchPaginator.destroy(); searchPaginator = null; }
     $('search-input').value = '';
     renderRandomIdiomStories();
   });
-
-  document.querySelector('#myTabs a[href="#igcse"]')?.addEventListener('shown.bs.tab', () => {
-    renderIgcseIdioms(1);
-  });
-
+  document.querySelector('#myTabs a[href="#igcse"]')?.addEventListener('shown.bs.tab', () => renderIgcseIdioms(1));
   document.querySelector('#myTabs a[href="#home"]')?.addEventListener('shown.bs.tab', renderRandomIdiomStories);
 }
 
