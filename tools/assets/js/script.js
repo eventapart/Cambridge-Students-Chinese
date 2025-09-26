@@ -282,7 +282,7 @@ function renderRandomIdiomStories() {
 }
 
 // =======================
-// 模糊搜索（多关键词）
+// 模糊搜索（任意关键词匹配）
 // =======================
 
 let searchPaginator = null;
@@ -293,7 +293,7 @@ async function searchIdioms(input) {
 
   const matchedParts = await Promise.all(idiomsParts.map(part =>
     part.filter(i =>
-      keywords.every(kw =>
+      keywords.some(kw =>
         i.idiomLower.includes(kw) ||
         i.definitionLower.includes(kw) ||
         i.litLower.includes(kw) ||
