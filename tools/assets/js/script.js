@@ -142,19 +142,25 @@ async function loadIgcseData() {
 }
 
 async function loadIdiomsEnMap() {
-  try {
-    const res = await fetch('./dictionaries/idioms_en_map.min.json');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const arr = await res.json();
-    arr.forEach(entry => {
-      const k = (entry.idiom || '').trim();
-      if (!k) return;
-      idiomsEnMap.set(k, entry);
-    });
-    console.log('idioms_en_map 加载完成，条目数：', idiomsEnMap.size);
-  } catch (err) {
-    console.warn('加载 idioms_en_map.min.json 失败或不存在：', err);
+  const parts = 3; // 分成 3 个文件
+  const fetchPromises = [];
+  for (let i = 1; i <= parts; i++) {
+    fetchPromises.push(
+      fetch(`./dictionaries/idioms_en_map_part${i}.min.json`)
+        .then(res => res.json())
+        .then(arr => {
+          arr.forEach(entry => {
+            const k = (entry.idiom || '').trim();
+            if (!k) return;
+            idiomsEnMap.set(k, entry);
+          });
+          console.log(`idioms_en_map_part${i} 加载完成，条目数：`, arr.length);
+        })
+        .catch(err => console.warn(`加载 idioms_en_map_part${i}.min.json 失败：`, err))
+    );
   }
+  await Promise.all(fetchPromises);
+  console.log('所有 idioms_en_map 分片加载完成，总条目数：', idiomsEnMap.size);
 }
 
 async function loadAllIdioms(parts = 10) {
