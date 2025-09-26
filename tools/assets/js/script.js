@@ -120,16 +120,14 @@ class Paginator {
 }
 
 // =======================
-// 数据加载（并行加载 part）
+// 数据加载
 // =======================
 
 let igcseData = null;
 let allIdioms = [];
 let idiomMap = new Map();
-let idiomsParts = []; // 保存每个 part 的数据，便于并行搜索
-
-// 新增：翻译表 map（从 idioms_en_map.min.json 加载）
-let idiomsEnMap = new Map();
+let idiomsParts = []; // 保存每个 part 的数据
+let idiomsEnMap = new Map(); // 英文释义
 
 async function loadIgcseData() {
   try {
@@ -143,13 +141,11 @@ async function loadIgcseData() {
   }
 }
 
-// 新增：加载 英文释义对照表 并生成 Map（key: idiom 原文）
 async function loadIdiomsEnMap() {
   try {
     const res = await fetch('./dictionaries/idioms_en_map.min.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const arr = await res.json();
-    // arr 期望结构为 [{ idiom: "...", tongyi: { lit: "...", fig: "..." }, petci: "..." }, ...]
     arr.forEach(entry => {
       const k = (entry.idiom || '').trim();
       if (!k) return;
@@ -158,7 +154,6 @@ async function loadIdiomsEnMap() {
     console.log('idioms_en_map 加载完成，条目数：', idiomsEnMap.size);
   } catch (err) {
     console.warn('加载 idioms_en_map.min.json 失败或不存在：', err);
-    // 不弹 alert，这个文件可选
   }
 }
 
@@ -169,12 +164,8 @@ async function loadAllIdioms(parts = 10) {
   for (let i = 1; i <= parts; i++) {
     fetchPromises.push(
       fetch(`./dictionaries/idioms_part${i}.min.json`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
+        .then(res => res.json())
         .then(partData => {
-          // 标准化每项的字段，缓存小写用于搜索
           partData.forEach(item => {
             item.idiom = item.idiom || '';
             item.definition = item.definition || '';
@@ -187,9 +178,11 @@ async function loadAllIdioms(parts = 10) {
             item.story = item.story || [];
             item.idiomLower = item.idiom.toLowerCase();
             item.definitionLower = item.definition.toLowerCase();
+            item.litLower = (item.lit || '').toLowerCase();
+            item.figLower = (item.fig || '').toLowerCase();
           });
           allIdioms.push(...partData);
-          idiomsParts[i - 1] = partData; // 保存每个 part
+          idiomsParts[i - 1] = partData;
           partData.forEach(it => idiomMap.set(it.idiom, it));
           console.log(`Part ${i} 加载完成`);
         })
@@ -197,36 +190,23 @@ async function loadAllIdioms(parts = 10) {
     );
   }
 
-  // 同步加载英译表（可选），与 parts 并行进行
-  fetchPromises.push(
-    (async () => {
-      await loadIdiomsEnMap();
-    })()
-  );
+  fetchPromises.push(loadIdiomsEnMap());
 
   await Promise.all(fetchPromises);
 
-  // 合并 idiomsEnMap 到 idiom 对象上（如果存在）
+  // 合并英文释义到 idiom 对象
   if (idiomsEnMap.size > 0) {
-    // idiomsEnMap 的 key 是原始成语字符串，直接合并到 idiomMap 中对应的对象
     idiomsEnMap.forEach((entry, idiomKey) => {
       const target = idiomMap.get(idiomKey);
       if (target) {
-        // 优先使用 tongyi.lit / tongyi.fig
-        try {
-          if (entry.tongyi && typeof entry.tongyi === 'object') {
-            if (entry.tongyi.lit) target.lit = entry.tongyi.lit;
-            if (entry.tongyi.fig) target.fig = entry.tongyi.fig;
-          }
-        } catch (e) {
-          // ignore
+        if (entry.tongyi) {
+          target.lit = entry.tongyi.lit || target.lit;
+          target.fig = entry.tongyi.fig || target.fig;
         }
-        // petci（若存在），直接赋值到 petci 字段
         if (entry.petci) target.petci = entry.petci;
-        // 为了安全：也把 entry 自身存入 target._enmap 以便调试或渲染其他字段
         target._enmap = entry;
-        // 更新在 allIdioms 中的对象（idiomMap 引用的是同一个对象，因为先前 set 时用的对象引用）
-        idiomMap.set(idiomKey, target);
+        target.litLower = (target.lit || '').toLowerCase();
+        target.figLower = (target.fig || '').toLowerCase();
       }
     });
   }
@@ -239,12 +219,11 @@ async function loadAllIdioms(parts = 10) {
 }
 
 // =======================
-// 渲染函数（含 Lit./Fig./PETCI）
+// 渲染函数
 // =======================
 
 function buildIdiomCardContent(item) {
   const add = (label, text) => text ? `<strong style="margin-left:-2.75rem">${label}</strong> ${text}` : '';
-  // 原有字段
   const base = [
     add("释义", item.definition),
     add("用法", item.usage),
@@ -255,26 +234,17 @@ function buildIdiomCardContent(item) {
     item.opposite?.length ? add("反义", item.opposite.join('、')) : ''
   ].filter(Boolean);
 
-  // 新增：如果存在英译表中的 lit / fig / petci，则在“释义”之后分别显示
   const extra = [];
-  // 注意：json 里字段可能是 lit/fig 存在于 item.lit / item.fig，或者存于 item._enmap.tongyi
   if (item.lit) extra.push(add("Lit.", item.lit));
-  else if (item._enmap && item._enmap.tongyi && item._enmap.tongyi.lit) extra.push(add("Lit.", item._enmap.tongyi.lit));
-
   if (item.fig) extra.push(add("Fig.", item.fig));
-  else if (item._enmap && item._enmap.tongyi && item._enmap.tongyi.fig) extra.push(add("Fig.", item._enmap.tongyi.fig));
-
   if (item.petci) extra.push(add("PETCI.", item.petci));
-  else if (item._enmap && item._enmap.petci) extra.push(add("PETCI.", item._enmap.petci));
 
-  // 将 extra 插入到 base 的第一项（“释义”）之后：如果 base 第一项是释义，就在其后追加 extra，否则将 extra 放到最前
   let merged;
   if (base.length && base[0].includes("释义")) {
     merged = [base[0], ...extra, ...base.slice(1)];
   } else {
     merged = [...extra, ...base];
   }
-
   return merged.filter(Boolean).join('<br />');
 }
 
@@ -291,7 +261,7 @@ function renderIdiomCards(container, items) {
 }
 
 // =======================
-// 首页和随机故事
+// 首页与随机故事
 // =======================
 
 function renderHomeIdioms() {
@@ -311,7 +281,7 @@ function renderRandomIdiomStories() {
 }
 
 // =======================
-// 搜索功能（异步并行搜索每个 part）
+// 模糊搜索
 // =======================
 
 let searchPaginator = null;
@@ -319,10 +289,12 @@ let searchPaginator = null;
 async function searchIdioms(input) {
   if (!input) return [];
 
-  // 并行异步搜索每个 part
-  const matchedParts = await Promise.all(idiomsParts.map(async part => 
+  const matchedParts = await Promise.all(idiomsParts.map(part =>
     part.filter(i =>
-      i.idiomLower.includes(input) || i.definitionLower.includes(input)
+      i.idiomLower.includes(input) ||
+      i.definitionLower.includes(input) ||
+      i.litLower?.includes(input) ||
+      i.figLower?.includes(input)
     )
   ));
 
@@ -330,7 +302,8 @@ async function searchIdioms(input) {
 }
 
 async function handleIdiomSearch() {
-  const input = $('search-input').value.trim().toLowerCase();
+  const inputRaw = $('search-input').value.trim();
+  const input = inputRaw.toLowerCase();
   const results = $('search-results');
   const pagination = $('pagination-controls-dict');
   const button = $('button-addon2');
@@ -362,9 +335,10 @@ async function handleIdiomSearch() {
     const pageItems = matched.slice((page - 1) * perPage, page * perPage)
       .map(i => ({
         ...i,
-        idiom: highlightText(i.idiom, input),
-        // 高亮 definition 时要基于原始 definition 字段（如果上面的 renderRandomIdiomStories 改写了 definition, 保证存在 definition 字段）
-        definition: highlightText(i.definition || '', input)
+        idiom: highlightText(i.idiom, inputRaw),
+        definition: highlightText(i.definition || '', inputRaw),
+        lit: highlightText(i.lit || '', inputRaw),
+        fig: highlightText(i.fig || '', inputRaw)
       }));
     renderIdiomCards(results, pageItems);
   };
@@ -493,7 +467,7 @@ function initTabListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadIgcseData();
-  loadAllIdioms(10); // 并行加载 10 个 part（同时会尝试加载 idioms_en_map）
+  loadAllIdioms(10);
   $('search-input').addEventListener('input', debounce(handleIdiomSearch, 200));
   $('button-addon2').disabled = true;
   $('best-score').textContent = bestScore;
