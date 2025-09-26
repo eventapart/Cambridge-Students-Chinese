@@ -276,7 +276,7 @@ function renderRandomIdiomStories() {
   const pageItems = shuffleArrayInPlace(items).slice(0, 3).map(i => ({
     ...i,
     // 保留释义并追加故事
-    definition: (i.definition || '') + '<br /><strong style="margin-left:-3.75rem">故事</strong> ' + i.story.join('<br /><br />')
+    definition: (i.definition || '') + '<br /><strong>故事</strong> ' + i.story.join('<br /><br />')
   }));
 
   renderIdiomCards(c, pageItems);
