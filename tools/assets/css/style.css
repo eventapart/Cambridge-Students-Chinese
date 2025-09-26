@@ -232,7 +232,7 @@ h1 small {
   border: solid 18px transparent;
   border-image: url(../images/corner.png) 66 stretch;
 }
-.card-chinese p { color: var(--text-muted); font-size: 0.875rem; }
+.card-chinese p { color: var(--text-muted); font-size: 0.875rem; text-transform: capitalize}
 .card-chinese p strong {
   padding: 0 0.375rem;
   background-color: var(--board-bg);
