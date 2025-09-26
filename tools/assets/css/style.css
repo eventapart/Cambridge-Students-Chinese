@@ -232,8 +232,10 @@ h1 small {
   border: solid 18px transparent;
   border-image: url(../images/corner.png) 66 stretch;
 }
-.card-chinese p { color: var(--text-muted); font-size: 0.875rem;}
+.card-chinese p { position: relative; color: var(--text-muted); font-size: 0.875rem;}
 .card-chinese p strong {
+  position: absolute;
+  left:0;
   display:inline-block;
   background-color: var(--board-bg);
   border-radius: 3px;
