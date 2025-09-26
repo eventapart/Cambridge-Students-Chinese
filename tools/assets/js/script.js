@@ -142,7 +142,7 @@ async function loadIgcseData() {
 }
 
 async function loadIdiomsEnMap() {
-  const parts = 2;
+  const parts = 3;
   const fetchPromises = [];
   for (let i = 1; i <= parts; i++) {
     fetchPromises.push(
@@ -328,7 +328,7 @@ async function handleIdiomSearch() {
   const matched = await searchIdioms(input);
   if (!matched.length) return renderStatusMessage(results, "未找到相关成语");
 
-  const perPage = 2;
+  const perPage = 3;
   const totalPages = Math.ceil(matched.length / perPage);
   const renderPage = page => {
     const pageItems = matched.slice((page - 1) * perPage, page * perPage)
@@ -373,7 +373,7 @@ function renderIgcseIdioms(page = 1) {
 
   if (!items.length) return c.innerHTML = '<p>暂无真题成语数据</p>';
 
-  const perPage = 2;
+  const perPage = 3;
   const totalPages = Math.ceil(items.length / perPage);
   const renderPage = p => renderIdiomCards(c, items.slice((p - 1) * perPage, p * perPage), false);
   new Paginator(paginationId, totalPages, renderPage).render(page);
