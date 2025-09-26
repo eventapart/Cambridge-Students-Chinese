@@ -289,16 +289,21 @@ async function searchIdioms(input) {
   const keywords = input.toLowerCase().split(/\s+/).filter(Boolean);
 
   const matchedParts = await Promise.all(idiomsParts.map(part =>
-    part.filter(i =>
-      keywords.some(kw =>
-        i.idiomLower.includes(kw) ||
-        i.definitionLower.includes(kw) ||
-        i.litLower.includes(kw) ||
-        i.figLower.includes(kw)
-      )
-    )
+    part.map(i => {
+      let matchCount = 0;
+      for (const kw of keywords) {
+        if (i.idiomLower.includes(kw) || i.definitionLower.includes(kw) ||
+            i.litLower.includes(kw) || i.figLower.includes(kw)) {
+          matchCount++;
+        }
+      }
+      if (matchCount > 0) return { ...i, matchCount };
+      return null;
+    }).filter(Boolean)
   ));
-  return matchedParts.flat();
+
+  // flatten 并按 matchCount 降序排序
+  return matchedParts.flat().sort((a, b) => b.matchCount - a.matchCount);
 }
 
 async function handleIdiomSearch() {
