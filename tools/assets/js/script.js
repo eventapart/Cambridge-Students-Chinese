@@ -221,7 +221,7 @@ async function loadAllIdioms(parts = 10) {
 // =======================
 
 function buildIdiomCardContent(item) {
-  const add = (label, text) => text ? `<strong style="margin-left:-2.75rem">${label}</strong> ${text}` : '';
+  const add = (label, text) => text ? `<strong style="margin-left:-3.75rem">${label}</strong> ${text}` : '';
   const base = [
     add("释义", item.definition),
     add("用法", item.usage),
@@ -233,9 +233,9 @@ function buildIdiomCardContent(item) {
   ].filter(Boolean);
 
   const extra = [];
-  if (item.lit) extra.push(add("LIT.", item.lit));
-  if (item.fig) extra.push(add("FIG.", item.fig));
-  if (item.petci) extra.push(add("PETCI.", item.petci));
+  if (item.lit) extra.push(add("LIT", item.lit));
+  if (item.fig) extra.push(add("FIG", item.fig));
+  if (item.petci) extra.push(add("PETCI", item.petci));
 
   let merged = base.length && base[0].includes("释义") ? [base[0], ...extra, ...base.slice(1)] : [...extra, ...base];
   return merged.filter(Boolean).join('<br />');
@@ -247,7 +247,7 @@ function renderIdiomCards(container, items) {
       <div class="card shadow-sm h-100">
         <div class="card-body d-flex flex-column card-chinese">
           <h5 class="card-title mb-4">${i.idiom}<br><small class="text-muted">${i.pinyin || ''}</small></h5>
-          <p class="card-text mt-auto" style="padding-left:2.75rem">${buildIdiomCardContent(i)}</p>
+          <p class="card-text mt-auto" style="padding-left:3.75rem">${buildIdiomCardContent(i)}</p>
         </div>
       </div>
     </div>`).join('');
@@ -269,7 +269,7 @@ function renderRandomIdiomStories() {
   if (!items.length) return renderStatusMessage(c, "暂无成语故事");
   renderIdiomCards(c, shuffleArrayInPlace(items).slice(0, 3).map(i => ({
     ...i,
-    definition: `<strong style="margin-left:-2.75rem">故事</strong> ${i.story.join('<br /><br />')}`
+    definition: `<strong style="margin-left:-3.75rem">故事</strong> ${i.story.join('<br /><br />')}`
   })));
 }
 
