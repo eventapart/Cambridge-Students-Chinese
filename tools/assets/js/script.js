@@ -330,7 +330,7 @@ async function handleIdiomSearch() {
       .map(i => ({
         ...i,
         idiom: highlightText(i.idiom, inputRaw),
-        definition: highlightText(i.definition || '', inputRaw) + (i.story?.length ? '<br /><strong style="margin-left:-3.75rem">故事</strong> ' + i.story.join('<br /><br />') : ''),
+        definition: highlightText(i.definition || '', inputRaw) + (i.story?.length ? '<br /><strong>故事</strong> ' + i.story.join('<br /><br />') : ''),
         lit: highlightText(i.lit || '', inputRaw),
         fig: highlightText(i.fig || '', inputRaw)
       }));
