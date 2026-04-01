@@ -29,9 +29,9 @@
 
 ### 技术栈
 
-前端: HTML5, CSS3, JavaScript (ES6+)
-框架: Bootstrap 5
-数据源: 成语 JSON 数据集（包含释义与故事）
+- 前端: HTML5, CSS3, JavaScript (ES6+)
+- 框架: Bootstrap 5
+- 数据源: 成语 JSON 数据集（包含释义与故事）
 
 ---
 
@@ -58,8 +58,8 @@
 
 ## 快速开始
 
-git clone https://github.com/eventapart/Cambridge-Students-Chinese.git
-cd Cambridge-Students-Chinese
+> git clone https://github.com/eventapart/Cambridge-Students-Chinese.git
+> cd Cambridge-Students-Chinese
 
 直接在浏览器中打开对应的 HTML 文件即可使用。
 
