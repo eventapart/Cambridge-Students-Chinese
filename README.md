@@ -58,8 +58,8 @@
 
 ## 快速开始
 
-   git clone https://github.com/eventapart/Cambridge-Students-Chinese.git
-   cd Cambridge-Students-Chinese
+    git clone https://github.com/eventapart/Cambridge-Students-Chinese.git
+    cd Cambridge-Students-Chinese
 
 直接在浏览器中打开对应的 HTML 文件即可使用。
 
