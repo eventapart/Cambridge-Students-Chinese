@@ -75,5 +75,4 @@
 
 ## 作者
 
-Benjamin Zhai
-IGCSE 中文教师
+- Benjamin Zhai (IGCSE 中文教师)
