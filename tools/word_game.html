@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>词语分类大挑战</title>
+    <!-- 引入 Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e9ecef; /* 浅灰背景，突出蓝色卡片 */
+            padding-top: 50px;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        .game-card {
+            max-width: 600px;
+            margin: 0 auto;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 100, 200, 0.2);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .word-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+            margin: 30px 0;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-option {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 12px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .feedback-modal {
+            display: none; /* 默认隐藏 */
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .explanation-box {
+            background-color: #f8f9fa;
+            border-left: 5px solid #0d6efd;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            text-align: left;
+        }
+        .score-board {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card game-card">
+        <div class="card-header">
+            <h3 class="mb-0">📝 词语分类大挑战</h3>
+            <small>请判断下列词语属于哪种描写类型</small>
+        </div>
+        <div class="card-body">
+            <!-- 进度条 -->
+            <div class="progress mb-3" style="height: 10px;">
+                <div id="progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+            </div>
+
+            <!-- 游戏区域 -->
+            <div id="game-area">
+                <div class="word-display" id="word-text">
+                    准备开始...
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary btn-option" onclick="checkAnswer('神态')">😊 神态描写</button>
+                    <button class="btn btn-outline-primary btn-option" onclick="checkAnswer('心理')">🧠 心理描写</button>
+                    <button class="btn btn-outline-primary btn-option" onclick="checkAnswer('动作')">🏃 动作描写</button>
+                </div>
+            </div>
+
+            <!-- 反馈与解释区域 (默认隐藏) -->
+            <div id="feedback-area" class="feedback-modal">
+                <div id="result-title" class="text-center fs-4 fw-bold mb-2"></div>
+                <div class="explanation-box">
+                    <p class="mb-1"><strong>词语：</strong><span id="feedback-word"></span></p>
+                    <p class="mb-1"><strong>类型：</strong><span id="feedback-type"></span></p>
+                    <p class="mb-0"><strong>解释：</strong><span id="feedback-def"></span></p>
+                </div>
+                <button class="btn btn-primary w-100 mt-3" onclick="nextQuestion()">下一题 ➡️</button>
+            </div>
+
+            <!-- 游戏结束区域 (默认隐藏) -->
+            <div id="end-area" class="text-center" style="display: none;">
+                <h2>🎉 挑战完成！</h2>
+                <p class="lead">你的最终得分是：</p>
+                <h1 class="display-1 text-primary fw-bold" id="final-score">0</h1>
+                <button class="btn btn-lg btn-success mt-3" onclick="restartGame()">🔄 重新开始</button>
+            </div>
+        </div>
+        <div class="card-footer bg-white text-center">
+            <span class="score-board">得分: <span id="current-score" class="text-primary">0</span></span>
+        </div>
+    </div>
+</div>
+
+<!-- 引入 Bootstrap JS (可选，用于交互组件) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // 1. 数据准备：包含所有30个词语及其解释
+    const allWords = [
+        // 神态
+        { word: "眉飞色舞", type: "神态", def: "形容人得意、兴奋或愉快的神态。" },
+        { word: "垂头丧气", type: "神态", def: "形容因失败或不顺利而情绪低落、萎靡不振的样子。" },
+        { word: "呆若木鸡", type: "神态", def: "形容因恐惧或惊讶而发愣的样子。" },
+        { word: "全神贯注", type: "神态", def: "全副精神高度集中。" },
+        { word: "大惊失色", type: "神态", def: "非常惊恐，脸色都变了。" },
+        // 心理
+        { word: "忐忑不安", type: "心理", def: "心神不定，心神极为不安。" },
+        { word: "心花怒放", type: "心理", def: "形容内心高兴极了。" },
+        { word: "心惊胆战", type: "心理", def: "形容十分害怕。" },
+        { word: "心灰意冷", type: "心理", def: "灰心丧气，意志消沉。" },
+        { word: "怒火中烧", type: "心理", def: "心中怀着极大的愤怒。" },
+        // 动作
+        { word: "昂首挺胸", type: "动作", def: "抬起头，挺起胸膛，形容斗志高或士气旺。" },
+        { word: "手舞足蹈", type: "动作", def: "两手舞动，两只脚也跳了起来，形容高兴到了极点。" },
+        { word: "东张西望", type: "动作", def: "形容这里那里地到处看。" },
+        { word: "大步流星", type: "动作", def: "形容步子跨得大，走得快。" },
+        { word: "摩拳擦掌", type: "动作", def: "形容战斗或劳动前，人们精神振奋、跃跃欲试的样子。" },
+        { word: "蹑手蹑脚", type: "动作", def: "形容走路时脚步放得很轻。" },
+        { word: "抓耳挠腮", type: "动作", def: "形容焦急、苦恼或忙乱时无计可施的样子。" }
+    ];
+
+    let gameWords = [];
+    let currentIndex = 0;
+    let score = 0;
+
+    // 2. 初始化游戏
+    function initGame() {
+        // 复制并打乱数组
+        gameWords = [...allWords].sort(() => 0.5 - Math.random());
+        currentIndex = 0;
+        score = 0;
+        updateScore();
+        
+        // 显示游戏区域，隐藏结束区域
+        document.getElementById('game-area').style.display = 'block';
+        document.getElementById('end-area').style.display = 'none';
+        document.getElementById('feedback-area').style.display = 'none';
+        
+        loadQuestion();
+    }
+
+    // 3. 加载当前题目
+    function loadQuestion() {
+        const currentWordObj = gameWords[currentIndex];
+        document.getElementById('word-text').textContent = currentWordObj.word;
+        
+        // 更新进度条
+        const progress = ((currentIndex) / gameWords.length) * 100;
+        document.getElementById('progress-bar').style.width = `${progress}%`;
+    }
+
+    // 4. 检查答案
+    function checkAnswer(selectedType) {
+        const currentWordObj = gameWords[currentIndex];
+        const isCorrect = selectedType === currentWordObj.type;
+        
+        // 更新分数
+        if (isCorrect) {
+            score += 10;
+            updateScore();
+        }
+
+        // 显示反馈区域
+        const feedbackArea = document.getElementById('feedback-area');
+        const resultTitle = document.getElementById('result-title');
+        
+        // 隐藏题目和按钮
+        document.getElementById('game-area').style.display = 'none';
+        // 显示反馈
+        feedbackArea.style.display = 'block';
+
+        // 设置反馈内容
+        if (isCorrect) {
+            resultTitle.textContent = "✅ 回答正确！";
+            resultTitle.className = "text-center fs-4 fw-bold mb-2 text-success";
+        } else {
+            resultTitle.textContent = "❌ 回答错误";
+            resultTitle.className = "text-center fs-4 fw-bold mb-2 text-danger";
+        }
+
+        document.getElementById('feedback-word').textContent = currentWordObj.word;
+        document.getElementById('feedback-type').textContent = currentWordObj.type + "描写";
+        document.getElementById('feedback-def').textContent = currentWordObj.def;
+    }
+
+    // 5. 下一题
+    function nextQuestion() {
+        currentIndex++;
+        
+        if (currentIndex < gameWords.length) {
+            // 还有题目
+            document.getElementById('feedback-area').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            loadQuestion();
+        } else {
+            // 游戏结束
+            document.getElementById('feedback-area').style.display = 'none';
+            document.getElementById('end-area').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('progress-bar').style.width = `100%`;
+        }
+    }
+
+    // 6. 更新分数显示
+    function updateScore() {
+        document.getElementById('current-score').textContent = score;
+    }
+
+    // 7. 重新开始
+    function restartGame() {
+        initGame();
+    }
+
+    // 页面加载完成后启动
+    window.onload = initGame;
+
+</script>
+
+</body>
+</html>
